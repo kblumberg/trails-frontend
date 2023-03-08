@@ -1,38 +1,340 @@
 .App {
-  text-align: center;
+	text-align: center;
+	/* font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif, din-round */
+	font-family: din-round, sans-serif;
+	background-color: white;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.bold {
+	font-weight: 900;
+}
+.xp {
+	opacity: 0.85;
+	font-weight: 100;
+}
+.align-left {
+	text-align: left;
+}
+.avatar {
+	width: 40px;
+	height: 40px;
+	border-radius: 40px;
+	padding: 10px;
+	display: inline-block;
+	text-align: center;
+	color: white;
+}
+.leaderboard-page table tr {
+	height: 50px;
+}
+.leaderboard-page table td {
+	vertical-align: middle;
+}
+.leaderboard-page table span.username {
+	padding-left: 20px;
+	font-weight: 400;
+}
+.leaderboard-page table {
+	max-width: 600px;
+	margin: auto;
+}
+.rocket {
+	max-width: 100%;
+	max-height: 400px;
+}
+.expeditions-page {
+	color: #315274;
+}
+.launching-soon {
+	font-weight: 900;
+    font-size: 48px;
+    letter-spacing: 6px;
+}
+.settings-page .user {
+	padding-left: 30px;
+	display: inline-block;
+	text-align: left;
+}
+.user-header {
+	font-weight: 900;
+	font-size: 28px;
+}
+.user-subheader {
+	font-weight: 100;
+	font-size: 12px;
+	color: #999;
+	padding-bottom: 20px;
+}
+.pencil {
+	background-color: #53adf0;
+	vertical-align: top;
+    position: relative;
+    display: inline;
+    left: 105px;
+    color: white;
+    border-radius: 30px;
+    padding: 3px 5px 6px 6px;
+	cursor: pointer;
+}
+.settings-header {
+	padding-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+}
+.settings-page img.icon {
+	padding: 0;
+	border: none;
+}
+.settings-page .icon {
+	height: 120px;
+	width: 120px;
+	border-radius: 120px;
+	text-align: center;
+	vertical-align: top;
+	font-size: 45px;
+	padding: 25px;
+	display: inline-block;
+	color: #888;
+	border: 1px dashed #888;
+}
+.pfp-input {
+	display: none;
+}
+body, html {
+	padding: 0;
+}
+  
+.burst-button {
+	width: 250px;
+	height: 50px;
+	background-color: #CBDC41;
+	cursor: pointer;
+	/* margin: 50px auto 0; */
+	position: relative;
+	overflow: hidden;
+	transition: .3s;
+}
+.burst-button:hover {
+	  transition: .3s;
+	  box-shadow: 0px 8px 11px 0px rgba(0,0,0,0.1);
+}
+#success-timeline, #incorrect-timeline {
+	width: 24px;
+	height: 18px;
+	position: absolute;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	top: 50%;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.fade-in {
+    transition: opacity 1s ease;
+}
+.fade-out {
+    opacity: 0;
+    transition: opacity 1s ease;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.fade-button {
+    transition: opacity 1s ease;
 }
 
-.App-link {
-  color: #61dafb;
+.button {
+	margin: 0;
+}
+.error-text {
+	color: #dc3545;
+	opacity: 0.9;
+	padding-top: 10px;
+	font-size: 12px;
+	height: 28px;
+}
+.card-body > .back-text {
+	padding: 10px;
+}
+.card-body > .back-text > a {
+	font-weight: 900;
+    font-size: 16px;
+	text-decoration: none;
+	/* color: #ffc107; */
+	/* color: rgb(248, 213, 72); */
+	color: rgb(236, 166, 58 );
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.hidden {
+	opacity: 0;
+    transition: opacity 1s ease;
 }
+.not-hidden {
+	opacity: 1;
+    transition: opacity 0.1s ease !important;
+}
+.btn:disabled {
+	transition: opacity 4s ease;
+}
+.highlight {
+	/* background-color: rgba(236, 166, 58, .2 ); */
+	background-color: #eee;
+}
+  
+.text {
+	/* width: 100%;
+	text-align: center;
+	color: #fff; */
+	letter-spacing: 6px;
+	/* top: 50%;
+	transform: translateY(-50%);
+	font-family: 'Helvetica';
+	position: absolute;
+	display: inline-block; */
+}
+
+.left-bar-header {
+	font-size: 36px;
+	/* color: #DC1FFF; */
+	/* color: #5d3d28; */
+	/* color: #f7e6cd; */
+	/* color: rgb(100, 82, 70); */
+	/* color: rgb(164, 140, 113); */
+	/* color: #795c34; */
+	/* color: #80471c; */
+	color: rgb(110 189 100 );
+	/* color: #9a7b4f; */
+    padding: 40px 0 30px 16px;
+	font-weight: 900;
+}
+
+.left-bar {
+	left: 0;
+	top: 0;
+    position: fixed!important;
+    z-index: 1;
+	border-right: 1px solid rgb(229,229,229);
+    height: 100vh;
+    overflow-y: auto;
+    padding: 0 16px;
+}
+
+.left-bar-logo {
+	height: 30px;
+	padding-right: 20px;
+}
+
+.left-bar-item:hover {
+	background-color: rgb(247,247,247);
+	cursor: pointer;
+}
+
+.left-bar-item {
+	text-align: left;
+	padding: 10px;
+	border-radius: 12px;
+	color: rgb(119,119,119);
+	font-size: 15px;
+    font-weight: 700;
+    letter-spacing: .8px;
+    text-transform: uppercase;
+    transition: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+}
+.active > .left-bar-item {
+	color: rgb(28, 176, 246);
+	border: 2px solid rgb(132,216,255);
+	background-color: rgb(221,244,255);
+}
+
+.left-bar-list {
+	box-sizing: content-box;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: relative;
+}
+
+.main {
+	margin: 0 auto;
+    max-width: 1312px;
+    padding-top: 32px;
+    padding-left: 256px;
+    width: 100%;
+}
+.main > .row > .middle-col {
+	padding: 0 25px 25px 50px;
+}
+.main > .row > .right-col {
+	padding: 0 25px 25px 25px;
+}
+
+@media (min-width: 1500px) {
+	.main > .row > .middle-col {
+		padding-left: 0px;
+	}
+	.main > .row > .middle-col {
+		padding: 0 50px 25px 0px;
+	}
+}
+
+.right-panel-panel {
+	border: 2px solid rgb(229,229,229);
+    border-radius: 16px;
+    padding: 24px;
+}
+.right-panel-img {
+	max-width: 100%;
+}
+.right-panel-header {
+	height: 70px;
+}
+.wallet-adapter-dropdown, .wallet-adapter-button {
+	float: right;
+	/* width: 175px; */
+	width: 100%;
+}
+
+.loading-img {
+	max-height: 250px;
+}
+.middle-panel {
+	padding: 24px;
+}
+.icon {
+	width: 100%;
+}
+.cards > .col-3 {
+	padding: 12px;
+}
+.cards .card:hover {
+	cursor: pointer;
+	opacity: 1;
+	transition-property: all;
+    transition-timing-function: cubic-bezier(.4,0,.2,1);
+    transition-duration: .35s;
+	transform: scale(1.1);
+}
+.cards .card {
+	opacity: 0.95;
+	border-top-right-radius: 13px !important;
+	border-top-left-radius: 13px !important;
+}
+.cards .card .icon {
+	border-top-right-radius: 12px;
+	border-top-left-radius: 12px;
+}
+.cards .card .img {
+	background-color: #282828;
+	border-top-right-radius: 13px !important;
+	border-top-left-radius: 13px !important;
+}
+
+.left-bar-list > a {
+	text-decoration: none;
+	color: inherit;
+}
+
+@media (min-width: 1160px) {
+	.left-bar {
+		width: 256px;
+	}
+}
+/* 3d render of a purple and light blue "S" */
