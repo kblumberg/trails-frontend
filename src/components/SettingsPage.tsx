@@ -10,7 +10,7 @@ import { Button } from 'react-bootstrap';
 // import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { uploadFile } from 'react-s3';
-import * as anchor from '@project-serum/anchor';
+// import * as anchor from '@project-serum/anchor';
 import { Connection, ConnectionConfig } from '@solana/web3.js';
 import { NETWORK } from '../constants/constants';
 // import { Wallet } from 'easy-spl';
