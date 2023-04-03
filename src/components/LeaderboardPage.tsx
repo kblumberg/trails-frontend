@@ -29,11 +29,10 @@ const LeaderboardPage = (props: any) => {
     let leaderboard = data.leaderboard.filter(x => x[0] != data.address);
     leaderboard.push(cur);
     leaderboard = leaderboard.sort((a, b) => a[2] != b[2] ? b[2] - a[2] : a[1] > b[1] ? 1 : -1 );
-    console.log(`leaderboard`);
-    console.log(leaderboard);
+    // console.log(`leaderboard`);
+    // console.log(leaderboard);
     const rows = [];
     for (let index = 0; index <= 10; index ++) {
-        console.log(`index = ${index}`)
         if (index >= leaderboard.length) {
             rows.push(
                 <tr>
@@ -46,7 +45,10 @@ const LeaderboardPage = (props: any) => {
             const username = x[0] == data.address && data.username ? data.username : x[1] ? x[1] : x[0];
             // const username = x[1];
             const l = username.length;
-            console.log(`colors[${index}] = ${colors[index]}`)
+            // console.log(`colors[${index}] = ${colors[index]}`)
+            // console.log(`data.image`);
+            // console.log(data.image);
+
             // https://trails-avatars.s3.us-east-1.amazonaws.com/AoNVE2rKCE2YNA44V7NQt8N73JdPM7b6acZ2vzSpyPyi.png
             // https://trails-avatars.s3.us-east-1.amazonaws.com/AoNVE2rKCE2YNA44V7NQt8N73JdPM7b6acZ2vzSpyPyi
 
@@ -66,9 +68,9 @@ const LeaderboardPage = (props: any) => {
             )
         }
     }
-    console.log('rows');
-    console.log(rows);
-    console.log(leaderboard);
+    // console.log('rows');
+    // console.log(rows);
+    // console.log(leaderboard);
     // const rows = .map((x: any, index: number) => {
     //     const className = x[0] == data.address ? 'highlight' : ''
     //     const l = x[0].length;

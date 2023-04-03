@@ -44,6 +44,7 @@ require('@solana/wallet-adapter-react-ui/styles.css');
 const S3_BUCKET = 'trails-avatars';
 const REGION = 'us-east-1';
 
+console.log(`AWS_KEY = ${AWS_KEY}`)
 AWS.config.update({
     accessKeyId: AWS_KEY,
     secretAccessKey: AWS_SECRET
@@ -206,6 +207,7 @@ function App() {
 			var params = {Bucket: 'trails-avatars', Key: `${ useAddress }.png`};
 			s3.getObject(params).on('success', function(response: any) {
 				// console.log("Key was", response.request.params.Key);
+				console.log(`topbar avatar success`);
 				dispatch(actions.setImage(`https://trails-avatars.s3.us-east-1.amazonaws.com/${response.request.params.Key}`));
 			}).on('error',function(error){
 				//error return a object with status code 404

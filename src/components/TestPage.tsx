@@ -243,7 +243,8 @@ const TestPage = (props: any) => {
     const curTrailheadId = curTrailheads.length ? curTrailheads[0] : -1;
     const curTrails = data.trails.filter(x => curTrailheads.includes(x.trailheadId));
     // console.log(`curTrails`);
-    // console.log(curTrails);
+    console.log(`data.trailheads`);
+    console.log(data.trailheads);
     const maxUnlockedSteps = data.slideMovements.filter(x =>
         curTrailheads.includes(x.trailheadId)
         // && x.step == step
@@ -253,7 +254,9 @@ const TestPage = (props: any) => {
     const maxUnlockedStep = maxUnlockedSteps.length ? maxUnlockedSteps.reduce((a, b) => Math.max(a, b.step + 1), 0) : 0;
     console.log(`maxUnlockedStep = ${maxUnlockedStep}`);
     console.log(data.slideMovements);
-    const stepXp = maxUnlockedStep > step ? 0 : curTrails[step].xp;
+    console.log(`256 curTrails x.trailheadId`);
+    console.log(curTrails);
+    // const stepXp = maxUnlockedStep > step ? 0 : curTrails[step].xp;
     
 
     // const items: any[] = [];
@@ -297,7 +300,10 @@ const TestPage = (props: any) => {
         )
         return(slides);
     })
+    console.log(`step = ${step}. items = ${items.length}`);
     const slides = items[step];
+    console.log(`slides`);
+    console.log(slides);
     const now = Math.round(100 * slideNum / (slides.length - 1));
     const title = curTrails[step].slides[slideNum]?.title;
     const programIds = curTrails[step].slides[slideNum]?.programIds;

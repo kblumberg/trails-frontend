@@ -39,6 +39,7 @@ const MainPage = (props: any) => {
 		, 'Exchange': 'Exchange Art'
 		, 'FamousFoxFederation': 'Famous Fox Federation'
 		, 'ZetaMarkets': 'Zeta Markets'
+		, 'JupiterExchange': 'Jupiter Exchange'
 	};
 
 	// const programs = [ 'jupiter','magic','zetamarkets','jupiter','genopets','staratlas','raydium','famousfoxfederation','tensorswap','hadeswap','wormhole','hyperspace','openbook','opensea','jito' ];
@@ -51,6 +52,11 @@ const MainPage = (props: any) => {
 
 	const divs: any[] = [];
 	for (let i = 0; i < programs.length; i++) {
+		const trailheadId = data.trailheads[i].id;
+		const trails = data.trails.filter(x => x.trailheadId == trailheadId);
+		if (trails.length == 0) {
+			continue;
+		}
 		const name: string = Object.hasOwn(program_d, programs[i]) ? program_d[programs[i]] : programs[i];
 		const ext = ['Opensea','Jupiter','Openbook','Exchange','Orca'].includes(programs[i]) ? 'png' : 'jpeg'
 		const img = require(`../assets/${programs[i].toLowerCase().replaceAll(' ', '')}.${ext}`);
