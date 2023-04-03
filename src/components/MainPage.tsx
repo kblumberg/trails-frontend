@@ -58,7 +58,7 @@ const MainPage = (props: any) => {
 			continue;
 		}
 		const name: string = Object.hasOwn(program_d, programs[i]) ? program_d[programs[i]] : programs[i];
-		const ext = ['Opensea','JupiterExchange','Openbook','Exchange','Orca'].includes(programs[i]) ? 'png' : 'jpeg'
+		const ext = ['Opensea','JupiterExchange','FamousFoxFederation','Openbook','Exchange','Orca'].includes(programs[i]) ? 'png' : 'jpeg'
 		const img = require(`../assets/${programs[i].toLowerCase().replaceAll(' ', '')}.${ext}`);
 		const level = Object.hasOwn(levels, programs[i]) ? levels[programs[i]] : 1;
 		// const img = (`./assets/${programs[i].toLowerCase()}.${ext}`);
