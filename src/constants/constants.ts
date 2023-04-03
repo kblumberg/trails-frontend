@@ -2,8 +2,6 @@ import { ConnectionConfig } from '@solana/web3.js';
 
 export const AWS_KEY = process.env.REACT_APP_AWS_KEY;
 export const AWS_SECRET = process.env.REACT_APP_AWS_SECRET;
-console.log(`process.env`);
-console.log(process.env);
 
 export const isDev = false;
 
