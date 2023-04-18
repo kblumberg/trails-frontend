@@ -18,7 +18,7 @@ import { Dispatch } from 'redux';
 import { Xp } from 'src/models/Xp';
 
 const rocket = require('../assets/rocket.png');
-const header = require('../assets/bonkHeader.png');
+// const header = require('../assets/bonkHeader.png');
 const completeMp3 = require('../assets/complete.mp3');
 const correctMp3 = require('../assets/correct.mp3');
 const incorrectMp3 = require('../assets/incorrect.mp3');

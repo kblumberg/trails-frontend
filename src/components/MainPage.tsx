@@ -65,7 +65,8 @@ const MainPage = (props: any) => {
 		// console.log(`img = ${img}`)
 		const cur = 
 			<div key={i} className='col col-xl-3'>
-				<div className={`outer-ring pie no-round pct_${i}`} >
+				{/* <div className={`outer-ring pie no-round pct_${i}`} > */}
+				<div className={`outer-ring`} >
 					<div className='inner-ring'>
 						<Link to={`/${name.replace(/ /g,'')}`}>
 							<div className='card'>

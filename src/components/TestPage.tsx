@@ -25,7 +25,7 @@ import { Xp } from 'src/models/Xp';
 import Countdown from 'react-countdown';
 
 const rocket = require('../assets/rocket.png');
-const header = require('../assets/bonkHeader.png');
+// const header = require('../assets/bonkHeader.png');
 const completeMp3 = require('../assets/complete.mp3');
 const correctMp3 = require('../assets/correct.mp3');
 const incorrectMp3 = require('../assets/incorrect.mp3');
@@ -453,7 +453,7 @@ const TestPage = (props: any) => {
             </>
         : status == 'completed' && isRepeatable ? <span>Repeat this trail for more XP!</span>
         : status == 'completed' ? <span>This trail is complete</span>
-        : <span>Embark here!</span>;
+        : <span>{curTrails[i].title}</span>;
         const isLocked = (i > maxUnlockedStep) || (i != maxUnlockedStep && wait > 0 && isRepeatable);
         const isGray = (i > maxUnlockedStep) || (i != maxUnlockedStep && wait > 0 && isRepeatable) || (status == 'completed' && !isRepeatable);
 

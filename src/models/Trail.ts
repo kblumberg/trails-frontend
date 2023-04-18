@@ -6,6 +6,7 @@ export class Trail {
     trailheadId: number;
     programIds: string[];
     icon: string;
+    title: string;
     slides: Slide[];
     xp: number;
 
@@ -14,6 +15,7 @@ export class Trail {
         , trailheadId: number = 0
         , programIds: string[] = []
         , icon: string = ''
+        , title: string = ''
         , slides: Slide[] = []
         , xp: number = 0
     ) {
@@ -21,6 +23,7 @@ export class Trail {
         this.trailheadId = trailheadId;
         this.programIds = programIds;
         this.icon = icon;
+        this.title = title;
         this.slides = slides;
         this.xp = xp;
     }

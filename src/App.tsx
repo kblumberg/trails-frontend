@@ -11,7 +11,7 @@ import {
   SolletWalletAdapter,
   TorusWalletAdapter,
 } from '@solana/wallet-adapter-wallets';
-import { clusterApiUrl } from '@solana/web3.js';
+import { clusterApiUrl, Connection, PublicKey } from '@solana/web3.js';
 import React, { useEffect, useMemo, useState } from 'react';
 
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
@@ -29,7 +29,7 @@ import ProgramPage from './components/ProgramPage';
 import RightPanel from './components/RightPanel';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
-import { AWS_KEY, AWS_SECRET, BACKEND_URL } from './constants/constants';
+import { AWS_KEY, AWS_SECRET, BACKEND_URL, CONFIG, NETWORK } from './constants/constants';
 import * as actions from './store/actions/actions';
 import { IState } from './store/interfaces/state';
 
@@ -53,6 +53,54 @@ const s3 = new AWS.S3({
     params: { Bucket: S3_BUCKET},
     region: REGION,
 })
+const getTransactionsOfUser = async (address: string, options: any, connection: Connection) => {
+    // console.log({ address, options });
+	// console.log(`getTransactionsOfUser`);
+    // try {
+    //   const publicKey = new PublicKey(address);
+    //   const transSignatures =
+    //     await connection.getConfirmedSignaturesForAddress2(publicKey, options);
+    //   console.log({ transSignatures });
+    //   const transactions = [];
+    //   for (let i = 0; i < transSignatures.length; i++) {
+	// 	console.log(`transSignatures ${i}`);
+    //     const signature = transSignatures[i].signature;
+
+	// 	const config = {
+	// 		// 'commitment': 'confirmed',
+	// 		'maxSupportedTransactionVersion': 100
+	// 	};
+    //     // const confirmedTransaction = await connection.getConfirmedTransaction(
+    //     const confirmedTransaction = await connection.getTransaction(
+	// 		signature,
+	// 		config
+	// 	);
+	// 	// if (signature == 'zbcrRgSGdTjdnrvZVC1qKe3qxW492xbdx911My1Qsm4QgAZK1ugFhac1rT4Cdvf67piSg5f8m7VBSwrAYdsBtic') {
+	// 	if (signature == '5oYcpPfRZr9QdrvS47CivWBGtFA72auoug6XaENuLCLuKDYLF6yBf7Uha88bPXoGhe7gAzhUket2PP2iUuKqPvLF') {
+	// 		console.log(`confirmedTransaction`);
+	// 		console.log(confirmedTransaction);
+	// 	}
+    //     if (confirmedTransaction) {
+    //       const { meta } = confirmedTransaction;
+    //       if (meta) {
+    //         const oldBalance = meta.preBalances;
+    //         const newBalance = meta.postBalances;
+    //         const amount = oldBalance[0] - newBalance[0];
+    //         const transWithSignature = {
+    //           signature,
+    //           ...confirmedTransaction,
+    //           fees: meta?.fee,
+    //           amount,
+    //         };
+    //         transactions.push(transWithSignature);
+    //       }
+    //     }
+    //   }
+    //   return transactions;
+    // } catch (err) {
+    //   throw err;
+    // }
+  }
 
 function App() {
 	const solNetwork = WalletAdapterNetwork.Mainnet;
@@ -61,6 +109,8 @@ function App() {
 	const config: SolflareWalletAdapterConfig = {
 		'network': solNetwork
 	};
+
+	const connection = new Connection(NETWORK, CONFIG);
 
 	const wallets = [
 		new PhantomWalletAdapter(),
@@ -201,6 +251,10 @@ function App() {
 		loadUserDate(useAddress);
 		loadUsername(useAddress);
 		saveConnect(useAddress);
+
+		if (useAddress) {
+			getTransactionsOfUser(useAddress, {'limit':1000, 'maxSupportedTransactionVersion': 0}, connection);
+		}
 
 		if (useAddress) {
 			console.log(`useAddress = ${useAddress}`);
