@@ -260,9 +260,9 @@ const TestPage = (props: any) => {
     
 
     // const items: any[] = [];
-    const items = curTrails.map((x, i) => {
+    const items = curTrails.sort( (a, b) => a.step - b.step ).map((x, i) => {
         const slides = x.slides.map((y, j) => {
-            const img = require(`../assets/${program}/${i}/${program}-${i}-${j}.${y.extension}`);
+            const img = require(`../assets/${program}/${x.step}/${program}-${x.step}-${j}.${y.extension}`);
             // const img = require(`../assets/${program}/${1}/${program}-${1}-${0}.gif`);
             const className = y.alignment == 'left' ? 'col-6' : 'col-12';
             const item = 
