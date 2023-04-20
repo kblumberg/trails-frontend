@@ -294,6 +294,8 @@ const TxInput = (props: any) => {
                         setErrorText('Tx already submitted');
                     } else if (val == VerifyTransactionResult.TIME_LIMIT) {
                         setErrorText('Cooldown period not finished yet');
+                    } else if (val == VerifyTransactionResult.STALE_TX) {
+                        setErrorText('Transaction is too old. Check the About Us page.');
                     } else {
                         // alert('Incorrect Tx!');
                         setErrorText('Incorrect transaction');

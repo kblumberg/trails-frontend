@@ -286,8 +286,11 @@ html, body, .App {
 	border-bottom: 30px solid #c4ab92;
 }
 
-.trail.c .inner {
+.trail.c .inner, .trail.e .inner {
 	margin-top: -30px;
+}
+.trail.f .inner {
+	margin-top: -60px;
 }
 .trail.a .inner {
 	border-top: none;

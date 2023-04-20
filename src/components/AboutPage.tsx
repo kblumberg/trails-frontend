@@ -53,6 +53,11 @@ const AboutPage = (props: any) => {
                             <li>Reach out on Twitter <a target={'_blank'} href='https://twitter.com/TrailsProtocol'>@TrailsProtocol</a></li>
                         </ul>
                     </MDBAccordionItem>
+                    <MDBAccordionItem collapseId={5} headerTitle='Transaction is "too old"?'>
+                        <ul>
+                            <li>Only transactions within 5 days and after you first connected your wallet on Trails are valid</li>
+                        </ul>
+                    </MDBAccordionItem>
                     <MDBAccordionItem collapseId={6} headerTitle='Who is on the team?'>
                         <ul>
                             <li><a target={'_blank'} href='https://twitter.com/MilesFinched'>Michael Dillon</a> is a Solana analyst. He has experience building projects on Solana, including <a target={'_blank'} href='https://twitter.com/poolprops'>@PoolProps</a> which placed 4th in the Solana Summer Camp Hackathon.</li>
