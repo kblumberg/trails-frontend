@@ -107,24 +107,6 @@ const incorrectTimeline = new mojs.Timeline({ speed: 1.5 });
 const timelineSpinner = new mojs.Timeline({ speed: 1.5 });
 
 
-const saveHike = async (address: string, trailheadId: number, trailId: number, txId: string, step: number, slide: number) => {
-    let response = await axios({
-        method: 'post',
-        url: BACKEND_URL+'/api/hikes/saveHike',
-        data: {
-            'address': address
-            , 'trailheadId': trailheadId
-            , 'trailId': trailId
-            , 'txId': txId
-            , 'step': step
-            , 'slide': slide
-        }
-    });
-    console.log(`saveHike response`);
-    console.log(response);
-    return(response);
-}
-
 const ProgramPage = (props: any) => {
     const { program } = useParams();
     const connection = new Connection(NETWORK, CONFIG);

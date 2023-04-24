@@ -251,7 +251,8 @@ const TestPage = (props: any) => {
         && x.slide == curTrails[x.step].slides.length - 1
         && x.isForward
     )
-    const maxUnlockedStep = maxUnlockedSteps.length ? maxUnlockedSteps.reduce((a, b) => Math.max(a, b.step + 1), 0) : 0;
+    // const maxUnlockedStep = maxUnlockedSteps.length ? maxUnlockedSteps.reduce((a, b) => Math.max(a, b.step + 1), 0) : 0;
+    const maxUnlockedStep = 100;
     console.log(`maxUnlockedStep = ${maxUnlockedStep}`);
     console.log(data.slideMovements);
     console.log(`256 curTrails x.trailheadId`);
