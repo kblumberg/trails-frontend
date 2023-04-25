@@ -961,3 +961,9 @@ body, html {
     border-radius: 10px;
 	max-width: 600px;
 }
+.username-letter {
+	margin-top: -2px;
+    display: table;
+    text-align: center;
+    width: 100%;
+}

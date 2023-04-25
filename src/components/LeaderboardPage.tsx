@@ -25,6 +25,7 @@ const LeaderboardPage = (props: any) => {
         , '2c667e'
         , 'ce3f2e'
     ]
+    const totColors = colors.length;
     const cur: [string, string, number, boolean] = [data.address, data.username, data.xp, false];
     let leaderboard = data.leaderboard.filter(x => x[0] != data.address);
     leaderboard.push(cur);
@@ -54,7 +55,7 @@ const LeaderboardPage = (props: any) => {
 
             const img = data.image && x[0] == data.address ? <img className='avatar' src={data.image} />
             : x[3] ? <img className='avatar' src={`https://trails-avatars.s3.us-east-1.amazonaws.com/${x[0]}.png`} />
-            : <div style={{'backgroundColor': `#${colors[index]}`}} className='avatar'>{username.slice(0, 1)}</div>
+            : <div style={{'backgroundColor': `#${colors[index % totColors]}`}} className='avatar'><span className='username-letter'>{username.slice(0, 1)}</span></div>
             rows.push(
                 <tr className={className}>
                     <td className='bold'>{index + 1}</td>
