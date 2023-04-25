@@ -8,6 +8,7 @@ const settings = require('../assets/tent.png');
 const compass = require('../assets/compass.png');
 const about = require('../assets/flashlight.png');
 const trails = require('../assets/trails.png');
+const frontier = require('../assets/frontier-icon.png');
 
 
 const LeftBar = (props: any) => {
@@ -28,6 +29,11 @@ const LeftBar = (props: any) => {
                 <NavLink className={(navData) => (navData.isActive ? 'active' : '')} to ='/expeditions'>
                     <div className='left-bar-item'>
                         <img className='left-bar-logo' alt='logo' src={String(compass)} />{isMobile ? '' : 'Expeditions'}
+                    </div>
+                </NavLink>
+                <NavLink className={(navData) => (navData.isActive ? 'active' : '')} to ='/frontier'>
+                    <div className='left-bar-item'>
+                        <img className='left-bar-logo' alt='logo' src={String(frontier)} />{isMobile ? '' : 'Frontier'}
                     </div>
                 </NavLink>
                 <NavLink className={(navData) => (navData.isActive ? 'active' : '')} to ='/leaderboard'>

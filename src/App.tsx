@@ -39,6 +39,7 @@ import XpCard from './components/XpCard';
 import AboutPage from './components/AboutPage';
 import { Xp } from './models/Xp';
 import { isMobile } from './utils/utils';
+import FrontierPage from './components/FrontierPage';
 
 require('@solana/wallet-adapter-react-ui/styles.css');
 const S3_BUCKET = 'trails-avatars';
@@ -303,6 +304,7 @@ function App() {
 											<Route path='/expeditions' element={<ExpeditionsPage />} />
 											<Route path='/settings' element={<SettingsPage />} />
 											<Route path='/leaderboard' element={<LeaderboardPage />} />
+											<Route path='/frontier' element={<FrontierPage />} />
 											<Route path='/test' element={<TestPage />} />
 											<Route path='/about' element={<AboutPage />} />
 											<Route path='/:program' element={<TestPage />} />

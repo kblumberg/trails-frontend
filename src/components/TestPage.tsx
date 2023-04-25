@@ -448,12 +448,12 @@ const TestPage = (props: any) => {
         // : status == 'completed' && isRepeatable && wait > 0 ? <span>{`Repeat this trail in `<Countdown date={Date.now() + (wait * 1000)} />${hours}:${minutes.toLocaleString('en-US', {
         : status == 'completed' && isRepeatable && wait > 0 ? 
             <>
-                <span>{`Repeat this trail in `}</span>
+                <span>{curTrails[i].title}<br/>{`Repeat this trail in `}</span>
                 <Countdown zeroPadDays={0} renderer={Renderer} date={Date.now() + (wait * 1000)} />
                 <span> for more XP!</span>
             </>
-        : status == 'completed' && isRepeatable ? <span>Repeat this trail for more XP!</span>
-        : status == 'completed' ? <span>This trail is complete</span>
+        : status == 'completed' && isRepeatable ? <span>{curTrails[i].title}</span>
+        : status == 'completed' ? <span>{curTrails[i].title}<br/>This trail is complete</span>
         : <span>{curTrails[i].title}</span>;
         const isLocked = (i > maxUnlockedStep) || (i != maxUnlockedStep && wait > 0 && isRepeatable);
         const isGray = (i > maxUnlockedStep) || (i != maxUnlockedStep && wait > 0 && isRepeatable) || (status == 'completed' && !isRepeatable);
