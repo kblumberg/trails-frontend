@@ -28,16 +28,23 @@ const LeaderboardPage = (props: any) => {
     const totColors = colors.length;
     const cur: [string, string, number, boolean] = [data.address, data.username, data.xp, false];
     let leaderboard = data.leaderboard.filter(x => x[0] != data.address);
+    // if (leaderboard.length == 0) {
+    //     leaderboard.push(cur);
+    // } else if (data.xp >= leaderboard[leaderboard.length - 1][2] || leaderboard.length < 20) {
+    //     console.log('adding')
+    //     leaderboard.push(cur);
+    // }
     leaderboard.push(cur);
-    leaderboard = leaderboard.sort((a, b) => a[2] != b[2] ? b[2] - a[2] : a[1] > b[1] ? 1 : -1 );
+    leaderboard = leaderboard.sort((a, b) => a[2] != b[2] ? b[2] - a[2] : a[1] == data.username ? -1 : a[1] < b[1] ? -1 : 1 );
     // console.log(`leaderboard`);
     // console.log(leaderboard);
     const rows = [];
-    for (let index = 0; index <= 10; index ++) {
+    for (let index = 0; index < 20; index ++) {
         if (index >= leaderboard.length) {
             rows.push(
-                <tr>
-                    <td colSpan={3}/>
+                <tr key={index} >
+                    <td className='bold'>{index + 1}</td>
+                    <td colSpan={2}/>
                 </tr>
             )
         } else {
@@ -57,7 +64,7 @@ const LeaderboardPage = (props: any) => {
             : x[3] ? <img className='avatar' src={`https://trails-avatars.s3.us-east-1.amazonaws.com/${x[0]}.png`} />
             : <div style={{'backgroundColor': `#${colors[index % totColors]}`}} className='avatar'><div className='username-letter'>{username.slice(0, 1)}</div></div>
             rows.push(
-                <tr className={className}>
+                <tr key={index} className={className}>
                     <td className='bold'>{index + 1}</td>
                     <td className='bold align-left'>
                         {/* <div style={{'backgroundColor': `#${colors[index]}`}} className='avatar'>{username.slice(0, 1)}</div> */}
@@ -95,11 +102,13 @@ const LeaderboardPage = (props: any) => {
         <div className='leaderboard-page-outer-3'>
             {/* <h1>Leaderboard</h1> */}
             <Table hover>
-                <thead>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                </thead>
+                {/* <thead>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead> */}
                 <tbody>
                     {rows}
                 </tbody>

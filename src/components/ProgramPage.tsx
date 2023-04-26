@@ -335,7 +335,7 @@ const ProgramPage = (props: any) => {
                     strokeDashoffset: { '-100%' : '100%' },
                     degreeShift:     'stagger(0,-5)',
                     duration:     700 * 2,
-                    delay:        1300,
+                    delay:        1500,
                     easing:       'quad.out',
                 }
             });
