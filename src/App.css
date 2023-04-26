@@ -704,6 +704,21 @@ body, html {
 	.trails-modal .btn.inner > div, .trails-modal .btn {
 		padding: 10px 45px;
 	}
+	.leaderboard-page-outer-1, .leaderboard-page-outer-2 {
+		padding: 0;
+	}
+	.modal-main .slideshow.middle img {
+		height: 300px;
+	}
+	.modal-main-header {
+		padding: 15px;
+	}
+	.leaderboard-page {
+		height: 75vh;
+	}
+	.leaderboard-page table span.username {
+		display: none;
+	}
 }
 
 .right-panel-panel {
@@ -850,7 +865,7 @@ body, html {
 	border-radius: 200px;
 }
 .outer-ring {
-	padding: 5px;
+	padding: 7px;
 	/* border: 2px solid #eee; */
 	/* border: 5px solid rgb(150	202	194	); */
 	/* border: 5px solid #282828; */

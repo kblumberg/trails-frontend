@@ -273,7 +273,7 @@ function App() {
         			<div className='col-3 col-sm-2 col-md-4 col-lg-3 col-xl-2' style={{'paddingLeft': '0'}}>
 						<LeftBar />
 					</div>
-        			<div className='col' style={{'paddingLeft': '0'}}>
+        			<div className='col-9 col-sm-10 col-md-8 col-lg-9 col-xl-10' style={{'paddingLeft': '0'}}>
 						<div className='row' style={{'paddingTop': '55px', 'maxWidth': '1100px', 'margin': '0 auto'}}>
 						{/* <div className='main'> */}
 							{/* <div className='row'> */}

@@ -19,6 +19,7 @@ import AWS from 'aws-sdk'
 import { Clock, Pencil } from 'react-bootstrap-icons';
 import Form from 'react-bootstrap/Form';
 import axios from 'axios';
+import { isMobile } from 'src/utils/utils';
 
 const S3_BUCKET = 'trails-avatars';
 // const S3_BUCKET = 'trails-avatars';
@@ -146,7 +147,7 @@ const SettingsPage = (props: any) => {
                 { img }
                 <div className='user'>
                     <div className='bold user-header'>
-                        {data.address.slice(0, 20)}...
+                        {data.address.slice(0, isMobile ? 8 : 20 )}...
                     </div>
                     <div className='user-subheader'>
                         {data.username ? data.username : data.address}
