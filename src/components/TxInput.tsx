@@ -271,6 +271,8 @@ const TxInput = (props: any) => {
                         setErrorText('Cooldown period not finished yet');
                     } else if (val == VerifyTransactionResult.STALE_TX) {
                         setErrorText('Transaction is too old. Check the About Us page.');
+                    } else if (val == VerifyTransactionResult.INVALID_TOKEN) {
+                        setErrorText('Invalid token.');
                     } else {
                         // alert('Incorrect Tx!');
                         setErrorText('Incorrect transaction');

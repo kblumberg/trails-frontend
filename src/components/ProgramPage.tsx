@@ -112,12 +112,13 @@ const saveUserXp = async (address: string, trailheadId: number, step: number, sl
         url: BACKEND_URL+'/api/user/saveUserXp',
         data: fields
     });
-    const leaderboard = data.leaderboard;
-    const xps = data.xps;
-    xps.push(newXp);
-    dispatch(setUserXps(xps));
-    const newUserXp = data.xp + xp;
-    dispatch(setUserXp(newUserXp));
+    if (response.status == 200) {
+        const xps = data.xps;
+        xps.push(newXp);
+        dispatch(setUserXps(xps));
+        const newUserXp = data.xp + xp;
+        dispatch(setUserXp(newUserXp));
+    }
     return(response);
 }
 
@@ -258,7 +259,7 @@ const ProgramPage = (props: any) => {
             // const img = require(`../assets/${program}/${1}/${program}-${1}-${0}.gif`);
             const className = y.alignment == 'left' ? 'col-6' : 'col-12';
             const item = 
-                <div className={`row slideshow ${y.alignment}`}>
+                <div key={`${i}_${j}`} className={`row slideshow ${y.alignment}`}>
                     <div className={className}>
                         <img src={String(img)} />
                     </div>
@@ -335,7 +336,7 @@ const ProgramPage = (props: any) => {
                     strokeDashoffset: { '-100%' : '100%' },
                     degreeShift:     'stagger(0,-5)',
                     duration:     700 * 2,
-                    delay:        1500,
+                    delay:        1450,
                     easing:       'quad.out',
                 }
             });
@@ -445,7 +446,7 @@ const ProgramPage = (props: any) => {
         const isGray = (i != maxUnlockedStep && wait > 0 && isRepeatable) || (status == 'completed' && !isRepeatable);
 
         return(
-            <div className={`trail ${i % 2 ? 'even' : 'odd'} ${alphabet[i]}`}>
+            <div key={i} className={`trail ${i % 2 ? 'even' : 'odd'} ${alphabet[i]}`}>
                 <div className='inner'>
                     <div className='marker'>
                         <div className='dotted'></div>

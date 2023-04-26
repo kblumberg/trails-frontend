@@ -5,4 +5,5 @@ export const enum VerifyTransactionResult {
     TIME_LIMIT = 'TIME_LIMIT',
     STALE_TX = 'STALE_TX',
     WRONG_ADDRESS = 'WRONG_ADDRESS',
+    INVALID_TOKEN = 'INVALID_TOKEN',
 }
