@@ -555,12 +555,12 @@ const ProgramPage = (props: any) => {
                                 const num = slideNum;
                                 saveSlideMovement(data.address, curTrailheadId, step, num, true, dispatch, data);
                                 // TODO: check if they've completed this slide before. if not, add xp
-                                const hasCompleted = data.slideMovements.filter(x => 
+                                const hasCompleted = data.xps.filter(x => 
                                     x.address == data.address
                                     && x.trailheadId == curTrailheadId
                                     && x.step == step
                                     && x.slide == num
-                                    && x.isForward == true
+                                    && x.xp == curTrails[step].xp
                                 )
 
                                 if (num + 1 == slides.length) {
