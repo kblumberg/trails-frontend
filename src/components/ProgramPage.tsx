@@ -239,11 +239,11 @@ const ProgramPage = (props: any) => {
 
     const curTrailheads = data.trailheads.filter(x => x.name == program?.replaceAll('_', ' ')).map(x => x.id);
     const curTrailheadId = curTrailheads.length ? curTrailheads[0] : -1;
-    const curTrails = data.trails.filter(x => curTrailheads.includes(x.trailheadId));
-    // console.log(`curTrails`);
+    const curTrails = data.trails.filter(x => curTrailheads.includes(x.trailheadId)).sort((a, b) => b.step - a.step);
     const maxUnlockedSteps = data.slideMovements.filter(x =>
         curTrailheads.includes(x.trailheadId)
         // && x.step == step
+        && x.slide
         && x.slide == curTrails[x.step].slides.length - 1
         && x.isForward
     )
@@ -420,7 +420,9 @@ const ProgramPage = (props: any) => {
         // const status = i > maxUnlockedStep ? 'locked' : i < maxUnlockedStep ? 'completed' : 'current'
         const status = i > maxUnlockedStep ? 'current' : i < maxUnlockedStep ? 'completed' : 'current'
         const isRepeatable = curTrails[i].slides.filter(x => x.xp > 0).length > 0;
-        const lastComplete = data.xps.filter(x => x.trailheadId == curTrailheadId && x.step == i ).reduce((a, b) => Math.max(a, b.timestamp), 0);
+
+        // const lastComplete = data.xps.filter(y => y.trailheadId == curTrailheadId && y.step == i && y.slide == curTrails[i].slides.length - 1 ).reduce((a, b) => Math.max(a, b.timestamp), 0);
+        const lastComplete = data.xps.filter(y => y.trailheadId == curTrailheadId && y.step == i ).reduce((a, b) => Math.max(a, b.timestamp), 0);
         const lastCompleteSecondsAgo = (Date.now() - lastComplete) / 1000;
         const wait = Math.max(0, (24 * 60 * 60) - lastCompleteSecondsAgo);
         const hours = Math.floor(wait / (60 * 60));
@@ -443,7 +445,8 @@ const ProgramPage = (props: any) => {
         // const isLocked = (wait > 0 && isRepeatable);
         const isLocked = false;
         // const isGray = (i > maxUnlockedStep) || (i != maxUnlockedStep && wait > 0 && isRepeatable) || (status == 'completed' && !isRepeatable);
-        const isGray = (i != maxUnlockedStep && wait > 0 && isRepeatable) || (status == 'completed' && !isRepeatable);
+        // const isGray = (i != maxUnlockedStep && wait > 0 && isRepeatable) || (status == 'completed' && !isRepeatable);
+        const isGray = lastComplete > 0;
 
         return(
             <div key={i} className={`trail ${i % 2 ? 'even' : 'odd'} ${alphabet[i]}`}>
