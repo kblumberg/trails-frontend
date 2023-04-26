@@ -5,6 +5,13 @@ import { Trailhead } from "src/models/Trailhead";
 import { Xp } from "src/models/Xp";
 import * as types from "../types/types";
 
+export const setToken = (token: string) => {
+    return {
+        type: types.SET_TOKEN,
+        data: token
+    };
+};
+
 export const setAddress = (address: string) => {
     return {
         type: types.SET_ADDRESS,

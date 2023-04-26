@@ -444,17 +444,37 @@ img.avatar {
 body, html {
 	padding: 0;
 }
+.level-complete-outer {
+	margin-top: 15%;
+	/* position: relative; */
+	/* margin: auto; */
+}
 .level-complete {
 	font-size: 14px;
 	text-align: center;
 	height: 200px;
 	width: 200px;
 	background-color: #eab815;
+
+	background-color: rgb(28, 176, 246);
+	background-color: rgb(236, 166, 58 );
+	background-color: #ee7e31;
+	/* background-color: rgb(184, 226, 138); */
+	/* background-color: #b8e28a; */
+
 	border-radius: 200px;
 	/* text-transform: uppercase; */
 	color: white;
-	margin: auto;
 	position: relative;
+	margin: auto;
+}
+.hidden > .level-complete-text {
+	display: none;
+	width: 0;
+}
+.hidden > #success-timeline {
+	display: none;
+	width: 0;
 }
 .level-complete-text {
 	text-align: center;
@@ -550,7 +570,28 @@ body, html {
 	position: absolute;
 	display: inline-block; */
 }
-
+.left-bar-socials {
+	position: absolute;
+	bottom: 0;
+	/* display: flex; */
+	padding-bottom: 12px;
+	padding: 0 5px 12px;
+	width: 100%;
+	margin-left: -10px;
+}
+.left-bar-socials img {
+	height: 35px;
+	-webkit-filter: grayscale(100%);
+	filter: grayscale(100%);
+	transition-property: all;
+    transition-timing-function: cubic-bezier(.4,0,.2,1);
+    transition-duration: .35s;
+	padding: 7px 0;
+}
+.left-bar-socials img:hover {
+	-webkit-filter: unset;
+	filter: unset;
+}
 .left-bar-header {
 	font-size: 36px;
 	letter-spacing: 6px;
@@ -577,6 +618,7 @@ body, html {
 	border-right: 1px solid rgb(229,229,229);
     height: 100vh;
 	padding: 0 10px;
+	position: relative;
     /* height: 100%; */
     overflow-y: auto;
     /* padding: 10px 16px 0; */
@@ -963,7 +1005,7 @@ body, html {
 }
 .username-letter {
 	margin-top: -2px;
-    display: table;
+    /* display: table; */
     text-align: center;
     width: 100%;
 }

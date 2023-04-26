@@ -34,7 +34,6 @@ import * as actions from './store/actions/actions';
 import { IState } from './store/interfaces/state';
 
 import AWS from 'aws-sdk'
-import TestPage from './components/TestPage';
 import XpCard from './components/XpCard';
 import AboutPage from './components/AboutPage';
 import { Xp } from './models/Xp';
@@ -45,7 +44,6 @@ require('@solana/wallet-adapter-react-ui/styles.css');
 const S3_BUCKET = 'trails-avatars';
 const REGION = 'us-east-1';
 
-console.log(`AWS_KEY = ${AWS_KEY}`)
 AWS.config.update({
     accessKeyId: AWS_KEY,
     secretAccessKey: AWS_SECRET
@@ -134,8 +132,6 @@ function App() {
 			url: BACKEND_URL+'/api/trails/trails',
 		});
 		let trails = response.data;
-		console.log(`loadTrails`);
-		console.log(trails);
 		dispatch(actions.setTrails(trails));
 	}
 	const loadTrailheads = async () => {
@@ -167,8 +163,6 @@ function App() {
 			url: BACKEND_URL+'/api/slideMovement/loadSlideMovements',
 			data: {'address': address}
 		});
-		console.log(`loadSlideMovements`);
-		console.log(response.data);
 		dispatch(actions.setSlideMovements(response.data));
 	}
 	const loadUserXp = async (address: string) => {
@@ -181,8 +175,6 @@ function App() {
 			data: {'address': address}
 		});
 		const xps: Xp[] = response.data
-		console.log(`xps`);
-		console.log(xps);
 		dispatch(actions.setUserXp(xps.reduce((a, b) => a + b.xp, 0 )));
 		dispatch(actions.setUserXps(response.data));
 	}
@@ -196,7 +188,6 @@ function App() {
 		dispatch(actions.setLeaderboard(leaderboard));
 	}
 	const loadUserDate = async (address: string) => {
-		console.log(`loadUserDate ${address}`);
 		if (!address) {
 			dispatch(actions.setUserDate(Date.now()));
 		}
@@ -205,13 +196,10 @@ function App() {
 			url: BACKEND_URL+'/api/user/loadUserDate',
 			data: {'address': address}
 		});
-		console.log(`loadUserDate response`);
-		console.log(response);
 		let loadUserDate = response.data;
 		dispatch(actions.setUserDate(loadUserDate));
 	}
 	const loadUsername = async (address: string) => {
-		console.log(`loadUsername ${address}`);
 		if (!address) {
 			dispatch(actions.setUsername(''));
 		}
@@ -220,8 +208,6 @@ function App() {
 			url: BACKEND_URL+'/api/user/loadUsername',
 			data: {'address': address}
 		});
-		console.log(`setUsername response`);
-		console.log(response);
 		dispatch(actions.setUsername(response.data));
 	}
 	const saveConnect = async (address: string) => {
@@ -233,6 +219,7 @@ function App() {
 			url: BACKEND_URL+'/api/user/saveConnect',
 			data: {'address': address}
 		});
+		dispatch(actions.setToken(response.data));
 	}
 
 	useEffect(() => {
@@ -258,11 +245,9 @@ function App() {
 		}
 
 		if (useAddress) {
-			console.log(`useAddress = ${useAddress}`);
 			var params = {Bucket: 'trails-avatars', Key: `${ useAddress }.png`};
 			s3.getObject(params).on('success', function(response: any) {
 				// console.log("Key was", response.request.params.Key);
-				console.log(`topbar avatar success`);
 				dispatch(actions.setImage(`https://trails-avatars.s3.us-east-1.amazonaws.com/${response.request.params.Key}`));
 			}).on('error',function(error){
 				//error return a object with status code 404
@@ -305,9 +290,8 @@ function App() {
 											<Route path='/settings' element={<SettingsPage />} />
 											<Route path='/leaderboard' element={<LeaderboardPage />} />
 											<Route path='/frontier' element={<FrontierPage />} />
-											<Route path='/test' element={<TestPage />} />
 											<Route path='/about' element={<AboutPage />} />
-											<Route path='/:program' element={<TestPage />} />
+											<Route path='/:program' element={<ProgramPage />} />
 											<Route path="*" element={<MainPage />} />
 										</Routes>
 									}

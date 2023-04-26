@@ -9,6 +9,9 @@ const compass = require('../assets/compass.png');
 const about = require('../assets/flashlight.png');
 const trails = require('../assets/trails.png');
 const frontier = require('../assets/frontier-icon.png');
+const twitter = require('../assets/twitter-logo-2.png');
+const docs = require('../assets/docs-icon-2.png');
+const telegram = require('../assets/telegram-icon-2.png');
 
 
 const LeftBar = (props: any) => {
@@ -51,6 +54,13 @@ const LeftBar = (props: any) => {
                         <img className='left-bar-logo' alt='logo' src={String(about)} />{isMobile ? '' : 'About Us'}
                     </div>
                 </NavLink>
+            </div>
+            <div className='left-bar-socials'>
+                <div className='row'>
+                    <div className='col-12 col-md-4'><a target={'_blank'} href='https://twitter.com/TrailsProtocol'><img src={String(twitter)} /></a></div>
+                    <div className='col-12 col-md-4'><a target={'_blank'} href='https://t.me/trailsprotocol'><img src={String(telegram)} /></a></div>
+                    <div className='col-12 col-md-4'><a target={'_blank'} href='https://trails-protocol.gitbook.io/'><img src={String(docs)} /></a></div>
+                </div>
             </div>
         </div>
 	);

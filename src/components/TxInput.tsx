@@ -19,9 +19,9 @@ import { Xp } from 'src/models/Xp';
 
 const rocket = require('../assets/rocket.png');
 // const header = require('../assets/bonkHeader.png');
-const completeMp3 = require('../assets/complete.mp3');
-const correctMp3 = require('../assets/correct.mp3');
-const incorrectMp3 = require('../assets/incorrect.mp3');
+const completeMp3 = require('../assets/sounds/Tiny Victory.wav');
+const correctMp3 = require('../assets/sounds/correct.mp3');
+const incorrectMp3 = require('../assets/sounds/Quick Tuba Fail.wav');
 
 const successTimeline = new mojs.Timeline({ speed: 1.5 });
 const incorrectTimeline = new mojs.Timeline({ speed: 1.5 });
@@ -59,10 +59,9 @@ const saveHike = async (address: string, trailheadId: number, step: number, slid
             , 'step': step
             , 'slide': slide
             , 'txId': txId
+            , 'token': data.token
         }
     });
-    console.log(`saveHike response`);
-    console.log(response);
     if (response.data == VerifyTransactionResult.VERIFIED) {
         const newXp = xp + data.xp;
         dispatch(setUserXp(newXp));
@@ -75,7 +74,6 @@ const saveHike = async (address: string, trailheadId: number, step: number, slid
 }
 
 const validateTx = async (connection: Connection, txId: string, publicKey: string, programIds: string[]) => {
-    console.log(`validateTx txId = ${txId}`);
     const config: GetVersionedTransactionConfig = {
         'commitment': 'confirmed'
         , 'maxSupportedTransactionVersion': 100
@@ -85,14 +83,10 @@ const validateTx = async (connection: Connection, txId: string, publicKey: strin
         // console.log('result');
         // console.log(result);
         if (result) {
-            console.log(result.transaction.message);
             if (Object.hasOwn(result.transaction.message, 'staticAccountKeys')) {
-                console.log('resultV0');
                 // @ts-ignore
                 const resultV0: MessageV0 = result.transaction.message;
                 const accountKeys = resultV0.staticAccountKeys.map((x: any) => x.toString());
-                console.log('accountKeys');
-                console.log(accountKeys);
                 if (accountKeys[0] != publicKey) {
                     return(VerifyTransactionResult.WRONG_ADDRESS);
                 }
@@ -100,14 +94,12 @@ const validateTx = async (connection: Connection, txId: string, publicKey: strin
                 // for (let i = 0; i < accountKeys.length; i++) {
                 for (let i = 0; i < programIdIndices.length; i++) {
                     const ind = programIdIndices[i];
-                    console.log(`#${i} accountKeys[${ind}] = ${accountKeys[ind]}`)
                     if (programIds.includes(accountKeys[ind])) {
                         return(VerifyTransactionResult.VERIFIED);
                     }
                     
                 }
             } else if (Object.hasOwn(result.transaction.message, 'instructions')) {
-                console.log('transaction');
                 const message: Message = result.transaction.message;
                 const accountKeys = message.accountKeys.map((x: any) => x.toString());
                 const preTokenBalances = result.meta?.preTokenBalances?.filter(x => x.mint == 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v' && x.owner == accountKeys[0]);
@@ -120,21 +112,15 @@ const validateTx = async (connection: Connection, txId: string, publicKey: strin
                 if (hoursAgo > 72) {
                     return(VerifyTransactionResult.TIME_LIMIT);
                 }
-                console.log(`spent = ${spent}`);
-                console.log(`hoursAgo = ${hoursAgo}`);
                 for (let i = 0; i < result.transaction.message.instructions.length; i++) {
-                    console.log(result.transaction.message.instructions);
                     const j = result.transaction.message.instructions[i];
                     // const programId0 = result.transaction.message.instructions[0].accounts[i.programIdIndex];
                     const accountKeys = result.transaction.message.accountKeys.map(x => x.toString());
                     if (accountKeys[0] != publicKey) {
                         return(VerifyTransactionResult.WRONG_ADDRESS);
                     }
-                    console.log('accountKeys');
-                    console.log(accountKeys);
                     const programId = result.transaction.message.accountKeys[j.programIdIndex];
                     // const programId2 = result.transaction.message.accountKeys[programId0];
-                    console.log(`programId = ${programId.toString()}`)
                     if (programIds.includes(programId.toString())) {
                         return(VerifyTransactionResult.VERIFIED);
                     }
@@ -150,12 +136,9 @@ const validateTx = async (connection: Connection, txId: string, publicKey: strin
 }
 
 const TxInput = (props: any) => {
-    console.log('props');
-    console.log(props);
     const { program } = useParams();
     const dispatch = useDispatch();
 
-    console.log(`program = ${program}`)
     const [show, setShow] = useState(false);
     const [value, setValue] = useState('');
     const [errorText, setErrorText] = useState('');
@@ -173,9 +156,6 @@ const TxInput = (props: any) => {
 
 
 	const data: IState = useSelector((state: any) => state.data);
-    console.log('data');
-    console.log(data);
-
 
     useEffect(() => {
 
@@ -240,8 +220,6 @@ const TxInput = (props: any) => {
 
         successTimeline.add( burst, circle, check );
         incorrectTimeline.add( cross );
-        console.log('successTimeline p1');
-        console.log(successTimeline);
       }, []);
 
     return(
@@ -262,7 +240,6 @@ const TxInput = (props: any) => {
             <div className='col-4'>
             <Button disabled={buttonDisabled} id='burst-button' className='burst-button fade-button' variant={buttonClass} type='button' onClick={async () => {
                 setErrorText('');
-                console.log('clicked');
                 setFadeProp('fade-out')
 
                 const txId = cleanTxId(value);
@@ -271,8 +248,6 @@ const TxInput = (props: any) => {
                 const val = status.data;
                 const hike = new Hike(data.address, props.trailheadId, props.step, props.slide, Date.now(), txId, val);
                 const hikes = data.hikes;
-                console.log(data.hikes);
-                console.log('data.hikes');
                 hikes.push(hike);
                 dispatch(setHikes(hikes));
 
@@ -281,7 +256,7 @@ const TxInput = (props: any) => {
                     successTimeline.play();
                     playComplete();
                     setButtonDisabled(true);
-                    props.setCompleted(true);
+                    props.setCompleted(props.step);
                     // alert('Verified!');
                 } else {
                     setIncorrectClass('not-hidden');

@@ -5,16 +5,17 @@ import { SlideMovement } from 'src/models/SlideMovement';
 import { Xp } from 'src/models/Xp';
 
 export interface IState{
-    userDate: number;
-    xp: number;
-    username: string;
     xps: Xp[];
-    slideMovements: SlideMovement[];
+    xp: number;
+    token: string;
     image: string;
-    address: string;
-    leaderboard: [string, string, number, boolean][];
     hikes: Hike[];
     trails: Trail[];
+    address: string;
+    userDate: number;
+    username: string;
     trailheads: Trailhead[];
+    slideMovements: SlideMovement[];
+    leaderboard: [string, string, number, boolean][];
 }
 

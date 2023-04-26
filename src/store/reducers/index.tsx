@@ -1,9 +1,10 @@
 import { combineReducers } from 'redux';
 import { IState } from '../interfaces/state';
-import { SET_HIKES, SET_TRAILS, SET_TRAILHEADS, SET_ADDRESS, SET_LEADERBOARD, SET_IMAGE, SET_USER_XP, SET_SLIDE_MOVEMENTS, SET_USER_XPS, SET_USER_DATE, SET_USERNAME } from '../types/types';
+import { SET_HIKES, SET_TRAILS, SET_TRAILHEADS, SET_ADDRESS, SET_LEADERBOARD, SET_IMAGE, SET_USER_XP, SET_SLIDE_MOVEMENTS, SET_USER_XPS, SET_USER_DATE, SET_USERNAME, SET_TOKEN } from '../types/types';
 
 export const INITIAL_STATE: IState = {
     address: ''
+    , token: ''
     , username: ''
     , userDate: 0
     , xp: 0
@@ -19,6 +20,11 @@ export const INITIAL_STATE: IState = {
 const reducer = (state: IState = INITIAL_STATE, action: any): IState => {
     
     switch (action.type) {
+        case SET_TOKEN:
+            return {
+                ...state,
+                token: action.data
+            }
         case SET_ADDRESS:
             return {
                 ...state,

@@ -121,7 +121,6 @@ const XpCard = (props: any) => {
         // setNumber(xp);
         // console.log(`address is ${address}`)
         if (xp && address != '') {
-            console.log(`setColorClass to changing`)
             setColorClass('changing')
             setTimeout(function () {
                 setColorClass('base');
@@ -129,7 +128,6 @@ const XpCard = (props: any) => {
         }
         const newAddress = data.address;
         if (newAddress != address) {
-            console.log(`setting address to ${newAddress}`)
             setAddress(newAddress);
         }
       }, [xp, address]);

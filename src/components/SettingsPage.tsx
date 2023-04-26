@@ -35,9 +35,6 @@ const myBucket = new AWS.S3({
     region: REGION,
 })
 
-console.log('myBucket');
-console.log(myBucket);
-
 // const darkTheme = createTheme({
 //     palette: {
 //         mode: 'dark',
@@ -67,19 +64,14 @@ const SettingsPage = (props: any) => {
         , hasAvatar: boolean
     ) => {
         username = username ? username : data.address;
-		console.log(`setUserInfo username = ${username}`);
-		console.log(data.address);
-		console.log({'address': data.address, 'username': username, 'hasAvatar': hasAvatar});
 		
 		if(data.address) {
             dispatch(actions.setUsername(username));
             let response = await axios({
                 method: 'post',
                 url: BACKEND_URL+'/api/user/updateUser',
-                data: {'address': data.address, 'username': username, 'hasAvatar': hasAvatar}
+                data: {'address': data.address, 'username': username, 'hasAvatar': hasAvatar, 'token': data.token}
             });
-            console.log(`response`);
-            console.log(response);
 	    }
 	}
 
@@ -90,15 +82,12 @@ const SettingsPage = (props: any) => {
 	const walletContext: any = useWallet();
 
     const handleFileInput = (e: any) => {
-        console.log('handleFileInput');
-        console.log(e);
 		// setAlertText(`Reading file...`);
         setSelectedFile(e.target.files[0]);
         uploadFile(e.target.files[0])
     }
 
     const uploadFile = (file: any) => {
-        console.log(`uploadFile`);
 
 		// const walletContext: any = useWallet();
 		const config: ConnectionConfig = {
@@ -121,8 +110,6 @@ const SettingsPage = (props: any) => {
 		setAlertText(`Upload 0% Complete!`)
 		myBucket.putObject(params)
             .on('httpUploadProgress', (evt: any) => {
-				console.log(`${Math.round((evt.loaded / evt.total) * 100)}`);
-				console.log(evt);
 				setAlertText(`Upload ${Math.round((evt.loaded / evt.total) * 100)}% Complete!`)
                 setProgress(Math.round((evt.loaded / evt.total) * 100))
                 if (Math.round((evt.loaded / evt.total) * 100) >= 100) {
@@ -137,7 +124,6 @@ const SettingsPage = (props: any) => {
     const hiddenFileInput = React.useRef(null);
     const handleClick = (event: any) => {
         if (hiddenFileInput && hiddenFileInput.current) {
-            console.log('handleClick');
             // @ts-ignore
             hiddenFileInput.current.click();
         }
@@ -145,9 +131,6 @@ const SettingsPage = (props: any) => {
 	// const handleOddsChange = (event: SelectChangeEvent) => {
 	// 	setOdds(event.target.value);
 	// };
-    console.log('data.image');
-    console.log(data.image);
-    console.log(`data.userDate = ${data.userDate}`);
     const img = data.image ? <img className='icon' src={data.image} /> : 
     <div className='icon'>
         {data.address.slice(0, 1)}
