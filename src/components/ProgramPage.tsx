@@ -446,7 +446,7 @@ const ProgramPage = (props: any) => {
         const isLocked = false;
         // const isGray = (i > maxUnlockedStep) || (i != maxUnlockedStep && wait > 0 && isRepeatable) || (status == 'completed' && !isRepeatable);
         // const isGray = (i != maxUnlockedStep && wait > 0 && isRepeatable) || (status == 'completed' && !isRepeatable);
-        const isGray = lastComplete > 0;
+        const isGray = wait > 0;
 
         return(
             <div key={i} className={`trail ${i % 2 ? 'even' : 'odd'} ${alphabet[i]}`}>
