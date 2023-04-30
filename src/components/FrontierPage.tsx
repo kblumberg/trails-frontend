@@ -25,6 +25,9 @@ const FrontierPage = (props: any) => {
             <div>
                 <span>🙅</span>People who try to sybil the protocol will be disqualified
             </div>
+            <div>
+                <span>💰</span>Once at 100 XP, comment on the <a target={'_blank'} href='https://twitter.com/TrailsProtocol/status/1651299378684887058'>original post</a> with your address or DM us <a target={'_blank'} href='https://twitter.com/TrailsProtocol'>@TrailsProtocol</a> to receive your $SOL
+            </div>
             {/* </ul> */}
             </div>
         </div>

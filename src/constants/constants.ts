@@ -17,3 +17,6 @@ export const CONFIG: ConnectionConfig = {
 	disableRetryOnRateLimit: false,
 	confirmTransactionInitialTimeout: 150000
 };
+
+// {address:"734bdC9L1YD6FDLjuHdr1wNHe1kHtqQa6hpvpAeDdqA"}
+// {trailheadId: 7, step:3}

@@ -7,6 +7,7 @@ export class Trail {
     programIds: string[];
     icon: string;
     title: string;
+    hidden: boolean;
     slides: Slide[];
     xp: number;
 
@@ -16,6 +17,7 @@ export class Trail {
         , programIds: string[] = []
         , icon: string = ''
         , title: string = ''
+        , hidden: boolean = false
         , slides: Slide[] = []
         , xp: number = 0
     ) {
@@ -24,6 +26,7 @@ export class Trail {
         this.programIds = programIds;
         this.icon = icon;
         this.title = title;
+        this.hidden = hidden;
         this.slides = slides;
         this.xp = xp;
     }

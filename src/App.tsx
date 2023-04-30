@@ -39,6 +39,8 @@ import AboutPage from './components/AboutPage';
 import { Xp } from './models/Xp';
 import { isMobile } from './utils/utils';
 import FrontierPage from './components/FrontierPage';
+import { Trail } from './models/Trail';
+import { Trailhead } from './models/Trailhead';
 
 require('@solana/wallet-adapter-react-ui/styles.css');
 const S3_BUCKET = 'trails-avatars';
@@ -131,7 +133,8 @@ function App() {
 			method: 'get',
 			url: BACKEND_URL+'/api/trails/trails',
 		});
-		let trails = response.data;
+		let trails: Trail[] = response.data;
+		trails = trails.filter(x => x.hidden == false);
 		dispatch(actions.setTrails(trails));
 	}
 	const loadTrailheads = async () => {
@@ -139,7 +142,8 @@ function App() {
 			method: 'get',
 			url: BACKEND_URL+'/api/trailheads/trailheads',
 		});
-		let trailheads = response.data;
+		let trailheads: Trailhead[] = response.data;
+		trailheads = trailheads.filter(x => x.hidden == false);
 		dispatch(actions.setTrailheads(trailheads));
 	}
 	const loadHikes = async (address: string) => {
