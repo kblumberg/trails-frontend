@@ -4,9 +4,6 @@ import { useParams } from "react-router-dom"
 import { CONFIG, NETWORK } from 'src/constants/constants';
 import { MDBAccordion, MDBAccordionItem } from 'mdb-react-ui-kit';
 
-
-const rocket = require('../assets/rocket.png');
-
 const AboutPage = (props: any) => {
     const rows = [
         []

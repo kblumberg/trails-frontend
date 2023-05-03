@@ -17,8 +17,6 @@ import { setHikes, setUserXp, setUserXps } from 'src/store/actions/actions';
 import { Dispatch } from 'redux';
 import { Xp } from 'src/models/Xp';
 
-const rocket = require('../assets/rocket.png');
-// const header = require('../assets/bonkHeader.png');
 const completeMp3 = require('../assets/sounds/Tiny Victory.wav');
 const correctMp3 = require('../assets/sounds/correct.mp3');
 const incorrectMp3 = require('../assets/sounds/Quick Tuba Fail.wav');

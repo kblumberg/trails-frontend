@@ -4,13 +4,13 @@ import { useParams } from "react-router-dom"
 import { CONFIG, NETWORK } from 'src/constants/constants';
 
 
-const rocket = require('../assets/rocket.png');
+const rv = require('../assets/icons/rv.png');
 
 const ExpeditionsPage = (props: any) => {
 	return (
         <div className='expeditions-page'>
             <div>
-                <img className='rocket' src={String(rocket)} />
+                <img className='rocket' src={String(rv)} />
             </div>
             <div className='launching-soon'>
                 ARE WE THERE YET?

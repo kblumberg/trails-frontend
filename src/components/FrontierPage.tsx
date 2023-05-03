@@ -5,7 +5,7 @@ import { CONFIG, NETWORK } from 'src/constants/constants';
 import { MDBAccordion, MDBAccordionItem } from 'mdb-react-ui-kit';
 
 
-const frontier = require('../assets/frontier.png');
+const frontier = require('../assets/assets/frontier.png');
 
 const FrontierPage = (props: any) => {
     const rows = [

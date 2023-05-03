@@ -7,17 +7,6 @@ import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import { Link, Outlet } from "react-router-dom"
 
 
-const home = require('../assets/home.png');
-const shield = require('../assets/shield.png');
-const settings = require('../assets/settings.png');
-const market = require('../assets/market.png');
-const xp = require('../assets/xp.png');
-const loading = require('../assets/loading.gif');
-
-const API_KEY: string = `${"756df6bd-d941-43a4-ad61-9120c6a106cc"}`;
-
-
-
 const RightPanel = (props: any) => {
 	const solNetwork = WalletAdapterNetwork.Mainnet;
 	const endpoint = useMemo(() => clusterApiUrl(solNetwork), [solNetwork]);
@@ -49,7 +38,7 @@ const RightPanel = (props: any) => {
 	for (let i = 0; i < programs.length; i++) {
 		const name: string = Object.hasOwn(program_d, programs[i]) ? program_d[programs[i]] : programs[i];
 		const ext = ['Opensea','Jupiter','Openbook','Exchange','Orca'].includes(programs[i]) ? 'png' : 'jpeg'
-		const img = require(`../assets/${programs[i].toLowerCase()}.${ext}`);
+		const img = require(`../assets/projects/${programs[i].toLowerCase()}.${ext}`);
 		const level = Object.hasOwn(levels, programs[i]) ? levels[programs[i]] : 1;
 		// const img = (`./assets/${programs[i].toLowerCase()}.${ext}`);
 		// console.log(`img = ${img}`)

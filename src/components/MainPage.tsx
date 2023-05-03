@@ -9,13 +9,6 @@ import { IState } from 'src/store/interfaces/state';
 import { useSelector } from 'react-redux';
 
 
-const home = require('../assets/home.png');
-const shield = require('../assets/shield.png');
-const settings = require('../assets/settings.png');
-const market = require('../assets/market.png');
-const xp = require('../assets/xp.png');
-const loading = require('../assets/loading.gif');
-
 const MainPage = (props: any) => {
 	const solNetwork = WalletAdapterNetwork.Mainnet;
 	const endpoint = useMemo(() => clusterApiUrl(solNetwork), [solNetwork]);
@@ -40,6 +33,8 @@ const MainPage = (props: any) => {
 		, 'FamousFoxFederation': 'Famous Fox Federation'
 		, 'ZetaMarkets': 'Zeta Markets'
 		, 'JupiterExchange': 'Jupiter Exchange'
+		, 'AverExchange': 'Aver Exchange'
+		, 'MarinadeFinance': 'Marinade Finance'
 	};
 
 	// const programs = [ 'jupiter','magic','zetamarkets','jupiter','genopets','staratlas','raydium','famousfoxfederation','tensorswap','hadeswap','wormhole','hyperspace','openbook','opensea','jito' ];
@@ -58,8 +53,8 @@ const MainPage = (props: any) => {
 			continue;
 		}
 		const name: string = Object.hasOwn(program_d, programs[i]) ? program_d[programs[i]] : programs[i];
-		const ext = ['Opensea','JupiterExchange','FamousFoxFederation','Openbook','Exchange','Orca','Bonk'].includes(programs[i]) ? 'png' : 'jpeg'
-		const img = require(`../assets/${programs[i].toLowerCase().replaceAll(' ', '')}.${ext}`);
+		const ext = ['Opensea','JupiterExchange','FamousFoxFederation','AverExchange','Openbook','Exchange','Orca','Bonk','MarinadeFinance'].includes(programs[i]) ? 'png' : 'jpeg'
+		const img = require(`../assets/projects/${programs[i].toLowerCase().replaceAll(' ', '')}.${ext}`);
 		const level = Object.hasOwn(levels, programs[i]) ? levels[programs[i]] : 1;
 		// const img = (`./assets/${programs[i].toLowerCase()}.${ext}`);
 		// console.log(`img = ${img}`)

@@ -24,11 +24,8 @@ import 'react-tooltip/dist/react-tooltip.css';
 import { Xp } from 'src/models/Xp';
 import Countdown from 'react-countdown';
 
-const rocket = require('../assets/rocket.png');
-// const header = require('../assets/bonkHeader.png');
 const completeMp3 = require('../assets/sounds/complete.mp3');
 const correctMp3 = require('../assets/sounds/correct.mp3');
-// const correctMp3 = require('../assets/correct.mp3');
 const incorrectMp3 = require('../assets/sounds/incorrect.mp3');
 
 const successTimeline = new mojs.Timeline({ speed: 1.5 });
@@ -438,8 +435,8 @@ const ProgramPage = (props: any) => {
                 <Countdown zeroPadDays={0} renderer={Renderer} date={Date.now() + (wait * 1000)} />
                 <span> for more XP!</span>
             </>
-        : status == 'completed' && isRepeatable ? <span>{curTrails[i].title}</span>
-        : status == 'completed' ? <span>{curTrails[i].title}<br/>This trail is complete</span>
+        // : status == 'completed' && isRepeatable ? <span>{curTrails[i].title}</span>
+        : lastComplete > 0 && !isRepeatable ? <span>{curTrails[i].title}<br/>This trail is complete</span>
         : <span>{curTrails[i].title}</span>;
         // const isLocked = (i > maxUnlockedStep) || (i != maxUnlockedStep && wait > 0 && isRepeatable);
         // const isLocked = (wait > 0 && isRepeatable);

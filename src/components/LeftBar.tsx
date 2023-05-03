@@ -2,16 +2,15 @@ import React from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { isMobile } from 'src/utils/utils';
 
-const home = require('../assets/trailhead.png');
-const shield = require('../assets/leaderboard.png');
-const settings = require('../assets/tent.png');
-const compass = require('../assets/compass.png');
-const about = require('../assets/flashlight.png');
-const trails = require('../assets/trails.png');
-const frontier = require('../assets/frontier-icon.png');
-const twitter = require('../assets/twitter-logo-2.png');
-const docs = require('../assets/docs-icon-2.png');
-const telegram = require('../assets/telegram-icon-2.png');
+const home = require('../assets/icons/trailhead.png');
+const leaderboard = require('../assets/icons/leaderboard.png');
+const settings = require('../assets/icons/tent.png');
+const compass = require('../assets/icons/compass.png');
+const about = require('../assets/icons/flashlight.png');
+const frontier = require('../assets/icons/frontier-icon.png');
+const twitter = require('../assets/logos/twitter-logo.png');
+const docs = require('../assets/logos/docs-icon-2.png');
+const telegram = require('../assets/logos/telegram-icon-2.png');
 
 
 const LeftBar = (props: any) => {
@@ -41,7 +40,7 @@ const LeftBar = (props: any) => {
                 </NavLink>
                 <NavLink className={(navData) => (navData.isActive ? 'active' : '')} to ='/leaderboard'>
                     <div className='left-bar-item'>
-                        <img className='left-bar-logo' alt='logo' src={String(shield)} />{isMobile ? '' : 'Leaderboard'}
+                        <img className='left-bar-logo' alt='logo' src={String(leaderboard)} />{isMobile ? '' : 'Leaderboard'}
                     </div>
                 </NavLink>
                 <NavLink className={(navData) => (navData.isActive ? 'active' : '')} to ='/settings'>

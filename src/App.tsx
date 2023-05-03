@@ -55,52 +55,52 @@ const s3 = new AWS.S3({
     region: REGION,
 })
 const getTransactionsOfUser = async (address: string, options: any, connection: Connection) => {
-    // console.log({ address, options });
-	// console.log(`getTransactionsOfUser`);
-    // try {
-    //   const publicKey = new PublicKey(address);
-    //   const transSignatures =
-    //     await connection.getConfirmedSignaturesForAddress2(publicKey, options);
-    //   console.log({ transSignatures });
-    //   const transactions = [];
-    //   for (let i = 0; i < transSignatures.length; i++) {
-	// 	console.log(`transSignatures ${i}`);
-    //     const signature = transSignatures[i].signature;
+    console.log({ address, options });
+	console.log(`getTransactionsOfUser`);
+    try {
+      const publicKey = new PublicKey(address);
+      const transSignatures =
+        await connection.getConfirmedSignaturesForAddress2(publicKey, options);
+      console.log({ transSignatures });
+      const transactions = [];
+      for (let i = 0; i < transSignatures.length; i++) {
+		console.log(`transSignatures ${i}`);
+        const signature = transSignatures[i].signature;
 
-	// 	const config = {
-	// 		// 'commitment': 'confirmed',
-	// 		'maxSupportedTransactionVersion': 100
-	// 	};
-    //     // const confirmedTransaction = await connection.getConfirmedTransaction(
-    //     const confirmedTransaction = await connection.getTransaction(
-	// 		signature,
-	// 		config
-	// 	);
-	// 	// if (signature == 'zbcrRgSGdTjdnrvZVC1qKe3qxW492xbdx911My1Qsm4QgAZK1ugFhac1rT4Cdvf67piSg5f8m7VBSwrAYdsBtic') {
-	// 	if (signature == '5oYcpPfRZr9QdrvS47CivWBGtFA72auoug6XaENuLCLuKDYLF6yBf7Uha88bPXoGhe7gAzhUket2PP2iUuKqPvLF') {
-	// 		console.log(`confirmedTransaction`);
-	// 		console.log(confirmedTransaction);
-	// 	}
-    //     if (confirmedTransaction) {
-    //       const { meta } = confirmedTransaction;
-    //       if (meta) {
-    //         const oldBalance = meta.preBalances;
-    //         const newBalance = meta.postBalances;
-    //         const amount = oldBalance[0] - newBalance[0];
-    //         const transWithSignature = {
-    //           signature,
-    //           ...confirmedTransaction,
-    //           fees: meta?.fee,
-    //           amount,
-    //         };
-    //         transactions.push(transWithSignature);
-    //       }
-    //     }
-    //   }
-    //   return transactions;
-    // } catch (err) {
-    //   throw err;
-    // }
+		const config = {
+			// 'commitment': 'confirmed',
+			'maxSupportedTransactionVersion': 100
+		};
+        // const confirmedTransaction = await connection.getConfirmedTransaction(
+        const confirmedTransaction = await connection.getTransaction(
+			signature,
+			config
+		);
+		// if (signature == 'zbcrRgSGdTjdnrvZVC1qKe3qxW492xbdx911My1Qsm4QgAZK1ugFhac1rT4Cdvf67piSg5f8m7VBSwrAYdsBtic') {
+		if (signature == '33zKK8tXNv43DS6iX8AgCaVy3hpeaNNTVaBwWgHyHWQ5AW5DuRexyHTx5FBPEX5y8TNn8wzbC9JpXwJXAwm6onHS') {
+			console.log(`confirmedTransaction`);
+			console.log(confirmedTransaction);
+		}
+        if (confirmedTransaction) {
+          const { meta } = confirmedTransaction;
+          if (meta) {
+            const oldBalance = meta.preBalances;
+            const newBalance = meta.postBalances;
+            const amount = oldBalance[0] - newBalance[0];
+            const transWithSignature = {
+              signature,
+              ...confirmedTransaction,
+              fees: meta?.fee,
+              amount,
+            };
+            transactions.push(transWithSignature);
+          }
+        }
+      }
+      return transactions;
+    } catch (err) {
+      throw err;
+    }
   }
 
 function App() {
@@ -134,7 +134,7 @@ function App() {
 			url: BACKEND_URL+'/api/trails/trails',
 		});
 		let trails: Trail[] = response.data;
-		trails = trails.filter(x => x.hidden == false);
+		// trails = trails.filter(x => x.hidden == false);
 		dispatch(actions.setTrails(trails));
 	}
 	const loadTrailheads = async () => {
@@ -143,7 +143,8 @@ function App() {
 			url: BACKEND_URL+'/api/trailheads/trailheads',
 		});
 		let trailheads: Trailhead[] = response.data;
-		trailheads = trailheads.filter(x => x.hidden == false);
+		trailheads = trailheads.sort((a, b) => a.id == 9 ? - 1 : a.id == 8 && b.id != 9 ? -1 : 1);
+		// trailheads = trailheads.filter(x => x.hidden == false);
 		dispatch(actions.setTrailheads(trailheads));
 	}
 	const loadHikes = async (address: string) => {
@@ -245,7 +246,7 @@ function App() {
 		saveConnect(useAddress);
 
 		if (useAddress) {
-			getTransactionsOfUser(useAddress, {'limit':1000, 'maxSupportedTransactionVersion': 0}, connection);
+			// getTransactionsOfUser(useAddress, {'limit':1000, 'maxSupportedTransactionVersion': 0}, connection);
 		}
 
 		if (useAddress) {
