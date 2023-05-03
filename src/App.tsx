@@ -135,6 +135,8 @@ function App() {
 		});
 		let trails: Trail[] = response.data;
 		trails = trails.filter(x => x.hidden == false);
+		console.log('trails');
+		console.log(trails);
 		dispatch(actions.setTrails(trails));
 	}
 	const loadTrailheads = async () => {
@@ -144,6 +146,8 @@ function App() {
 		});
 		let trailheads: Trailhead[] = response.data;
 		trailheads = trailheads.sort((a, b) => a.id == 9 ? - 1 : a.id == 8 && b.id != 9 ? -1 : 1);
+		console.log('trailheads');
+		console.log(trailheads);
 		trailheads = trailheads.filter(x => x.hidden == false);
 		dispatch(actions.setTrailheads(trailheads));
 	}

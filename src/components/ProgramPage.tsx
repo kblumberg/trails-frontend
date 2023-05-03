@@ -237,14 +237,14 @@ const ProgramPage = (props: any) => {
     const curTrailheads = data.trailheads.filter(x => x.name == program?.replaceAll('_', ' ')).map(x => x.id);
     const curTrailheadId = curTrailheads.length ? curTrailheads[0] : -1;
     const curTrails = data.trails.filter(x => curTrailheads.includes(x.trailheadId)).sort((a, b) => b.step - a.step);
-    const maxUnlockedSteps = data.slideMovements.filter(x =>
-        curTrailheads.includes(x.trailheadId)
-        // && x.step == step
-        && x.slide
-        && x.slide == curTrails[x.step].slides.length - 1
-        && x.isForward
-    )
-    const maxUnlockedStep = maxUnlockedSteps.length ? maxUnlockedSteps.reduce((a, b) => Math.max(a, b.step + 1), 0) : 0;
+    // const maxUnlockedSteps = data.slideMovements.filter(x =>
+    //     curTrailheads.includes(x.trailheadId)
+    //     // && x.step == step
+    //     && x.slide
+    //     && x.slide == curTrails[x.step].slides.length - 1
+    //     && x.isForward
+    // )
+    // const maxUnlockedStep = maxUnlockedSteps.length ? maxUnlockedSteps.reduce((a, b) => Math.max(a, b.step + 1), 0) : 0;
     // const maxUnlockedStep = 100;
     // const stepXp = maxUnlockedStep > step ? 0 : curTrails[step].xp;
     
@@ -291,7 +291,10 @@ const ProgramPage = (props: any) => {
         return(slides);
     })
     const slides = items[step];
+    console.log('slides');
+    console.log(slides);
     const now = Math.round(100 * slideNum / (slides.length - 1));
+    console.log('297');
     const title = curTrails[step].slides[slideNum]?.title;
     const programIds = curTrails[step].slides[slideNum]?.programIds;
 
@@ -415,7 +418,7 @@ const ProgramPage = (props: any) => {
         // it is completed and can redo now: "repeat this trail for more XP!"
         // locked: "complete previous trail to unlock this one"
         // const status = i > maxUnlockedStep ? 'locked' : i < maxUnlockedStep ? 'completed' : 'current'
-        const status = i > maxUnlockedStep ? 'current' : i < maxUnlockedStep ? 'completed' : 'current'
+        // const status = i > maxUnlockedStep ? 'current' : i < maxUnlockedStep ? 'completed' : 'current'
         const isRepeatable = curTrails[i].slides.filter(x => x.xp > 0).length > 0;
 
         // const lastComplete = data.xps.filter(y => y.trailheadId == curTrailheadId && y.step == i && y.slide == curTrails[i].slides.length - 1 ).reduce((a, b) => Math.max(a, b.timestamp), 0);
@@ -465,7 +468,7 @@ const ProgramPage = (props: any) => {
                                 false
                                 ? 
                                     '🔒'
-                                : i < maxUnlockedStep
+                                : lastComplete > 0
                                 ? '✔️'
                                 : '⭐'
                             }

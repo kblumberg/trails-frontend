@@ -146,6 +146,10 @@ html, body, .App {
 	padding: 10px;
 	font-size: 20px;
 }
+.card-text ul {
+	display: inline-block;
+    text-align: left;
+}
 .trailhead {
 	background-color: #c4ab92;
 	color: white;
