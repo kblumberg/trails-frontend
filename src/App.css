@@ -15,6 +15,9 @@ html, body, .App {
 	font-family: "Noto Serif";
 	background-color: white;
 }
+.create-pool-button {
+	padding-bottom: 20px;
+}
 .modal-content {
 	font-family: "Noto Serif";
 }
@@ -126,6 +129,62 @@ html, body, .App {
 	/* background-color: rgb(180	222	223	); */
 	/* background-color: rgb(120	169	189	);
 	color: white; */
+}
+.admin-header-outer {
+	padding-bottom: 10px;
+}
+.admin-header {
+	font-size: 32px;
+	border-bottom: 1px solid #ddd;
+	/* color: rgb(119,119,119); */
+	/* color: #555; */
+}
+.admin-header-image {
+	float: left;
+	height: 42px;
+	border-radius: 42px;
+}
+.token-toggle {
+	padding-bottom: 20px;
+}
+.token-toggle > label {
+	width: 150px;
+}
+.token-amount-input {
+	min-width: 90px;
+}
+#dropdown-tokens {
+	background-image: linear-gradient(to right, rgb(120	169	189	) , rgb(183	225	139	));
+	border: none;
+	padding: 10px 25px;
+	font-size: 20px;
+}
+#dropdown-tokens > img {
+	height: 25px;
+	margin-top: -2px;
+}
+#dropdown-tokens > span {
+	padding: 0 10px;
+}
+.token-dropdown .dropdown-toggle::after {
+	float: right;
+    margin-top: 10px;
+}
+.token-dropdown > button, .token-dropdown > div {
+	width: 200px;
+}
+.dropdown-tokens img {
+	height: 35px;
+	border-radius: 25px;
+}
+.dropdown-tokens .dropdown-item {
+	padding: 5px 20px;
+	color: #444;
+}
+.dropdown-tokens span {
+	padding: 0 20px;
+    font-size: 20px;
+    font-weight: 100;
 }
 
 .trails-modal .modal-footer {

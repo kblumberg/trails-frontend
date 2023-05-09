@@ -291,10 +291,7 @@ const ProgramPage = (props: any) => {
         return(slides);
     })
     const slides = items[step];
-    console.log('slides');
-    console.log(slides);
     const now = Math.round(100 * slideNum / (slides.length - 1));
-    console.log('297');
     const title = curTrails[step].slides[slideNum]?.title;
     const programIds = curTrails[step].slides[slideNum]?.programIds;
 

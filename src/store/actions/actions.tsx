@@ -5,6 +5,13 @@ import { Trailhead } from "src/models/Trailhead";
 import { Xp } from "src/models/Xp";
 import * as types from "../types/types";
 
+export const setIsAdmin = (isAdmin: boolean) => {
+    return {
+        type: types.SET_IS_ADMIN,
+        data: isAdmin
+    };
+};
+
 export const setToken = (token: string) => {
     return {
         type: types.SET_TOKEN,

@@ -12,6 +12,7 @@ export interface IState{
     hikes: Hike[];
     trails: Trail[];
     address: string;
+    isAdmin: boolean;
     userDate: number;
     username: string;
     trailheads: Trailhead[];

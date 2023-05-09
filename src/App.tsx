@@ -36,6 +36,7 @@ import { IState } from './store/interfaces/state';
 import AWS from 'aws-sdk'
 import XpCard from './components/XpCard';
 import AboutPage from './components/AboutPage';
+import AdminPage from './components/AdminPage';
 import { Xp } from './models/Xp';
 import { isMobile } from './utils/utils';
 import FrontierPage from './components/FrontierPage';
@@ -54,6 +55,14 @@ const s3 = new AWS.S3({
     params: { Bucket: S3_BUCKET},
     region: REGION,
 })
+
+const getTx = async (txId: string, connection: Connection) => {
+	const tx = await connection.getTransaction(txId);
+	console.log(`getTx ${txId}`)
+	console.log(tx);
+	console.log(tx?.transaction.message.accountKeys.map(x => x.toString()));
+}
+
 const getTransactionsOfUser = async (address: string, options: any, connection: Connection) => {
     console.log({ address, options });
 	console.log(`getTransactionsOfUser`);
@@ -113,6 +122,8 @@ function App() {
 
 	const connection = new Connection(NETWORK, CONFIG);
 
+	getTx('55zbj9kqnQKZoP9tSvtKgs4yqgih2aDqjcyc1saVbsQyWfttr2HpczgvQrmTkbZqpDqmevWQj76qfDPgLH36Jwy9', connection);
+
 	const wallets = [
 		new PhantomWalletAdapter(),
 		new GlowWalletAdapter(),
@@ -135,8 +146,6 @@ function App() {
 		});
 		let trails: Trail[] = response.data;
 		// trails = trails.filter(x => x.hidden == false);
-		console.log('trails');
-		console.log(trails);
 		dispatch(actions.setTrails(trails));
 	}
 	const loadTrailheads = async () => {
@@ -146,8 +155,6 @@ function App() {
 		});
 		let trailheads: Trailhead[] = response.data;
 		trailheads = trailheads.sort((a, b) => b.id - a.id);
-		console.log('trailheads');
-		console.log(trailheads);
 		// trailheads = trailheads.filter(x => x.hidden == false);
 		dispatch(actions.setTrailheads(trailheads));
 	}
@@ -229,6 +236,12 @@ function App() {
 			data: {'address': address}
 		});
 		dispatch(actions.setToken(response.data));
+		let isAdminResponse = await axios({
+			method: 'post',
+			url: BACKEND_URL+'/api/user/checkIsAdmin',
+			data: {'address': address, 'token': response.data}
+		});
+		dispatch(actions.setIsAdmin(isAdminResponse.data > 0));
 	}
 
 	useEffect(() => {
@@ -300,6 +313,7 @@ function App() {
 											<Route path='/leaderboard' element={<LeaderboardPage />} />
 											<Route path='/frontier' element={<FrontierPage />} />
 											<Route path='/about' element={<AboutPage />} />
+											<Route path='/admin' element={<AdminPage />} />
 											<Route path='/:program' element={<ProgramPage />} />
 											<Route path="*" element={<MainPage />} />
 										</Routes>
