@@ -54,6 +54,7 @@ const s3 = new AWS.S3({
     params: { Bucket: S3_BUCKET},
     region: REGION,
 })
+
 const getTransactionsOfUser = async (address: string, options: any, connection: Connection) => {
     console.log({ address, options });
 	console.log(`getTransactionsOfUser`);
