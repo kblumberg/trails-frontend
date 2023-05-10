@@ -135,7 +135,7 @@ function App() {
 			url: BACKEND_URL+'/api/trails/trails',
 		});
 		let trails: Trail[] = response.data;
-		// trails = trails.filter(x => x.hidden == false);
+		trails = trails.filter(x => x.hidden == false);
 		console.log('trails');
 		console.log(trails);
 		dispatch(actions.setTrails(trails));
@@ -149,7 +149,7 @@ function App() {
 		trailheads = trailheads.sort((a, b) => b.id - a.id);
 		console.log('trailheads');
 		console.log(trailheads);
-		// trailheads = trailheads.filter(x => x.hidden == false);
+		trailheads = trailheads.filter(x => x.hidden == false);
 		dispatch(actions.setTrailheads(trailheads));
 	}
 	const loadHikes = async (address: string) => {
