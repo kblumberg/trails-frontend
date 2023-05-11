@@ -26,11 +26,11 @@ const FrontierPage = (props: any) => {
                 <span>😎</span>The top 20 on the "Campaign" <NavLink  to ='/leaderboard'>leaderboard</NavLink> on May 16 @ 9pm UTC will receive 2 $SOL each
             </div>
             <div>
-                <span>☀️</span>Only XP from the 4 new protocols (Drift, Solend, Solarplex) will count towards the "Campaign" leaderboard
+                <span>☀️</span>Only XP from Drift, Solend, Solarplex + MarginFi will count towards the "Campaign" leaderboard
             </div>
-            {/* <div>
-                <span>🐦</span>You must be following Trails, Drift, Solend, and Solarplex on Twitter to earn the "Campaign" leaderboard prize
-            </div> */}
+            <div>
+                <span>🐦</span>You must be following <a target={'_blank'} href='https://twitter.com/TrailsProtocol'>@TrailsProtocol</a>, <a target={'_blank'} href='https://twitter.com/DriftProtocol'>@DriftProtocol</a>, <a target={'_blank'} href='https://twitter.com/solend'>@solend</a>, <a target={'_blank'} href='https://twitter.com/solarplex_xyz'>@solarplex_xyz</a>, and <a target={'_blank'} href='https://twitter.com/marginfi'>@marginfi</a> on Twitter to earn the "Campaign" leaderboard prize
+            </div>
             <div>
                 <span>💰</span>DM us at<a target={'_blank'} href='https://twitter.com/TrailsProtocol'>@TrailsProtocol</a> with your address to receive your prize
             </div>
