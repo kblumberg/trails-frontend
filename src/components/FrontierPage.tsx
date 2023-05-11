@@ -29,7 +29,7 @@ const FrontierPage = (props: any) => {
                 <span>☀️</span>Only XP from Drift, Solend, Solarplex + MarginFi will count towards the "Campaign" leaderboard
             </div>
             <div>
-                <span>🐦</span>You must be following <a target={'_blank'} href='https://twitter.com/TrailsProtocol'>@TrailsProtocol</a>, <a target={'_blank'} href='https://twitter.com/DriftProtocol'>@DriftProtocol</a>, <a target={'_blank'} href='https://twitter.com/solend'>@solend</a>, <a target={'_blank'} href='https://twitter.com/solarplex_xyz'>@solarplex_xyz</a>, and <a target={'_blank'} href='https://twitter.com/marginfi'>@marginfi</a> on Twitter to earn the "Campaign" leaderboard prize
+                <span>🐦</span>You must be following <a target={'_blank'} href='https://twitter.com/TrailsProtocol'>@TrailsProtocol</a>, <a target={'_blank'} href='https://twitter.com/DriftProtocol'>@DriftProtocol</a>, <a target={'_blank'} href='https://twitter.com/solendprotocol'>@solendprotocol</a>, <a target={'_blank'} href='https://twitter.com/solarplex_xyz'>@solarplex_xyz</a>, and <a target={'_blank'} href='https://twitter.com/marginfi'>@marginfi</a> on Twitter to earn the "Campaign" leaderboard prize
             </div>
             <div>
                 <span>💰</span>DM us at<a target={'_blank'} href='https://twitter.com/TrailsProtocol'>@TrailsProtocol</a> with your address to receive your prize

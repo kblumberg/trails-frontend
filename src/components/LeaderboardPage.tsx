@@ -33,6 +33,8 @@ const LeaderboardPage = (props: any) => {
     }
     const totColors = colors.length;
     const cur: [string, string, string, number, boolean] = ['Overall', data.address, data.username, data.xp, false];
+    const curXp = data.xps.filter(x => [10, 11, 12, 13].includes(x.trailheadId)).reduce( (a, b) => a + b.xp, 0 );
+    const curC: [string, string, string, number, boolean] = ['Campaign', data.address, data.username, curXp, false];
     let leaderboard = data.leaderboard.filter(x => x[1] != data.address && x[0] == activeTab);
     // if (leaderboard.length == 0) {
     //     leaderboard.push(cur);
@@ -40,7 +42,11 @@ const LeaderboardPage = (props: any) => {
     //     console.log('adding')
     //     leaderboard.push(cur);
     // }
-    leaderboard.push(cur);
+    if (activeTab == 'Overall') {
+        leaderboard.push(cur);
+    } else {
+        leaderboard.push(curC);
+    }
     leaderboard = leaderboard.sort((a, b) => a[3] != b[3] ? b[3] - a[3] : a[2] == data.username ? -1 : a[3] < b[3] ? -1 : 1 );
     // console.log(`leaderboard`);
     // console.log(leaderboard);
