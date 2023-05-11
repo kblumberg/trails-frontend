@@ -5,6 +5,7 @@ export const AWS_SECRET = process.env.REACT_APP_AWS_SECRET;
 
 export const isDev = false;
 
+
 export const BACKEND_URL = 'https://trails-protocol-backend.herokuapp.com';
 // export const BACKEND_URL = 'https://trails-protocol-backend-dev.herokuapp.com';
 // export const BACKEND_URL = 'http://localhost:5000';
