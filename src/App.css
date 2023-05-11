@@ -1033,6 +1033,10 @@ body, html {
 	padding-right: 10px;
 	font-size: 20px;
 }
+.frontier-bullets > div {
+	padding: 4px 0;
+	font-size: 14px;
+}
 .frontier-page img {
 	width: 100%;
     border-radius: 10px;
