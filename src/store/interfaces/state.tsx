@@ -16,6 +16,6 @@ export interface IState{
     username: string;
     trailheads: Trailhead[];
     slideMovements: SlideMovement[];
-    leaderboard: [string, string, number, boolean][];
+    leaderboard: [string, string, string, number, boolean][];
 }
 
