@@ -337,10 +337,26 @@ img.avatar {
 	/* background-repeat: no-repeat; */
 	/* background-size: cover; */
 }
+.leaderboard-tabs .col {
+	color: white;
+	padding: 10px 0;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	cursor: pointer;
+}
+.leaderboard-tabs .active {
+	background-color: rgb(221	175	118	);
+}
+.leaderboard-tabs :not(.active) {
+	border-bottom-left-radius: 5px;
+}
+.leaderboard-tabs :not(.active):hover {
+	color: rgb(221	175	118	);
+}
 .leaderboard-page-outer-1 {
-	padding: 24px;
+	padding: 19px 24px 24px 24px;
 	/* border-radius: 10px; */
-	height: 100%;
+	height: 636px;
 	width: 100%;
 	/* background-color: rgb(177	139	98	); */
 	/* background-color: rgb(237	208	155	); */
