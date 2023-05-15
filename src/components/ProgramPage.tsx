@@ -416,7 +416,7 @@ const ProgramPage = (props: any) => {
         // locked: "complete previous trail to unlock this one"
         // const status = i > maxUnlockedStep ? 'locked' : i < maxUnlockedStep ? 'completed' : 'current'
         // const status = i > maxUnlockedStep ? 'current' : i < maxUnlockedStep ? 'completed' : 'current'
-        const isRepeatable = curTrails[i].slides.filter(x => x.xp > 0).length > 0;
+        const isRepeatable = curTrails[i].slides.filter(x => x.xp > 0).length > 0 && curTrailheadId != 12;
 
         // const lastComplete = data.xps.filter(y => y.trailheadId == curTrailheadId && y.step == i && y.slide == curTrails[i].slides.length - 1 ).reduce((a, b) => Math.max(a, b.timestamp), 0);
         const lastComplete = data.xps.filter(y => y.trailheadId == curTrailheadId && y.step == i ).reduce((a, b) => Math.max(a, b.timestamp), 0);

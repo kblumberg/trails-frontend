@@ -32,14 +32,14 @@
       "name": "depositFunds",
       "accounts": [
         {
-          "name": "rewardPoolAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
           "name": "poolAuthority",
           "isMut": true,
           "isSigner": true
+        },
+        {
+          "name": "rewardPoolAccount",
+          "isMut": true,
+          "isSigner": false
         },
         {
           "name": "token",
@@ -63,14 +63,14 @@
       "name": "withdrawFunds",
       "accounts": [
         {
-          "name": "rewardPoolAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
           "name": "poolAuthority",
           "isMut": true,
           "isSigner": true
+        },
+        {
+          "name": "rewardPoolAccount",
+          "isMut": true,
+          "isSigner": false
         },
         {
           "name": "token",
@@ -83,7 +83,12 @@
           "isSigner": false
         }
       ],
-      "args": []
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
     },
     {
       "name": "distributeReward",

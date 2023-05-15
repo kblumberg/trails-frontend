@@ -12,6 +12,13 @@ export const setIsAdmin = (isAdmin: boolean) => {
     };
 };
 
+export const setRewardPoolAccount = (rewardPoolAccount: string) => {
+    return {
+        type: types.SET_REWARD_POOL_ACCOUNT,
+        data: rewardPoolAccount
+    };
+};
+
 export const setToken = (token: string) => {
     return {
         type: types.SET_TOKEN,

@@ -16,7 +16,8 @@ export interface IState{
     userDate: number;
     username: string;
     trailheads: Trailhead[];
+    rewardPoolAccount: string;
     slideMovements: SlideMovement[];
-    leaderboard: [string, string, number, boolean][];
+    leaderboard: [string, string, string, number, boolean][];
 }
 

@@ -21,30 +21,26 @@ import { CustomWallet } from '../models/CustomWallet';
 
 
 
-const depositFunds = async (trailheadId: number, poolAuthorityKey: string, userAddress: string, walletContext: WalletContextState) => {
-	console.log(`depositFunds userAddress = ${userAddress}`);
+const depositFunds = async (
+	trailheadId: number
+	, rewardPoolAccount: string
+	, userAddress: string
+	, walletContext: WalletContextState
+	, mintAddress: string
+	, amount: number
+	, isDeposit: boolean
+	) => {
+	console.log(`depositFunds userAddress = ${userAddress} isDeposit = ${isDeposit}`);
 	try {
 		console.log(`Adding ${trailheadId}`);
-
-        // make sure this is a valid trailheadId and we don't already have it
-
-		// let response = await axios({
-		// 	method: 'post',
-		// 	url: BACKEND_URL+'/api/rewardPoolAccount/getRewardPoolAccounts',
-		// 	data: {
-		// 		'trailheadId': 6
-		// 	}
-		// });
-        // if (response.status != HttpStatusCodes.OK) {
-        //     return('Pool Already Exists')
-        // }
-
+		
 		const connection = new Connection(NETWORK, CONFIG);
+		const mint = new Mint(connection, new PublicKey(mintAddress));
+		const decimals = await mint.getDecimals();
 
 		const programIdl: any = idl;
         const programId = new anchor.web3.PublicKey(PROGRAM_ID);
 
-		// const provider = new anchor.Provider(connection, trailsWallet, CONFIG);
 		if (walletContext) {
 			// @ts-ignore
 			const provider = new anchor.AnchorProvider(connection, walletContext, CONFIG);
@@ -53,48 +49,43 @@ const depositFunds = async (trailheadId: number, poolAuthorityKey: string, userA
 				programId,
 				provider,
 			);
-	
-			// const result = await initialize(
-			// 	program,
-			// 	rewardPoolAccount,
-			// 	new PublicKey(userAddress),
-			// 	new PublicKey(poolAuthorityKey),
-			// 	walletContext
-			// );
-
-			const rewardPoolAccount = new PublicKey('8MjNhmDx6uDs5CQaEnCuXnYBvru8SJRxTvwx9Xurmdv3');
 
 			const mint = new PublicKey(SOL_ADDRESS)
 
-			const txId = await program.methods
-			.depositFunds(new BN(LAMPORTS_PER_SOL))
-			.accounts({
-				rewardPoolAccount: rewardPoolAccount,
-				// authority: new PublicKey(userAddress),
-
-				poolAuthority: new PublicKey(userAddress),
-
-				// tokenProgram: TOKEN_PROGRAM_ID,
-				// rent: web3.SYSVAR_RENT_PUBKEY,
-				// clock: web3.SYSVAR_CLOCK_PUBKEY,
-				// systemProgram: web3.SystemProgram.programId,
-				token: mint,
-				systemProgram: web3.SystemProgram.programId,
-			})
-			// .signers([rewardPoolAccount])
-			// .transaction() // use .transaction instead of .rpc
-			.rpc() // use .transaction instead of .rpc
-			// console.log(`transaction = ${transaction}`);
+			let txId = ''
+			if (isDeposit) {
+				txId = await program.methods
+				.depositFunds(new BN(amount * Math.pow(10, decimals)))
+				.accounts({
+					rewardPoolAccount: new PublicKey(rewardPoolAccount),
+					poolAuthority: new PublicKey(userAddress),
+					token: mint,
+					systemProgram: web3.SystemProgram.programId,
+				})
+				.rpc()
+			} else {
+				txId = await program.methods
+				.withdrawFunds(new BN(amount * Math.pow(10, decimals)))
+				.accounts({
+					rewardPoolAccount: new PublicKey(rewardPoolAccount),
+					// authority: new PublicKey(userAddress),
+	
+					poolAuthority: new PublicKey(userAddress),
+	
+					// tokenProgram: TOKEN_PROGRAM_ID,
+					// rent: web3.SYSVAR_RENT_PUBKEY,
+					// clock: web3.SYSVAR_CLOCK_PUBKEY,
+					// systemProgram: web3.SystemProgram.programId,
+					token: mint,
+					systemProgram: web3.SystemProgram.programId,
+				})
+				// .signers([rewardPoolAccount])
+				// .transaction() // use .transaction instead of .rpc
+				.rpc() // use .transaction instead of .rpc
+				// console.log(`transaction = ${transaction}`);
+			}
 			console.log(`txId`);
 			console.log(txId);
-	
-			// let response = await axios({
-			// 	method: 'post',
-			// 	url: BACKEND_URL+'/api/rewardPoolAccount/addPool',
-			// 	data: {'txId': txId, 'trailheadId': 6}
-			// });
-			// console.log(`response`);
-			// console.log(response);
 		}
 
 	}
@@ -287,9 +278,11 @@ const AdminPage = (props: any) => {
 
 	const [token, setToken] = useState('SOL');
 	const [mint, setMint] = useState('So11111111111111111111111111111111111111112');
-    const [buttonClass, setButtonClass] = useState('primary');
+    const [buttonClass, setButtonClass] = useState('success');
     const [toggle, setToggle] = useState('deposit');
+    const [value, setValue] = useState('');
 	const [ userBalances, setUserBalances ] = React.useState({} as any);
+	const [ poolBalances, setPoolBalances ] = React.useState({} as any);
 
 	const headerImg = require(`../assets/projects/famousfoxfederation.png`);
 	// const headerImg = require(`../assets/projects/marinadefinance.png`);
@@ -313,6 +306,7 @@ const AdminPage = (props: any) => {
 
 
 	const getSpecificUserTokenBalances = async (curBalances: any, tokens: string[], address: string) => {
+		console.log(`getSpecificUserTokenBalances ${address}`);
 		const connection = new Connection(NETWORK, CONFIG);
 
 		// console.log(`setSpecificUserTokenBalances`);
@@ -334,7 +328,11 @@ const AdminPage = (props: any) => {
 		// console.log(`setSpecificUserTokenBalances for address ${address}`);
 		// console.log(d);
 		// setUserTokenBalances(d);
-		setUserBalances(d)
+		if (address == data.address) {
+			setUserBalances(d)
+		} else {
+			setPoolBalances(d)
+		}
 	}
 
 	const tokens = [
@@ -361,10 +359,11 @@ const AdminPage = (props: any) => {
     useEffect(() => {
 		// console.log(`useEffect 2`);
 		if (data.address) {
-			const address = data.address;
 			getSpecificUserTokenBalances({}, tokens.map(x => x.mint), data.address);
+			console.log(`useEffect data.rewardPoolAccount = ${data.rewardPoolAccount}`)
+			getSpecificUserTokenBalances({}, tokens.map(x => x.mint), data.rewardPoolAccount);
 		}
-	}, [data.address])
+	}, [data.address, data.rewardPoolAccount])
 	
 
 	// const mint = tokens.filter(x => x.name == token)
@@ -410,6 +409,9 @@ const AdminPage = (props: any) => {
 					Trailblazer Rewards
 				</div>
 			</div>
+			<div>
+				Reward Pool Account: <a target='_blank' href={`https://solana.fm/address/${data.rewardPoolAccount}?cluster=http%253A%252F%252F127.0.0.1%253A8899%252F`}>{data.rewardPoolAccount}</a>
+			</div>
 			{
 				createPoolButton
 			}
@@ -440,12 +442,17 @@ const AdminPage = (props: any) => {
 				<div className='col'>
 					<Form.Group className='mb-3 token-amount-input' controlId='formAmount'>
 						{/* <Form.Label>Transaction ID</Form.Label> */}
-						<Form.Control style={{'height':'50px', 'textAlign':'right','fontSize':'20px'}} type='txId' placeholder='0.0' onChange={(e) => {
+						<Form.Control style={{'height':'50px', 'textAlign':'right','fontSize':'20px'}} type='txId' placeholder='0.0' value={value} onChange={(e) => {
+							console.log(`e.target.value = ${e.target.value}`);
 							// @ts-ignore
-							// setValue(e.target.value)
+							setValue(e.target.value)
 						}} />
 						<Form.Text className='text-muted'>
-							Balance: { mint in userBalances ? userBalances[mint]: 0}
+							{ toggle == 'deposit' ? `Wallet` : 'Pool'} Balance: {
+								(toggle == 'deposit' && mint in userBalances) ? userBalances[mint]
+								: (toggle == 'withdraw' && mint in poolBalances) ? poolBalances[mint]
+								: 0
+							}
 						</Form.Text>
 					</Form.Group>
 				</div>
@@ -454,13 +461,14 @@ const AdminPage = (props: any) => {
 						disabled={false}
 						id='burst-button'
 						className='burst-button fade-button'
-						variant={buttonClass}
+						variant={ toggle == 'deposit' ? 'success' : 'warning' }
 						type='button'
 						style={{'width':'200px'}}
 						onClick={async () => {
-							depositFunds(6, data.address, data.address, walletContext).then( () => {
+							depositFunds(6, data.rewardPoolAccount, data.address, walletContext, mint, parseFloat(value), toggle == 'deposit').then( () => {
 								const cur = {...userBalances}
-								getSpecificUserTokenBalances(cur, [SOL_ADDRESS], data.address);
+								getSpecificUserTokenBalances(cur, [mint], data.address);
+								getSpecificUserTokenBalances(cur, [mint], data.rewardPoolAccount);
 
 							}
 							)

@@ -58,9 +58,9 @@ const s3 = new AWS.S3({
 
 const getTx = async (txId: string, connection: Connection) => {
 	const tx = await connection.getTransaction(txId);
-	console.log(`getTx ${txId}`)
-	console.log(tx);
-	console.log(tx?.transaction.message.accountKeys.map(x => x.toString()));
+	// console.log(`getTx ${txId}`)
+	// console.log(tx);
+	// console.log(tx?.transaction.message.accountKeys.map(x => x.toString()));
 }
 
 const getTransactionsOfUser = async (address: string, options: any, connection: Connection) => {
@@ -120,9 +120,9 @@ function App() {
 		'network': solNetwork
 	};
 
-	const connection = new Connection(NETWORK, CONFIG);
+	// const connection = new Connection(NETWORK, CONFIG);
 
-	getTx('55zbj9kqnQKZoP9tSvtKgs4yqgih2aDqjcyc1saVbsQyWfttr2HpczgvQrmTkbZqpDqmevWQj76qfDPgLH36Jwy9', connection);
+	// getTx('55zbj9kqnQKZoP9tSvtKgs4yqgih2aDqjcyc1saVbsQyWfttr2HpczgvQrmTkbZqpDqmevWQj76qfDPgLH36Jwy9', connection);
 
 	const wallets = [
 		new PhantomWalletAdapter(),
@@ -146,6 +146,7 @@ function App() {
 		});
 		let trails: Trail[] = response.data;
 		// trails = trails.filter(x => x.hidden == false);
+		trails = trails.filter(x => x.hidden == false);
 		dispatch(actions.setTrails(trails));
 	}
 	const loadTrailheads = async () => {
@@ -154,8 +155,9 @@ function App() {
 			url: BACKEND_URL+'/api/trailheads/trailheads',
 		});
 		let trailheads: Trailhead[] = response.data;
-		trailheads = trailheads.sort((a, b) => b.id - a.id);
 		// trailheads = trailheads.filter(x => x.hidden == false);
+		trailheads = trailheads.sort((a, b) => (a.id >= 10 && b.id >= 10) ? a.id - b.id : b.id - a.id);
+		trailheads = trailheads.filter(x => x.hidden == false);
 		dispatch(actions.setTrailheads(trailheads));
 	}
 	const loadHikes = async (address: string) => {
@@ -236,12 +238,19 @@ function App() {
 			data: {'address': address}
 		});
 		dispatch(actions.setToken(response.data));
-		let isAdminResponse = await axios({
+		let isAdminResponse: any = await axios({
 			method: 'post',
 			url: BACKEND_URL+'/api/user/checkIsAdmin',
 			data: {'address': address, 'token': response.data}
 		});
-		dispatch(actions.setIsAdmin(isAdminResponse.data > 0));
+		console.log(`isAdminResponse`);
+		console.log(isAdminResponse);
+		const isAdmin = isAdminResponse && isAdminResponse.data.poolAuthority;
+		if (isAdmin) {
+			const rewardPoolAccount = isAdminResponse.data.rewardPoolAccount;
+			dispatch(actions.setRewardPoolAccount(rewardPoolAccount));
+		}
+		dispatch(actions.setIsAdmin(isAdmin));
 	}
 
 	useEffect(() => {

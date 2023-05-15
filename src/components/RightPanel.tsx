@@ -31,13 +31,15 @@ const RightPanel = (props: any) => {
 
 	// const programs = [ 'jupiter','magic','zetamarkets','jupiter','genopets','staratlas','raydium','famousfoxfederation','tensorswap','hadeswap','wormhole','hyperspace','openbook','opensea','jito' ];
 
-	const programs = [ 'Jupiter','Magic','Raydium','Orca','Hadeswap','Saber','Exchange','Hyperspace','Solanart','Opensea' ]
+	// const programs = [ 'Jupiter','Magic','Raydium','Orca','Hadeswap','Saber','Exchange','Hyperspace','Solanart','Opensea' ]
+	const programs: string[] = []
 	// const programs = [ 'Jupiter','Raydium','Orca','Hadeswap','Saber','Exchange','Hyperspace','Solanart','Opensea' ]
 
 	const divs: any[] = [];
 	for (let i = 0; i < programs.length; i++) {
 		const name: string = Object.hasOwn(program_d, programs[i]) ? program_d[programs[i]] : programs[i];
-		const ext = ['Opensea','Jupiter','Openbook','Exchange','Orca'].includes(programs[i]) ? 'png' : 'jpeg'
+		// const ext = ['Opensea','Jupiter','Openbook','Exchange','Orca'].includes(programs[i]) ? 'png' : 'jpeg'
+		const ext = 'png';
 		const img = require(`../assets/projects/${programs[i].toLowerCase()}.${ext}`);
 		const level = Object.hasOwn(levels, programs[i]) ? levels[programs[i]] : 1;
 		// const img = (`./assets/${programs[i].toLowerCase()}.${ext}`);
