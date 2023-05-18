@@ -23,10 +23,12 @@ import { Tooltip } from 'react-tooltip'
 import 'react-tooltip/dist/react-tooltip.css';
 import { Xp } from 'src/models/Xp';
 import Countdown from 'react-countdown';
+import BurstButton from './BurstButton';
 
 const completeMp3 = require('../assets/sounds/complete.mp3');
 const correctMp3 = require('../assets/sounds/correct.mp3');
 const incorrectMp3 = require('../assets/sounds/incorrect.mp3');
+const clickSound = require('../assets/sounds/click.wav');
 
 const successTimeline = new mojs.Timeline({ speed: 1.5 });
 const incorrectTimeline = new mojs.Timeline({ speed: 1.5 });
@@ -209,7 +211,7 @@ const ProgramPage = (props: any) => {
     const [show, setShow] = useState(false);
     const [step, setStep] = useState(0);
     const [slideNum, setSlideNum] = useState(0);
-    const [completed, setCompleted] = useState(0);
+    const [completed, setCompleted] = useState(-1);
     const [value, setValue] = useState('');
     const [errorText, setErrorText] = useState('');
     const [correctClass, setCorrectClass] = useState('');
@@ -220,6 +222,9 @@ const ProgramPage = (props: any) => {
     const [playComplete] = useSound(completeMp3);
     const [playCorrect] = useSound(correctMp3);
     const [playIncorrect] = useSound(incorrectMp3);
+    const [playClick] = useSound(clickSound);
+    const [selectedOption, setSelectedOption] = useState(-1);
+    const [timeout, setTimeout] = useState(0);
   
     const handleClose = () => {
         setShow(false);
@@ -250,35 +255,83 @@ const ProgramPage = (props: any) => {
     
 
     // const items: any[] = [];
+    console.log(`curTrails`);
+    console.log(curTrails);
     const items = curTrails.sort( (a, b) => a.step - b.step ).map((x, i) => {
         const slides = x.slides.map((y, j) => {
-            const img = require(`../assets/${program}/${x.step}/${program}-${x.step}-${j}.${y.extension}`);
-            // const img = require(`../assets/${program}/${1}/${program}-${1}-${0}.gif`);
-            const className = y.alignment == 'left' ? 'col-6' : 'col-12';
-            const item = 
-                <div key={`${i}_${j}`} className={`row slideshow ${y.alignment}`}>
-                    <div className={className}>
-                        <img src={String(img)} />
-                    </div>
-                    <div className={className}>
-                        <div className='card-text'>
-                            <div dangerouslySetInnerHTML={{__html: y.htmlDescription}} />
-                        </div>
-                        {
-                            !y.programIds || y.programIds.length == 0 ? null
-                            :
-                            <div className=''>
-                                <TxInput
-                                    trailheadId = {x.trailheadId}
-                                    step = {x.step}
-                                    slide = {slideNum}
-                                    setCompleted = {setCompleted}
-                                    xp = {y.xp ? y.xp : 0}
-                                />
+            let item = null;
+            if (y.quiz) {
+                console.log('y.quiz.correctOption');
+                console.log(y.quiz.correctOption);
+                const options = y.quiz.options.map( (op, index) => {
+                    return(
+                        <div className={`quiz-pill ${selectedOption == index ? 'selected' : ''}`}>
+                        <Button className='trails-button quiz-pill inner' variant="primary" onClick={() => {
+                            playClick();
+                            setSelectedOption(index);
+                            console.log(`setSelectedOption = ${index}`)
+                            // const num = slideNum;
+                            // saveSlideMovement(data.address, curTrailheadId, step, num, false, dispatch, data);
+                            // setSlideNum(num - 1);
+                        }}>
+                            <div>
+                                <div>
+                                    {op}
+                                </div>
                             </div>
-                        }
-                    </div>
+                        </Button></div>);
+                    return(<div className='quiz-pill inner btn btn-primary'>{op}</div>);
+                })
+                
+                item = <div className='quiz'>
+                    {options}
+                    <div style={{'textAlign': 'center', 'paddingTop': '20px'}} className=''>
+                            <BurstButton setCompleted={setCompleted} isCorrect={selectedOption == y.quiz.correctOption} disabled={selectedOption < 0}/>
+                        </div>
+
                 </div>
+            } else {
+                const colSize = y.colSize ? parseInt(y.colSize) : 6;
+                const img = require(`../assets/${program}/${x.step}/${program}-${x.step}-${j}.${y.extension}`);
+                const imgStyle: any = y.maxHeight ? {'maxHeight': y.maxHeight} : {};
+                if (y.imgHeight) {
+                    imgStyle['height'] = y.imgHeight;
+                }
+                if (y.imgWidth) {
+                    imgStyle['width'] = y.imgWidth;
+                }
+                const alignStyle = y.alignImage ? {'alignItems': y.alignImage} : {};
+                // const img = require(`../assets/${program}/${1}/${program}-${1}-${0}.gif`);
+                const classNameLeft = y.alignment == 'left' ? `col-12 col-lg-${ colSize }` : 'col-12';
+                const classNameRight = y.alignment == 'left' ? `col-12 col-lg-${ 12 - colSize }` : 'col-12';
+                const imgDiv = <div className={classNameLeft}>
+                    <img style={imgStyle} className='' src={String(img)} />
+                </div>
+                const textDiv = <div style={y.textFirst ? {'paddingBottom': '20px'} : {} } className={classNameRight}>
+                    <div className='card-text'>
+                        <div dangerouslySetInnerHTML={{__html: y.htmlDescription}} />
+                    </div>
+                    {
+                        !y.programIds || y.programIds.length == 0 ? null
+                        :
+                        <div className=''>
+                            <TxInput
+                                trailheadId = {x.trailheadId}
+                                step = {x.step}
+                                slide = {slideNum}
+                                setCompleted = {setCompleted}
+                                xp = {y.xp ? y.xp : 0}
+                            />
+                        </div>
+                    }
+                </div>
+                item = 
+                    <div key={`${i}_${j}`} style={alignStyle} className={`row slideshow ${y.alignment}`}>
+                        {y.textFirst ? textDiv : imgDiv}
+                        {y.textFirst ? imgDiv : textDiv}
+                    </div>
+                
+            }
             return(item);
         })
 
@@ -294,6 +347,7 @@ const ProgramPage = (props: any) => {
     const now = Math.round(100 * slideNum / (slides.length - 1));
     const title = curTrails[step].slides[slideNum]?.title;
     const programIds = curTrails[step].slides[slideNum]?.programIds;
+    const quiz = curTrails[step].slides[slideNum]?.quiz;
 
     useEffect(() => {
         const connection = new Connection(NETWORK, CONFIG);
@@ -409,13 +463,6 @@ const ProgramPage = (props: any) => {
     const className = isLastSlide ? '' : 'hidden';
     const alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
     const trailDivs = items.map((x, i) => {
-        // it is the max: "embark here!"
-        // it is completed and no repeat: "This trail is complete"
-        // it is completed but can redo but not time: "repeat this trail in XX:XX for more XP!"
-        // it is completed and can redo now: "repeat this trail for more XP!"
-        // locked: "complete previous trail to unlock this one"
-        // const status = i > maxUnlockedStep ? 'locked' : i < maxUnlockedStep ? 'completed' : 'current'
-        // const status = i > maxUnlockedStep ? 'current' : i < maxUnlockedStep ? 'completed' : 'current'
         const isRepeatable = curTrails[i].slides.filter(x => x.xp > 0).length > 0 && curTrailheadId != 12;
 
         // const lastComplete = data.xps.filter(y => y.trailheadId == curTrailheadId && y.step == i && y.slide == curTrails[i].slides.length - 1 ).reduce((a, b) => Math.max(a, b.timestamp), 0);
@@ -428,21 +475,17 @@ const ProgramPage = (props: any) => {
 
         // const content = status == 'locked' ? <span>Complete previous trail to unlock this one</span>
         const content = false ? <span>Complete previous trail to unlock this one</span>
-        // : status == 'completed' && isRepeatable && wait > 0 ? <span>{`Repeat this trail in `<Countdown date={Date.now() + (wait * 1000)} />${hours}:${minutes.toLocaleString('en-US', {
         : isRepeatable && wait > 0 ? 
             <>
                 <span>{curTrails[i].title}<br/>{`Repeat this trail in `}</span>
                 <Countdown zeroPadDays={0} renderer={Renderer} date={Date.now() + (wait * 1000)} />
                 <span> for more XP!</span>
             </>
-        // : status == 'completed' && isRepeatable ? <span>{curTrails[i].title}</span>
         : lastComplete > 0 && !isRepeatable ? <span>{curTrails[i].title}<br/>This trail is complete</span>
         : <span>{curTrails[i].title}</span>;
         // const isLocked = (i > maxUnlockedStep) || (i != maxUnlockedStep && wait > 0 && isRepeatable);
         // const isLocked = (wait > 0 && isRepeatable);
         const isLocked = false;
-        // const isGray = (i > maxUnlockedStep) || (i != maxUnlockedStep && wait > 0 && isRepeatable) || (status == 'completed' && !isRepeatable);
-        // const isGray = (i != maxUnlockedStep && wait > 0 && isRepeatable) || (status == 'completed' && !isRepeatable);
         const isGray = wait > 0 || (lastComplete > 0 && !isRepeatable);
 
         return(
@@ -482,6 +525,8 @@ const ProgramPage = (props: any) => {
     })
     
     const lastComplete = data.xps.filter(x => x.trailheadId == curTrailheadId && x.step == step && x.slide == slideNum ).reduce((a, b) => Math.max(a, b.timestamp), 0);
+    const hasQuiz = (quiz != null && quiz.options.length > 0);
+    console.log(`hasQuiz = ${hasQuiz}. completed = ${completed}. step = ${step}. lastComplete = ${lastComplete}`)
     return (
         <>
         <div className='test-page'>
@@ -534,7 +579,7 @@ const ProgramPage = (props: any) => {
                                 slideNum == 0 ? null
                                 : 
                                 <div className='col'>
-                                    <Button className='inner' variant="primary" onClick={() => {
+                                    <Button className='inner trails-button' variant="primary" onClick={() => {
                                         const num = slideNum;
                                         saveSlideMovement(data.address, curTrailheadId, step, num, false, dispatch, data);
                                         setSlideNum(num - 1);
@@ -548,7 +593,7 @@ const ProgramPage = (props: any) => {
                                 </div>
                             }
                         <div className='col'>
-                            <Button disabled={ (completed < step) && lastComplete == 0 && programIds && programIds.length > 0} variant="primary" onClick={() => {
+                            <Button className='trails-button' disabled={ (completed < step) && lastComplete == 0 && ((programIds && programIds.length > 0) || hasQuiz) } variant="primary" onClick={() => {
                                 const num = slideNum;
                                 saveSlideMovement(data.address, curTrailheadId, step, num, true, dispatch, data);
                                 // TODO: check if they've completed this slide before. if not, add xp

@@ -95,7 +95,6 @@ const validateTx = async (connection: Connection, txId: string, publicKey: strin
                     if (programIds.includes(accountKeys[ind])) {
                         return(VerifyTransactionResult.VERIFIED);
                     }
-                    
                 }
             } else if (Object.hasOwn(result.transaction.message, 'instructions')) {
                 const message: Message = result.transaction.message;
