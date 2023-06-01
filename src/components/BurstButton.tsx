@@ -21,9 +21,6 @@ const completeMp3 = require('../assets/sounds/Tiny Victory.wav');
 const correctMp3 = require('../assets/sounds/correct.mp3');
 const incorrectMp3 = require('../assets/sounds/Quick Tuba Fail.wav');
 
-const successTimeline = new mojs.Timeline({ speed: 1.5 });
-const incorrectTimeline = new mojs.Timeline({ speed: 1.5 });
-
 const RADIUS = 100;
 
 
@@ -38,7 +35,18 @@ class Cross extends mojs.CustomShape {
     }
 }
 
-const saveQuizSubmission = async (address: string, trailheadId: number, step: number, slide: number, txId: string, xp: number, data: IState, dispatch: Dispatch) => {
+const saveQuizSubmission = async (
+    address: string
+    , trailheadId: number
+    , step: number
+    , slide: number
+    , trailId: string
+    , slideId: string
+    , txId: string
+    , xp: number
+    , data: IState
+    , dispatch: Dispatch
+) => {
     let response = await axios({
         method: 'post',
         url: BACKEND_URL+'/api/quiz/saveQuizSubmission',
@@ -54,7 +62,7 @@ const saveQuizSubmission = async (address: string, trailheadId: number, step: nu
     if (response.data == VerifyTransactionResult.VERIFIED) {
         const newXp = xp + data.xp;
         dispatch(setUserXp(newXp));
-        const newXp1 = new Xp(address, trailheadId, step, slide, Date.now(), xp);
+        const newXp1 = new Xp(address, trailheadId, step, slide, trailId, slideId, Date.now(), xp);
         const xps = data.xps;
         xps.push(newXp1);
         dispatch(setUserXps(xps));
@@ -108,6 +116,9 @@ const Timer = (props: any) => {
     )
 }
 
+
+let successTimeline = new mojs.Timeline({ speed: 1.5 });
+let incorrectTimeline = new mojs.Timeline({ speed: 1.5 });
 const BurstButton = (props: any) => {
     const { program } = useParams();
     const dispatch = useDispatch();
@@ -170,10 +181,16 @@ const BurstButton = (props: any) => {
     //     // startTimer(data.quizDisabledUntil);
     // }, [data.quizDisabledUntil]);
 
-    console.log(`timeRemaining = ${timeRemaining}`)
+    // console.log(`timeRemaining = ${timeRemaining}`)
 
     useEffect(() => {
         // startTimer(data.quizDisabledUntil);
+        console.log(`BurstButton useEffect`);
+        setButtonClass('primary');
+        setCorrectClass('hidden');
+        setFadeProp('fade-in');
+        // successTimeline = new mojs.Timeline({ speed: 1.5 });
+        // incorrectTimeline = new mojs.Timeline({ speed: 1.5 });
 
         const circle = new mojs.Shape({
             parent: '#burst-button',
@@ -237,21 +254,26 @@ const BurstButton = (props: any) => {
 
         successTimeline.add( burst, circle, check );
         incorrectTimeline.add( cross );
-      }, []);
+      }, [props.slideNum]);
     //   const t = getTimeRemaining(data.quizDisabledUntil);
     //   const t = getTimeRemaining();
+    console.log(`${props.step} = props.step`);
 
     return(
         <Button disabled={props.disabled || timeRemaining ? true : false} id='burst-button' className='burst-button fade-button' variant={buttonClass} type='button' onClick={async () => {
+            props.onClick()
             setErrorText('');
             setFadeProp('fade-out')
+            console.log(`BurstButton onClick isCorrect ${props.isCorrect}`)
 
             if (props.isCorrect) {
+                setCorrectClass('');
                 setButtonClass('success');
                 successTimeline.play();
                 playComplete();
                 setButtonDisabled(true);
-                props.setCompleted(props.step);
+                console.log(`BurstButton setCompleted ${true}`)
+                props.setCompleted(true);
                 // alert('Verified!');
             } else {
                 setIncorrectClass('not-hidden');

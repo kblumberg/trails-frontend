@@ -47,15 +47,17 @@ const cleanTxId = (txId: string) => {
 }
 
 
-const saveHike = async (address: string, trailheadId: number, step: number, slide: number, txId: string, xp: number, data: IState, dispatch: Dispatch) => {
+const saveHike = async (address: string, trailheadId: number, step: number, slide: number, trailId: string, slideId: string, txId: string, xp: number, data: IState, dispatch: Dispatch) => {
     let response = await axios({
         method: 'post',
-        url: BACKEND_URL+'/api/hikes/saveHike',
+        url: BACKEND_URL+'/api/hikes/saveHike2',
         data: {
             'address': address
             , 'trailheadId': trailheadId
             , 'step': step
             , 'slide': slide
+            , 'trailId': trailId
+            , 'slideId': slideId
             , 'txId': txId
             , 'token': data.token
         }
@@ -63,7 +65,7 @@ const saveHike = async (address: string, trailheadId: number, step: number, slid
     if (response.data == VerifyTransactionResult.VERIFIED) {
         const newXp = xp + data.xp;
         dispatch(setUserXp(newXp));
-        const newXp1 = new Xp(address, trailheadId, step, slide, Date.now(), xp);
+        const newXp1 = new Xp(address, trailheadId, step, slide, trailId, slideId, Date.now(), xp);
         const xps = data.xps;
         xps.push(newXp1);
         dispatch(setUserXps(xps));
@@ -241,7 +243,7 @@ const TxInput = (props: any) => {
 
                 const txId = cleanTxId(value);
                 
-                const status = await saveHike(data.address, props.trailheadId, props.step, props.slide, txId, props.xp, data, dispatch);
+                const status = await saveHike(data.address, props.trailheadId, props.step, props.slide, props.trailId, props.slideId, txId, props.xp, data, dispatch);
                 const val = status.data;
                 const hike = new Hike(data.address, props.trailheadId, props.step, props.slide, Date.now(), txId, val);
                 const hikes = data.hikes;
@@ -253,7 +255,7 @@ const TxInput = (props: any) => {
                     successTimeline.play();
                     playComplete();
                     setButtonDisabled(true);
-                    props.setCompleted(props.step);
+                    props.setCompleted(true);
                     // alert('Verified!');
                 } else {
                     setIncorrectClass('not-hidden');

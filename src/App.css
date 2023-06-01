@@ -34,7 +34,7 @@ html, body, .App {
 	max-width: 1000px;
 	margin: auto;
 	padding: 50px 20px 0;
-	overflow-y: scroll;
+	overflow-y: auto;
 	/* padding: 50px 350px 0; */
 }
 .modal-main-image {
