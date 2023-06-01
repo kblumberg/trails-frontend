@@ -48,6 +48,18 @@ const cleanTxId = (txId: string) => {
 
 
 const saveHike = async (address: string, trailheadId: number, step: number, slide: number, trailId: string, slideId: string, txId: string, xp: number, data: IState, dispatch: Dispatch) => {
+    const fields = {
+        'address': address
+        , 'trailheadId': trailheadId
+        , 'step': step
+        , 'slide': slide
+        , 'trailId': trailId
+        , 'slideId': slideId
+        , 'txId': txId
+        , 'token': data.token
+    };
+    console.log(`fields`);
+    console.log(fields);
     let response = await axios({
         method: 'post',
         url: BACKEND_URL+'/api/hikes/saveHike2',

@@ -224,6 +224,8 @@ const ProgramPage = (props: any) => {
                                 trailheadId = {x.trailheadId}
                                 step = {x.step}
                                 slide = {slideNum}
+                                trailId = {x.id}
+                                slideId = {y.id}
                                 setCompleted = {setCompleted}
                                 xp = {y.xp ? y.xp : 0}
                             />
