@@ -23,7 +23,7 @@ import { CustomWallet } from '../models/CustomWallet';
 
 const depositFunds = async (
 	trailheadId: number
-	, rewardPoolAccount: string
+	, rewardPoolAccount: IRewardPoolAccount
 	, userAddress: string
 	, walletContext: WalletContextState
 	, mintAddress: string
@@ -96,12 +96,19 @@ const depositFunds = async (
 	}
 }
 
-const addRewardPool = async (trailheadId: number, poolAuthorityKey: string, userAddress: string, walletContext: WalletContextState) => {
+const addRewardPool = async (
+	trailheadId: number
+	, poolAuthorityKey: string
+	, userAddress: string
+	, walletContext: WalletContextState
+) => {
 	console.log(`addRewardPool`);
 	try {
 		console.log(`Adding ${trailheadId}`);
 
         // make sure this is a valid trailheadId and we don't already have it
+
+        const programId = new anchor.web3.PublicKey(PROGRAM_ID);
 
 		let response = await axios({
 			method: 'post',
@@ -118,13 +125,18 @@ const addRewardPool = async (trailheadId: number, poolAuthorityKey: string, user
 
 		const programIdl: any = idl;
 
-		const rewardPoolAccount = Keypair.generate();
+		const escrowAccount = Keypair.generate();
+
+		const seedString = `${poolAuthorityKey}`;
+		const [ vaultAccount, nonce ] = await anchor.web3.PublicKey.findProgramAddress(
+			[ (escrowAccount.publicKey).toBuffer() ],
+			programId
+		);
+		console.log(`vaultAccount = ${vaultAccount}. nonce = ${nonce}`);
 
 		// const signature = await connection.requestAirdrop(rewardPoolAccount.publicKey, 1000000000);
 		// console.log(`signature = ${signature}`);
 		// await connection.confirmTransaction(signature);
-
-        const programId = new anchor.web3.PublicKey(PROGRAM_ID);
 
 
 		// const walletSeed: Uint8Array = new Uint8Array(trailsWalletSeed);
@@ -155,9 +167,10 @@ const addRewardPool = async (trailheadId: number, poolAuthorityKey: string, user
 
 
 			const txId = await program.methods
-			.initialize()
+			.initializeEscrow(nonce)
 			.accounts({
-				rewardPoolAccount: rewardPoolAccount.publicKey,
+				escrowAccount: escrowAccount.publicKey,
+				vaultAccount: vaultAccount,
 				authority: new PublicKey(userAddress),
 
 				poolAuthority: new PublicKey(poolAuthorityKey),
@@ -167,7 +180,7 @@ const addRewardPool = async (trailheadId: number, poolAuthorityKey: string, user
 				// clock: web3.SYSVAR_CLOCK_PUBKEY,
 				systemProgram: web3.SystemProgram.programId,
 			})
-			.signers([rewardPoolAccount])
+			.signers([escrowAccount])
 			// .transaction() // use .transaction instead of .rpc
 			.rpc() // use .transaction instead of .rpc
 			// console.log(`transaction = ${transaction}`);
@@ -275,6 +288,7 @@ const addRewardPool = async (trailheadId: number, poolAuthorityKey: string, user
 
 const AdminPage = (props: any) => {
 	const data: IState = useSelector((state: any) => state.data);
+	const vaultAccount = data.rewardPoolAccount?.vaultAccount || '';
 
 	const [token, setToken] = useState('SOL');
 	const [mint, setMint] = useState('So11111111111111111111111111111111111111112');
@@ -300,7 +314,7 @@ const AdminPage = (props: any) => {
 	// const connection = new Connection(NETWORK, CONFIG);
 
 	// const provider = new anchor.AnchorProvider(connection, signerWallet, {
-    //   preflightCommitment: "recent",
+    //   preflightCommitment: 'recent',
     // });
 	// const walletContext: any = useWallet();
 
@@ -360,10 +374,10 @@ const AdminPage = (props: any) => {
 		// console.log(`useEffect 2`);
 		if (data.address) {
 			getSpecificUserTokenBalances({}, tokens.map(x => x.mint), data.address);
-			console.log(`useEffect data.rewardPoolAccount = ${data.rewardPoolAccount}`)
-			getSpecificUserTokenBalances({}, tokens.map(x => x.mint), data.rewardPoolAccount);
+			// console.log(`useEffect data.rewardPoolAccount = ${data.rewardPoolAccount}`)
+			getSpecificUserTokenBalances({}, tokens.map(x => x.mint), vaultAccount);
 		}
-	}, [data.address, data.rewardPoolAccount])
+	}, [data.address, vaultAccount])
 	
 
 	// const mint = tokens.filter(x => x.name == token)
@@ -410,31 +424,31 @@ const AdminPage = (props: any) => {
 				</div>
 			</div>
 			<div>
-				Reward Pool Account: <a target='_blank' href={`https://solana.fm/address/${data.rewardPoolAccount}?cluster=http%253A%252F%252F127.0.0.1%253A8899%252F`}>{data.rewardPoolAccount}</a>
+				Reward Pool Account: <a target='_blank' href={`https://solana.fm/address/${vaultAccount}?cluster=http%253A%252F%252F127.0.0.1%253A8899%252F`}>{vaultAccount}</a>
 			</div>
 			{
 				createPoolButton
 			}
 			<ToggleButtonGroup
 				className='token-toggle'
-				color="primary"
+				color='primary'
 				value={toggle}
 				type='radio'
 				name='toggle'
-				aria-label="Platform"
+				aria-label='Platform'
 				>
-				<ToggleButton onClick={() => setToggle('deposit')} value="deposit">Deposit</ToggleButton>
-				<ToggleButton onClick={() => setToggle('withdraw')} value="withdraw">Withdraw</ToggleButton>
+				<ToggleButton onClick={() => setToggle('deposit')} value='deposit'>Deposit</ToggleButton>
+				<ToggleButton onClick={() => setToggle('withdraw')} value='withdraw'>Withdraw</ToggleButton>
 			</ToggleButtonGroup>
 
 			<div className='row'>
 				<div className='col'>
 					<Dropdown className='token-dropdown' as={ButtonGroup}>
-						<Dropdown.Toggle id="dropdown-tokens">
+						<Dropdown.Toggle id='dropdown-tokens'>
 							<img src={String(curImg)} />
 							<span>{token}</span>
 						</Dropdown.Toggle>
-						<Dropdown.Menu className="dropdown-tokens">
+						<Dropdown.Menu className='dropdown-tokens'>
 							{options}
 						</Dropdown.Menu>
 					</Dropdown>
@@ -465,13 +479,14 @@ const AdminPage = (props: any) => {
 						type='button'
 						style={{'width':'200px'}}
 						onClick={async () => {
-							depositFunds(6, data.rewardPoolAccount, data.address, walletContext, mint, parseFloat(value), toggle == 'deposit').then( () => {
-								const cur = {...userBalances}
-								getSpecificUserTokenBalances(cur, [mint], data.address);
-								getSpecificUserTokenBalances(cur, [mint], data.rewardPoolAccount);
-
+							if (data.rewardPoolAccount) {
+								depositFunds(6, data.rewardPoolAccount, data.address, walletContext, mint, parseFloat(value), toggle == 'deposit').then( () => {
+									const cur = {...userBalances}
+									getSpecificUserTokenBalances(cur, [mint], data.address);
+									getSpecificUserTokenBalances(cur, [mint], vaultAccount);
+	
+								})
 							}
-							)
 						}}
 					>{`${toggle.charAt(0).toUpperCase()}${toggle.substring(1)}`}</Button>
 				</div>

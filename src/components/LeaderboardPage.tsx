@@ -108,6 +108,8 @@ const LeaderboardPage = (props: any) => {
     // })
 
 	return (
+        <div>
+        <div className='light-text'>Campaign Leaderboard only counts XP from Drift, Solend, Solarplex, and MarginFi trails</div>
         <div className='leaderboard-page'>
         <div className='leaderboard-tabs row'>
             <div className={`col ${activeTab == 'Overall' ? 'active' : ''}`} onClick={handleTabClick}>
@@ -133,6 +135,7 @@ const LeaderboardPage = (props: any) => {
                     {rows}
                 </tbody>
             </Table>
+        </div>
         </div>
         </div>
         </div>

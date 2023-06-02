@@ -3,6 +3,7 @@ import { Trailhead } from 'src/models/Trailhead';
 import { Trail } from 'src/models/Trail';
 import { SlideMovement } from 'src/models/SlideMovement';
 import { Xp } from 'src/models/Xp';
+import { IRewardPoolAccount } from 'src/models/RewardPoolAccount';
 
 export interface IState{
     xps: Xp[];
@@ -16,7 +17,8 @@ export interface IState{
     userDate: number;
     username: string;
     trailheads: Trailhead[];
-    rewardPoolAccount: string;
+    rewardPoolAccount: IRewardPoolAccount | null;
+    quizDisabledUntil: number;
     slideMovements: SlideMovement[];
     leaderboard: [string, string, string, number, boolean][];
 }

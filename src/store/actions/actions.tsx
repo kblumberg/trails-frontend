@@ -4,6 +4,7 @@ import { Trail } from "src/models/Trail";
 import { Trailhead } from "src/models/Trailhead";
 import { Xp } from "src/models/Xp";
 import * as types from "../types/types";
+import { IRewardPoolAccount } from "src/models/RewardPoolAccount";
 
 export const setIsAdmin = (isAdmin: boolean) => {
     return {
@@ -12,7 +13,7 @@ export const setIsAdmin = (isAdmin: boolean) => {
     };
 };
 
-export const setRewardPoolAccount = (rewardPoolAccount: string) => {
+export const setRewardPoolAccount = (rewardPoolAccount: IRewardPoolAccount) => {
     return {
         type: types.SET_REWARD_POOL_ACCOUNT,
         data: rewardPoolAccount
@@ -23,6 +24,13 @@ export const setToken = (token: string) => {
     return {
         type: types.SET_TOKEN,
         data: token
+    };
+};
+
+export const setQuizDisabledUntil = (quizDisabledUntil: number) => {
+    return {
+        type: types.SET_QUIZ_DISABLED_UNTIL,
+        data: quizDisabledUntil
     };
 };
 

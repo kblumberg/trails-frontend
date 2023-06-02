@@ -3,12 +3,17 @@
   "name": "trails",
   "instructions": [
     {
-      "name": "initialize",
+      "name": "initializeEscrow",
       "accounts": [
         {
-          "name": "rewardPoolAccount",
+          "name": "escrowAccount",
           "isMut": true,
           "isSigner": true
+        },
+        {
+          "name": "vaultAccount",
+          "isMut": false,
+          "isSigner": false
         },
         {
           "name": "authority",
@@ -26,7 +31,12 @@
           "isSigner": false
         }
       ],
-      "args": []
+      "args": [
+        {
+          "name": "nonce",
+          "type": "u8"
+        }
+      ]
     },
     {
       "name": "depositFunds",
@@ -37,7 +47,12 @@
           "isSigner": true
         },
         {
-          "name": "rewardPoolAccount",
+          "name": "escrowAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "vaultAccount",
           "isMut": true,
           "isSigner": false
         },
@@ -68,7 +83,12 @@
           "isSigner": true
         },
         {
-          "name": "rewardPoolAccount",
+          "name": "escrowAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "vaultAccount",
           "isMut": true,
           "isSigner": false
         },
@@ -125,7 +145,7 @@
   ],
   "accounts": [
     {
-      "name": "RewardPoolAccount",
+      "name": "EscrowAccount",
       "type": {
         "kind": "struct",
         "fields": [
@@ -134,14 +154,19 @@
             "type": "publicKey"
           },
           {
+            "name": "vaultAccount",
+            "type": "publicKey"
+          },
+          {
             "name": "distributionAuthority",
             "type": "publicKey"
+          },
+          {
+            "name": "nonce",
+            "type": "u8"
           }
         ]
       }
     }
-  ],
-  "metadata": {
-    "address": "TraiLS6XoUXJPS3GovqUnSvoUPjBZBcSzkDQB9VARYx"
-  }
+  ]
 }

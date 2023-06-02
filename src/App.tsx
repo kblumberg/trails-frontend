@@ -157,7 +157,7 @@ function App() {
 		let trailheads: Trailhead[] = response.data;
 		// trailheads = trailheads.filter(x => x.hidden == false);
 		trailheads = trailheads.sort((a, b) => (a.id >= 10 && b.id >= 10) ? a.id - b.id : b.id - a.id);
-		trailheads = trailheads.filter(x => x.hidden == false);
+		// trailheads = trailheads.filter(x => x.hidden == false);
 		dispatch(actions.setTrailheads(trailheads));
 	}
 	const loadHikes = async (address: string) => {
@@ -246,8 +246,10 @@ function App() {
 		console.log(`isAdminResponse`);
 		console.log(isAdminResponse);
 		const isAdmin = isAdminResponse && isAdminResponse.data.poolAuthority;
+		console.log(`isAdmin = ${isAdmin}`);
 		if (isAdmin) {
-			const rewardPoolAccount = isAdminResponse.data.rewardPoolAccount;
+			const rewardPoolAccount = isAdminResponse.data;
+			console.log(`rewardPoolAccount = ${rewardPoolAccount}`);
 			dispatch(actions.setRewardPoolAccount(rewardPoolAccount));
 		}
 		dispatch(actions.setIsAdmin(isAdmin));
