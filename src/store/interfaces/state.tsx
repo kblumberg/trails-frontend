@@ -15,7 +15,6 @@ export interface IState{
     userDate: number;
     username: string;
     trailheads: Trailhead[];
-    quizDisabledUntil: number;
     slideMovements: SlideMovement[];
     leaderboard: [string, string, string, number, boolean][];
 }

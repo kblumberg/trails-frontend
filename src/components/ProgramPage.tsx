@@ -23,18 +23,17 @@ import { Tooltip } from 'react-tooltip'
 import 'react-tooltip/dist/react-tooltip.css';
 import { Xp } from 'src/models/Xp';
 import Countdown from 'react-countdown';
-import BurstButton from './BurstButton';
 
 const completeMp3 = require('../assets/sounds/complete.mp3');
 const correctMp3 = require('../assets/sounds/correct.mp3');
 const incorrectMp3 = require('../assets/sounds/incorrect.mp3');
-const clickSound = require('../assets/sounds/click.wav');
 
 const successTimeline = new mojs.Timeline({ speed: 1.5 });
 const incorrectTimeline = new mojs.Timeline({ speed: 1.5 });
 
 const RADIUS = 100;
 
+// const Renderer = (hours: number, minutes: number, seconds: number, completed: boolean, props: any ) => {
 // @ts-ignore
 const Renderer = ({ hours, minutes, seconds, completed, props }) => {
 
@@ -57,10 +56,18 @@ const Renderer = ({ hours, minutes, seconds, completed, props }) => {
 
 class Check extends mojs.CustomShape {
     getShape () {
+        // return "<path transform-origin: 50% 50% 0px; stroke-linecap='square' d='M3.699 9.699l4.193 4.193 M19.995 3.652L8.677 14.342'/>";
+        // return "<path stroke-width='10px' transform-origin: 50% 50% 0px; stroke-linecap='square' d='M0 50 l32 32 L 100 0'/>";
+        // return "<path stroke-width='10px' stroke-linecap='square' d='M15.9057 41.7057 l18.0299 18.0299 M85.9785 15.7036 L36.751 62.61'/>";
         return "<path stroke-width='10px' stroke-linecap='square' d='M20.9057 41.7057 l18.0299 18.0299 M90.9785 15.7036 L41.751 62.61'/>";
+        // return "<path transform-origin: 50% 50% 0px; stroke-linecap='square' d='M3.699 9.699 L20 0 M19.995 3.652L8.677 14.342'/>";
+        // return "<path transform-origin: 50% 50% 0px; stroke-linecap='square' d='M7.398 19.398 L 8.386 8.386 M 39.99 7.304 L 17.354 28.684'/>";
+        // return "<path transform-origin: 50% 50% 0px; stroke-linecap='square' d='M7.398 19.398 L 8.386 8.386'/>";
+        // return "<path transform-origin: 50% 50% 0px; stroke-linecap='square' d='M3 9 L6 6 M 40 3 L20 40 '/>";
+        // return "<path transform-origin: 50% 50% 0px; stroke-linecap='square' d='M 2.328125 4.222656 L 27.734375 4.222656 L 27.734375 24.542969 L 2.328125 24.542969 Z M 2.328125 4.222656'/>";
+        // return "<path transform-origin: 50% 50% 0px; stroke-linecap='square' d='M14.1 27.2l7.1 7.2 16.7-16.8'/>";
     }
 }
-
 class Cross extends mojs.CustomShape {
     getShape () {
         return "<path transform-origin: 50% 50% 0px; stroke-linecap='square' d='M3 3 L18 18 M18 3 L3 18'/>";
@@ -87,28 +94,21 @@ const saveSlideMovement = async (address: string, trailheadId: number, step: num
     return(response);
 }
 
-const saveUserXp = async (address: string, trailheadId: number, step: number, slide: number, trailId: string, slideId: string, xp: number, dispatch: Dispatch, data: IState) => {
-    console.log(`saveUserXp`)
+const saveUserXp = async (address: string, trailheadId: number, step: number, slide: number, xp: number, dispatch: Dispatch, data: IState) => {
     const fields = {
         'address': address
         , 'trailheadId': trailheadId
         , 'step': step
         , 'slide': slide
-        , 'trailId': trailId
-        , 'slideId': slideId
         , 'xp': xp
         , 'token': data.token
     };
-    console.log(fields);
-
-    const newXp = new Xp(address, trailheadId, step, slide, trailId, slideId, Date.now(), xp);
+    const newXp = new Xp(address, trailheadId, step, slide, Date.now(), xp);
     let response = await axios({
         method: 'post',
-        url: BACKEND_URL+'/api/user/saveUserXp2',
+        url: BACKEND_URL+'/api/user/saveUserXp',
         data: fields
     });
-    console.log(`saveUserXp response`)
-    console.log(response)
     if (response.status == 200) {
         const xps = data.xps;
         xps.push(newXp);
@@ -119,21 +119,108 @@ const saveUserXp = async (address: string, trailheadId: number, step: number, sl
     return(response);
 }
 
+
+const cleanTxId = (txId: string) => {
+    const cleaned_0 = txId.split('/')
+    const i = cleaned_0.length;
+    const cleaned_1 = cleaned_0[i - 1].split('?')[0];
+    return(cleaned_1);
+}
+
+
+const validateTx = async (connection: Connection, txId: string, publicKey: string, programIds: string[]) => {
+    const config: GetVersionedTransactionConfig = {
+        'commitment': 'confirmed'
+        , 'maxSupportedTransactionVersion': 100
+    }
+    try {
+        const result = await connection.getTransaction(txId, config);
+        // console.log('result');
+        // console.log(result);
+        // if (result) {
+        //     console.log(result.transaction.message);
+        //     if (Object.hasOwn(result.transaction.message, 'staticAccountKeys')) {
+        //         console.log('resultV0');
+        //         // @ts-ignore
+        //         const resultV0: MessageV0 = result.transaction.message;
+        //         const accountKeys = resultV0.staticAccountKeys.map((x: any) => x.toString());
+        //         console.log('accountKeys');
+        //         console.log(accountKeys);
+        //         if (accountKeys[0] != publicKey) {
+        //             return(VerifyTransactionResult.WRONG_ADDRESS);
+        //         }
+        //         const programIdIndices = resultV0.compiledInstructions.map((x: any) => x.programIdIndex);
+        //         // for (let i = 0; i < accountKeys.length; i++) {
+        //         for (let i = 0; i < programIdIndices.length; i++) {
+        //             const ind = programIdIndices[i];
+        //             console.log(`#${i} accountKeys[${ind}] = ${accountKeys[ind]}`)
+        //             if (programIds.includes(accountKeys[ind])) {
+        //                 return(VerifyTransactionResult.VERIFIED);
+        //             }
+                    
+        //         }
+        //     } else if (Object.hasOwn(result.transaction.message, 'instructions')) {
+        //         console.log('transaction');
+        //         const message: Message = result.transaction.message;
+        //         const accountKeys = message.accountKeys.map((x: any) => x.toString());
+        //         const preTokenBalances = result.meta?.preTokenBalances?.filter(x => x.mint == 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v' && x.owner == accountKeys[0]);
+        //         const postTokenBalances = result.meta?.postTokenBalances?.filter(x => x.mint == 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v' && x.owner == accountKeys[0]);
+        //         const preTokenBalance = preTokenBalances && preTokenBalances[0].uiTokenAmount.uiAmount ? preTokenBalances[0].uiTokenAmount.uiAmount : 0
+        //         const postTokenBalance = postTokenBalances && postTokenBalances[0].uiTokenAmount.uiAmount ? postTokenBalances[0].uiTokenAmount.uiAmount : 0
+        //         const spent = preTokenBalance  - postTokenBalance;
+        //         const secondsAgo = (Date.now() / 1000.0) - (result.blockTime ? result.blockTime : 0);
+        //         const hoursAgo = secondsAgo / (60 * 60.0);
+        //         if (hoursAgo > 72) {
+        //             return(VerifyTransactionResult.TIME_LIMIT);
+        //         }
+        //         console.log(`spent = ${spent}`);
+        //         console.log(`hoursAgo = ${hoursAgo}`);
+        //         for (let i = 0; i < result.transaction.message.instructions.length; i++) {
+        //             console.log(result.transaction.message.instructions);
+        //             const j = result.transaction.message.instructions[i];
+        //             // const programId0 = result.transaction.message.instructions[0].accounts[i.programIdIndex];
+        //             const accountKeys = result.transaction.message.accountKeys.map(x => x.toString());
+        //             if (accountKeys[0] != publicKey) {
+        //                 return(VerifyTransactionResult.WRONG_ADDRESS);
+        //             }
+        //             console.log('accountKeys');
+        //             console.log(accountKeys);
+        //             const programId = result.transaction.message.accountKeys[j.programIdIndex];
+        //             // const programId2 = result.transaction.message.accountKeys[programId0];
+        //             console.log(`programId = ${programId.toString()}`)
+        //             if (programIds.includes(programId.toString())) {
+        //                 return(VerifyTransactionResult.VERIFIED);
+        //             }
+        //         }
+        //     }
+        // }
+        // return(VerifyTransactionResult.WRONG_TX);
+    } catch (error) {
+        return(VerifyTransactionResult.WRONG_TX);
+    }
+    // console.log(result?.transaction.message.instructions[0]);
+    // return result.value?.confirmationStatus;
+}
+
 const ProgramPage = (props: any) => {
     const { program } = useParams();
-    const programName = program == 'FamousFoxFederation2' ? 'FamousFoxFederation' : program;
     const dispatch = useDispatch();
 
     const [show, setShow] = useState(false);
     const [step, setStep] = useState(0);
     const [slideNum, setSlideNum] = useState(0);
-    const [completed, setCompleted] = useState(false);
+    const [completed, setCompleted] = useState(0);
+    const [value, setValue] = useState('');
+    const [errorText, setErrorText] = useState('');
+    const [correctClass, setCorrectClass] = useState('');
+    const [incorrectClass, setIncorrectClass] = useState('');
+    const [buttonDisabled, setButtonDisabled] = useState(false);
+    const [fadeProp, setFadeProp] = useState('fade-in');
+    const [buttonClass, setButtonClass] = useState('primary');
     const [playComplete] = useSound(completeMp3);
     const [playCorrect] = useSound(correctMp3);
-    const [playClick] = useSound(clickSound);
-    const [selectedOption, setSelectedOption] = useState(-1);
-    const [timeout, setTimeout] = useState(0);
-
+    const [playIncorrect] = useSound(incorrectMp3);
+  
     const handleClose = () => {
         setShow(false);
         setSlideNum(0);
@@ -141,105 +228,57 @@ const ProgramPage = (props: any) => {
     const handleShow = () => setShow(true);
 
 
+    const wallet = useWallet();
+    const publicKey = wallet.publicKey ? wallet.publicKey.toString() : '';
 	const data: IState = useSelector((state: any) => state.data);
+    // console.log(`data`);
+    // console.log(data);
 
     const curTrailheads = data.trailheads.filter(x => x.name == program?.replaceAll('_', ' ')).map(x => x.id);
     const curTrailheadId = curTrailheads.length ? curTrailheads[0] : -1;
-    const curTrails = data.trails.filter(x => curTrailheads.includes(x.trailheadId)).sort((a, b) => a.step - b.step);
-
+    const curTrails = data.trails.filter(x => curTrailheads.includes(x.trailheadId)).sort((a, b) => b.step - a.step);
+    // const maxUnlockedSteps = data.slideMovements.filter(x =>
+    //     curTrailheads.includes(x.trailheadId)
+    //     // && x.step == step
+    //     && x.slide
+    //     && x.slide == curTrails[x.step].slides.length - 1
+    //     && x.isForward
+    // )
+    // const maxUnlockedStep = maxUnlockedSteps.length ? maxUnlockedSteps.reduce((a, b) => Math.max(a, b.step + 1), 0) : 0;
+    // const maxUnlockedStep = 100;
+    // const stepXp = maxUnlockedStep > step ? 0 : curTrails[step].xp;
     
-    // console.log(`curTrails`);
-    // console.log(curTrails);
-    const trailList = curTrails.map((x, i) => {
-        const slides = x.slides.map((y, j) => {
-            let item = null;
-            if (y.quiz) {
-                // console.log('y.quiz.correctOption');
-                // console.log(y.quiz.correctOption);
-                const hasCompleted = data.xps.filter(xp => xp.slideId == y.id ).length > 0;
-                const options = y.quiz.options.map( (op, index) => {
-                    return(
-                        <div key={index} className={`quiz-pill ${selectedOption == index ? 'selected' : ''}`}>
-                        <Button className='trails-button quiz-pill inner' variant="primary" onClick={() => {
-                            playClick();
-                            setSelectedOption(index);
-                            console.log(`setSelectedOption = ${index}`)
-                            // const num = slideNum;
-                            // saveSlideMovement(data.address, curTrailheadId, step, num, false, dispatch, data);
-                            // setSlideNum(num - 1);
-                        }}>
-                            <div>
-                                <div>
-                                    {op}
-                                </div>
-                            </div>
-                        </Button></div>);
-                    return(<div className='quiz-pill inner btn btn-primary'>{op}</div>);
-                })
-                
-                item = <div className='quiz'>
-                    {options}
-                    <div style={{'textAlign': 'center', 'paddingTop': '20px'}} className=''>
-                            <BurstButton
-                                step={step}
-                                slideNum={slideNum}
-                                setCompleted={setCompleted}
-                                isCorrect={selectedOption == y.quiz.correctOption}
-                                disabled={selectedOption < 0}
-                                onClick = {() => {
-                                    console.log(`BurstButton click hasCompleted = ${hasCompleted} isCorrect = ${selectedOption == y.quiz?.correctOption}`);
-                                    if ((!hasCompleted) && selectedOption == y.quiz?.correctOption) {
-                                        saveUserXp(data.address, curTrailheadId, step, slideNum, trailId, slideId, curTrails[step].xp, dispatch, data);
-                                    }
-                                }}
-                            />
-                        </div>
 
-                </div>
-            } else {
-                const colSize = y.colSize ? parseInt(y.colSize) : 6;
-                const img = require(`../assets/${program}/${x.step}/${program}-${x.step}-${j}.${y.extension}`);
-                const imgStyle: any = y.maxHeight ? {'maxHeight': y.maxHeight} : {};
-                if (y.imgHeight) {
-                    imgStyle['height'] = y.imgHeight;
-                }
-                if (y.imgWidth) {
-                    imgStyle['width'] = y.imgWidth;
-                }
-                const alignStyle = y.alignImage ? {'alignItems': y.alignImage} : {};
-                // const img = require(`../assets/${program}/${1}/${program}-${1}-${0}.gif`);
-                const classNameLeft = y.alignment == 'left' ? `col-12 col-lg-${ colSize }` : 'col-12';
-                const classNameRight = y.alignment == 'left' ? `col-12 col-lg-${ 12 - colSize }` : 'col-12';
-                const imgDiv = <div className={classNameLeft}>
-                    <img style={imgStyle} className='' src={String(img)} />
-                </div>
-                const textDiv = <div style={y.textFirst ? {'paddingBottom': '20px'} : {} } className={classNameRight}>
-                    <div className='card-text'>
-                        <div dangerouslySetInnerHTML={{__html: y.htmlDescription}} />
+    // const items: any[] = [];
+    const items = curTrails.sort( (a, b) => a.step - b.step ).map((x, i) => {
+        const slides = x.slides.map((y, j) => {
+            const img = require(`../assets/${program}/${x.step}/${program}-${x.step}-${j}.${y.extension}`);
+            // const img = require(`../assets/${program}/${1}/${program}-${1}-${0}.gif`);
+            const className = y.alignment == 'left' ? 'col-6' : 'col-12';
+            const item = 
+                <div key={`${i}_${j}`} className={`row slideshow ${y.alignment}`}>
+                    <div className={className}>
+                        <img src={String(img)} />
                     </div>
-                    {
-                        !y.programIds || y.programIds.length == 0 ? null
-                        :
-                        <div className=''>
-                            <TxInput
-                                trailheadId = {x.trailheadId}
-                                step = {x.step}
-                                slide = {slideNum}
-                                trailId = {x.id}
-                                slideId = {y.id}
-                                setCompleted = {setCompleted}
-                                xp = {y.xp ? y.xp : 0}
-                            />
+                    <div className={className}>
+                        <div className='card-text'>
+                            <div dangerouslySetInnerHTML={{__html: y.htmlDescription}} />
                         </div>
-                    }
-                </div>
-                item = 
-                    <div key={`${i}_${j}`} style={alignStyle} className={`row slideshow ${y.alignment}`}>
-                        {y.textFirst ? textDiv : imgDiv}
-                        {y.textFirst ? imgDiv : textDiv}
+                        {
+                            !y.programIds || y.programIds.length == 0 ? null
+                            :
+                            <div className=''>
+                                <TxInput
+                                    trailheadId = {x.trailheadId}
+                                    step = {x.step}
+                                    slide = {slideNum}
+                                    setCompleted = {setCompleted}
+                                    xp = {y.xp ? y.xp : 0}
+                                />
+                            </div>
+                        }
                     </div>
-                
-            }
+                </div>
             return(item);
         })
 
@@ -251,21 +290,25 @@ const ProgramPage = (props: any) => {
         )
         return(slides);
     })
-    const slides = trailList[step];
+    const slides = items[step];
     const now = Math.round(100 * slideNum / (slides.length - 1));
-    const trailId = curTrails[step].id;
-    const slideId = curTrails[step].slides[slideNum]?.id;
     const title = curTrails[step].slides[slideNum]?.title;
     const programIds = curTrails[step].slides[slideNum]?.programIds;
-    const quiz = curTrails[step].slides[slideNum]?.quiz;
 
     useEffect(() => {
-        setSelectedOption(-1);
+        const connection = new Connection(NETWORK, CONFIG);
+        const txId = cleanTxId('25ejcuBvdG7TWoFGVJZHWwgvztCcRgr3R9scXRjmTajsG89jtXdkfhGhKUR3qN4xMeivEXhDMi4eX5mzC6QKPHAB');
+        // verify the signer is the first pubkey
+        // program id is ZETAxsqBRek56DhiGXrn75yj2NHU3aYUnxvHXpkf3aD
+        // verify usdc is transferred to the vault from the signer
+        validateTx(connection, txId, publicKey, ['ZETAxsqBRek56DhiGXrn75yj2NHU3aYUnxvHXpkf3aD']);
+        // const status = await saveHike(data.address, x.trailheadId, x.id, txId, val);
         try {
             const circle = new mojs.Shape({
                 parent: '#burst',
                 left: '50%', top: '50%',
                 stroke:   '#ffffff',
+                // stroke:   '#000000',
                 strokeWidth: { [2*RADIUS] : 0 },
                 fill:     'none',
                 scale:    { 0: 1, easing: 'quad.out' },
@@ -283,6 +326,9 @@ const ProgramPage = (props: any) => {
                     radius:       RADIUS/7.3,
                     scale:        1,
                     stroke:       '#ffffff',
+                    // stroke:       '#eab815',
+                    // stroke:       '#fbea8c',
+                    // stroke:       '#000000',
                     strokeDasharray: '100%',
                     strokeDashoffset: { '-100%' : '100%' },
                     degreeShift:     'stagger(0,-5)',
@@ -296,7 +342,10 @@ const ProgramPage = (props: any) => {
             mojs.addShape( 'cross', Cross );
             const check = new mojs.Shape({
                 parent: '#success-timeline',
+                // left: 22, top: 20,
                 shape:    'check',
+                // origin: '10% 0%',
+                // origin: '20% 10%',
                 stroke:       '#ffffff',
                 scale:    { 0 : 1 },
                 easing:   'elastic.out',
@@ -304,7 +353,53 @@ const ProgramPage = (props: any) => {
                 innerHeight: 90,
                 delay:    300
             });
+            // const cross = new mojs.Shape({
+            //     parent: '#incorrect-timeline',
+            //     left: 52, top: 50,
+            //     shape:    'cross',
+            //     origin: '20% 10%',
+            //     stroke:     '#ffffff',
+            //     scale:    { 0 : 1 },
+            //     easing:   'elastic.out',
+            //     duration: 1600,
+            //     innerHeight: 50,
+            //     delay:    300
+            // });
+    
+            // const spinner = new mojs.Shape({
+            //     parent:           '#spinner',
+            //     shape:            'circle',
+            //     stroke:           '#FC46AD',
+            //     strokeDasharray:  '125, 125',
+            //     strokeDashoffset: {'0': '-125'},
+            //     strokeWidth:      4,
+            //     fill:             'none',
+            //     left:             '50%',
+            //     top:              '50%',
+            //     rotate:            {'-90': '270'},
+            //     radius:           20,
+            //     isShowStart:      true,
+            //     duration:         3000,
+            //     // easing:           'back.in',
+            //     easing:           'cubic.out',
+            //     repeat: 20,
+            //     isYoyo: true
+            //   })
+            //   .then({
+            //     rotate:            {'-90': '270'},
+            //     strokeDashoffset: {'-125': '-250'},
+            //     duration:         3000,
+            //     easing:           'cubic.out',
+            //   });
+            //   spinner.play();
+    
+    
+            // successtimeline.add( burst, circle );
             successTimeline.add( burst, circle, check );
+            // incorrectTimeline.add( cross );
+            // timelineSpinner.add( spinner );
+            // timelineSpinner.play();
+            // successTimeline.play();
         }
         catch {
 
@@ -313,26 +408,41 @@ const ProgramPage = (props: any) => {
     const isLastSlide = slideNum == slides.length - 1;
     const className = isLastSlide ? '' : 'hidden';
     const alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
+    const trailDivs = items.map((x, i) => {
+        // it is the max: "embark here!"
+        // it is completed and no repeat: "This trail is complete"
+        // it is completed but can redo but not time: "repeat this trail in XX:XX for more XP!"
+        // it is completed and can redo now: "repeat this trail for more XP!"
+        // locked: "complete previous trail to unlock this one"
+        // const status = i > maxUnlockedStep ? 'locked' : i < maxUnlockedStep ? 'completed' : 'current'
+        // const status = i > maxUnlockedStep ? 'current' : i < maxUnlockedStep ? 'completed' : 'current'
+        const isRepeatable = curTrails[i].slides.filter(x => x.xp > 0).length > 0 && curTrailheadId != 12;
 
-    // the trails that you see when you first enter the page
-    const trailDivs = curTrails.map((trail, i) => {
-        // only trails where you submit a tx are repeatable
-        const isRepeatable = curTrails[i].slides.filter(x => x.programIds && (x.programIds.length > 0)).length > 0 && curTrailheadId != 12;
-        // todo: make sure it's all the way complete
-        const lastComplete = data.xps.filter(x => x.trailId == trail.id ).reduce((a, b) => Math.max(a, b.timestamp), 0);
-
+        // const lastComplete = data.xps.filter(y => y.trailheadId == curTrailheadId && y.step == i && y.slide == curTrails[i].slides.length - 1 ).reduce((a, b) => Math.max(a, b.timestamp), 0);
+        const lastComplete = data.xps.filter(y => y.trailheadId == curTrailheadId && y.step == i ).reduce((a, b) => Math.max(a, b.timestamp), 0);
         const lastCompleteSecondsAgo = (Date.now() - lastComplete) / 1000;
         const wait = Math.max(0, (24 * 60 * 60) - lastCompleteSecondsAgo);
+        const hours = Math.floor(wait / (60 * 60));
+        const minutes = Math.floor((wait % (60 * 60)) / 60);
+        const seconds = Math.floor(wait % 60);
 
-        const content = isRepeatable && wait > 0 ? 
+        // const content = status == 'locked' ? <span>Complete previous trail to unlock this one</span>
+        const content = false ? <span>Complete previous trail to unlock this one</span>
+        // : status == 'completed' && isRepeatable && wait > 0 ? <span>{`Repeat this trail in `<Countdown date={Date.now() + (wait * 1000)} />${hours}:${minutes.toLocaleString('en-US', {
+        : isRepeatable && wait > 0 ? 
             <>
                 <span>{curTrails[i].title}<br/>{`Repeat this trail in `}</span>
                 <Countdown zeroPadDays={0} renderer={Renderer} date={Date.now() + (wait * 1000)} />
                 <span> for more XP!</span>
             </>
+        // : status == 'completed' && isRepeatable ? <span>{curTrails[i].title}</span>
         : lastComplete > 0 && !isRepeatable ? <span>{curTrails[i].title}<br/>This trail is complete</span>
         : <span>{curTrails[i].title}</span>;
+        // const isLocked = (i > maxUnlockedStep) || (i != maxUnlockedStep && wait > 0 && isRepeatable);
+        // const isLocked = (wait > 0 && isRepeatable);
         const isLocked = false;
+        // const isGray = (i > maxUnlockedStep) || (i != maxUnlockedStep && wait > 0 && isRepeatable) || (status == 'completed' && !isRepeatable);
+        // const isGray = (i != maxUnlockedStep && wait > 0 && isRepeatable) || (status == 'completed' && !isRepeatable);
         const isGray = wait > 0 || (lastComplete > 0 && !isRepeatable);
 
         return(
@@ -351,7 +461,11 @@ const ProgramPage = (props: any) => {
                         {/* <a data-tooltip-id={`button_${i}`} data-tooltip-content={content}> */}
                         <a id={`button_${i}`}>
                             {
-                                lastComplete > 0
+                                // i > maxUnlockedStep
+                                false
+                                ? 
+                                    '🔒'
+                                : lastComplete > 0
                                 ? '✔️'
                                 : '⭐'
                             }
@@ -367,29 +481,26 @@ const ProgramPage = (props: any) => {
 
     })
     
-    // 
-    const hasCompleted = data.xps.filter(x => x.slideId == slideId ).length > 0;
-    const hasQuiz = (quiz != null && quiz.options.length > 0);
-    // console.log(`hasQuiz = ${hasQuiz}. completed = ${completed}. step = ${step}. hasCompleted = ${hasCompleted}`)
+    const lastComplete = data.xps.filter(x => x.trailheadId == curTrailheadId && x.step == step && x.slide == slideNum ).reduce((a, b) => Math.max(a, b.timestamp), 0);
     return (
         <>
-            <div className='program-page'>
-                <div className='trailhead'>
-                    <h3>
-                        <div className='back-arrow'>
-                            <NavLink to ='/'>
-                                <ArrowLeftCircleFill />
-                            </NavLink>
-                        </div>
-                        {programName}
-                        <div className='forward-arrow'>
+        <div className='test-page'>
+            <div className='trailhead'>
+                <h3>
+                    <div className='back-arrow'>
+                        <NavLink to ='/'>
                             <ArrowLeftCircleFill />
-                        </div>
-                    </h3>
-                    <div>{`Learn the basics of ${programName}`}</div>
-                </div>
-                {trailDivs}
+                        </NavLink>
+                    </div>
+                    {program}
+                    <div className='forward-arrow'>
+                        <ArrowLeftCircleFill />
+                    </div>
+                </h3>
+                <div>{`Learn the basics of ${program}`}</div>
             </div>
+            {trailDivs}
+        </div>
             <Modal className='trails-modal' show={show} onHide={handleClose}>
                 <Modal.Body>
                     <div className='modal-progress'>
@@ -423,7 +534,7 @@ const ProgramPage = (props: any) => {
                                 slideNum == 0 ? null
                                 : 
                                 <div className='col'>
-                                    <Button className='inner trails-button' variant="primary" onClick={() => {
+                                    <Button className='inner' variant="primary" onClick={() => {
                                         const num = slideNum;
                                         saveSlideMovement(data.address, curTrailheadId, step, num, false, dispatch, data);
                                         setSlideNum(num - 1);
@@ -437,34 +548,27 @@ const ProgramPage = (props: any) => {
                                 </div>
                             }
                         <div className='col'>
-                            <Button className='trails-button' disabled={ !completed && !hasCompleted && ((programIds && programIds.length > 0) || hasQuiz) } variant="primary" onClick={() => {
+                            <Button disabled={ (completed < step) && lastComplete == 0 && programIds && programIds.length > 0} variant="primary" onClick={() => {
                                 const num = slideNum;
-                                setCompleted(false);
                                 saveSlideMovement(data.address, curTrailheadId, step, num, true, dispatch, data);
                                 // TODO: check if they've completed this slide before. if not, add xp
-
-                                console.log(`num = ${num}. slides.length = ${slides.length}`);
+                                const hasCompleted = data.xps.filter(x => 
+                                    x.address == data.address
+                                    && x.trailheadId == curTrailheadId
+                                    && x.step == step
+                                    && x.slide == num
+                                    && x.xp == curTrails[step].xp
+                                )
 
                                 if (num + 1 == slides.length) {
                                     setSlideNum(0);
                                     handleClose();
                                 } else {
                                     if (num + 2 == slides.length) {
-
-                                        const finalSlideId = curTrails[step].slides[num]?.id;
-                                        console.log(`finalSlideId = ${finalSlideId}`);
-
-                                        const hasCompleted = data.xps.filter(x => 
-                                            x.address == data.address
-                                            && x.slideId == finalSlideId
-                                            && x.xp == curTrails[step].xp
-                                        )
                                         playComplete();
                                         successTimeline.play();
-                                        console.log(`hasCompleted = ${hasCompleted}`)
                                         if (!hasCompleted.length) {
-                                            console.log(`461 saveUserXp`)
-                                            const response = saveUserXp(data.address, curTrailheadId, step, num, trailId, finalSlideId, curTrails[step].xp, dispatch, data);
+                                            const response = saveUserXp(data.address, curTrailheadId, step, num, curTrails[step].xp, dispatch, data);
                                         }
                                     } else {
                                         playCorrect();
