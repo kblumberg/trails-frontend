@@ -121,6 +121,7 @@ const saveUserXp = async (address: string, trailheadId: number, step: number, sl
 
 const ProgramPage = (props: any) => {
     const { program } = useParams();
+    const programName = program == 'FamousFoxFederation2' ? 'FamousFoxFederation' : program;
     const dispatch = useDispatch();
 
     const [show, setShow] = useState(false);
@@ -380,12 +381,12 @@ const ProgramPage = (props: any) => {
                                 <ArrowLeftCircleFill />
                             </NavLink>
                         </div>
-                        {program}
+                        {programName}
                         <div className='forward-arrow'>
                             <ArrowLeftCircleFill />
                         </div>
                     </h3>
-                    <div>{`Learn the basics of ${program}`}</div>
+                    <div>{`Learn the basics of ${programName}`}</div>
                 </div>
                 {trailDivs}
             </div>
