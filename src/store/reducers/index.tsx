@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 import { IState } from '../interfaces/state';
-import { SET_HIKES, SET_TRAILS, SET_TRAILHEADS, SET_ADDRESS, SET_LEADERBOARD, SET_IMAGE, SET_USER_XP, SET_SLIDE_MOVEMENTS, SET_USER_XPS, SET_USER_DATE, SET_USERNAME, SET_TOKEN } from '../types/types';
+import { SET_HIKES, SET_TRAILS, SET_TRAILHEADS, SET_ADDRESS, SET_LEADERBOARD, SET_IMAGE, SET_USER_XP, SET_SLIDE_MOVEMENTS, SET_USER_XPS, SET_USER_DATE, SET_USERNAME, SET_TOKEN, SET_QUIZ_DISABLED_UNTIL } from '../types/types';
 
 export const INITIAL_STATE: IState = {
     address: ''
@@ -15,6 +15,7 @@ export const INITIAL_STATE: IState = {
     , hikes: []
     , trails: []
     , trailheads: []
+    , quizDisabledUntil: 0
 };
 
 const reducer = (state: IState = INITIAL_STATE, action: any): IState => {
@@ -24,6 +25,11 @@ const reducer = (state: IState = INITIAL_STATE, action: any): IState => {
             return {
                 ...state,
                 token: action.data
+            }
+        case SET_QUIZ_DISABLED_UNTIL:
+            return {
+                ...state,
+                quizDisabledUntil: action.data
             }
         case SET_ADDRESS:
             return {

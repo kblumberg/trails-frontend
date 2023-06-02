@@ -54,6 +54,7 @@ const MainPage = (props: any) => {
 			continue;
 		}
 		const name: string = Object.hasOwn(program_d, programs[i]) ? program_d[programs[i]] : programs[i];
+		// const project = name == 
 		// const ext = ['Opensea','JupiterExchange','FamousFoxFederation','AverExchange','Openbook','Exchange','Orca','Bonk','MarinadeFinance','DriftProtocol'].includes(programs[i]) ? 'png' : 'jpeg'
 		const ext = 'png'
 		const img = require(`../assets/projects/${programs[i].toLowerCase().replaceAll(' ', '')}.${ext}`);
@@ -65,7 +66,7 @@ const MainPage = (props: any) => {
 				{/* <div className={`outer-ring pie no-round pct_${i}`} > */}
 				<div className={`outer-ring`} >
 					<div className='inner-ring'>
-						<Link to={`/${name.replace(/ /g,'')}`}>
+						<Link to={`/${programs[i].replace(/ /g,'')}`}>
 							<div className='card'>
 								<div className='img'>
 									<img className='icon' alt='logo' src={String(img)}></img>

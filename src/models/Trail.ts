@@ -2,6 +2,7 @@ import { Slide } from "./Slide";
 
 export class Trail {
 
+    id: string;
     step: number;
     trailheadId: number;
     programIds: string[];
@@ -12,7 +13,8 @@ export class Trail {
     xp: number;
 
 	constructor(
-        step: number = 0
+        id: string = ''
+        , step: number = 0
         , trailheadId: number = 0
         , programIds: string[] = []
         , icon: string = ''
@@ -21,6 +23,7 @@ export class Trail {
         , slides: Slide[] = []
         , xp: number = 0
     ) {
+        this.id = id;
         this.step = step;
         this.trailheadId = trailheadId;
         this.programIds = programIds;

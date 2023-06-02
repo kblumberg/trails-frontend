@@ -12,6 +12,13 @@ export const setToken = (token: string) => {
     };
 };
 
+export const setQuizDisabledUntil = (quizDisabledUntil: number) => {
+    return {
+        type: types.SET_QUIZ_DISABLED_UNTIL,
+        data: quizDisabledUntil
+    };
+};
+
 export const setAddress = (address: string) => {
     return {
         type: types.SET_ADDRESS,
