@@ -31,6 +31,7 @@ const MainPage = (props: any) => {
 		'Magic': 'Magic Eden'
 		, 'Exchange': 'Exchange Art'
 		, 'FamousFoxFederation': 'Famous Fox Federation'
+		, 'FamousFoxFederation2': 'Famous Fox Federation'
 		, 'ZetaMarkets': 'Zeta Markets'
 		, 'JupiterExchange': 'Jupiter Exchange'
 		, 'AverExchange': 'Aver Exchange'

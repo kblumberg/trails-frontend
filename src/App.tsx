@@ -144,7 +144,7 @@ function App() {
 			url: BACKEND_URL+'/api/trailheads/trailheads',
 		});
 		let trailheads: Trailhead[] = response.data;
-		trailheads = trailheads.sort((a, b) => (a.id >= 10 && b.id >= 10) ? a.id - b.id : b.id - a.id);
+		trailheads = trailheads.sort((a, b) => b.id - a.id);
 		trailheads = trailheads.filter(x => x.hidden == false);
 		dispatch(actions.setTrailheads(trailheads));
 	}
