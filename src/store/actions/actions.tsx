@@ -5,11 +5,19 @@ import { Trailhead } from "src/models/Trailhead";
 import { Xp } from "src/models/Xp";
 import * as types from "../types/types";
 import { IRewardPoolAccount } from "src/models/RewardPoolAccount";
+import { ExpeditionInviteDetail } from "src/models/ExpeditionInviteDetail";
 
 export const setIsAdmin = (isAdmin: boolean) => {
     return {
         type: types.SET_IS_ADMIN,
         data: isAdmin
+    };
+};
+
+export const setExpeditionInvites = (expeditionInvites: ExpeditionInviteDetail[]) => {
+    return {
+        type: types.SET_EXPEDITION_INVITES,
+        data: expeditionInvites
     };
 };
 

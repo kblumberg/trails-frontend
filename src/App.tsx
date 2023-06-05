@@ -255,6 +255,35 @@ function App() {
 		dispatch(actions.setIsAdmin(isAdmin));
 	}
 
+	const loadExpeditions = async (address: string) => {
+		if (!address) {
+			return(1);
+		}
+		let response = await axios({
+			method: 'post',
+			url: BACKEND_URL+'/api/expedition/expeditionInvites',
+			data: {'address': address}
+		});
+		console.log(`expeditionInvites response`)
+		console.log(response);
+		dispatch(actions.setExpeditionInvites(response.data));
+		// let isAdminResponse: any = await axios({
+		// 	method: 'post',
+		// 	url: BACKEND_URL+'/api/user/checkIsAdmin',
+		// 	data: {'address': address, 'token': response.data}
+		// });
+		// console.log(`isAdminResponse`);
+		// console.log(isAdminResponse);
+		// const isAdmin = isAdminResponse && isAdminResponse.data.poolAuthority;
+		// console.log(`isAdmin = ${isAdmin}`);
+		// if (isAdmin) {
+		// 	const rewardPoolAccount = isAdminResponse.data;
+		// 	console.log(`rewardPoolAccount = ${rewardPoolAccount}`);
+		// 	dispatch(actions.setRewardPoolAccount(rewardPoolAccount));
+		// }
+		// dispatch(actions.setIsAdmin(isAdmin));
+	}
+
 	useEffect(() => {
 		loadTrails();
 		loadTrailheads();
@@ -271,6 +300,7 @@ function App() {
 		loadUserXp(useAddress);
 		loadUserDate(useAddress);
 		loadUsername(useAddress);
+		loadExpeditions(useAddress);
 		saveConnect(useAddress);
 
 		if (useAddress) {

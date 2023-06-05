@@ -57,8 +57,9 @@ const depositFunds = async (
 				txId = await program.methods
 				.depositFunds(new BN(amount * Math.pow(10, decimals)))
 				.accounts({
-					rewardPoolAccount: new PublicKey(rewardPoolAccount),
 					poolAuthority: new PublicKey(userAddress),
+					escrowAccount: new PublicKey(rewardPoolAccount.escrowAccount),
+					vaultAccount: new PublicKey(rewardPoolAccount.vaultAccount),
 					token: mint,
 					systemProgram: web3.SystemProgram.programId,
 				})
@@ -67,10 +68,9 @@ const depositFunds = async (
 				txId = await program.methods
 				.withdrawFunds(new BN(amount * Math.pow(10, decimals)))
 				.accounts({
-					rewardPoolAccount: new PublicKey(rewardPoolAccount),
-					// authority: new PublicKey(userAddress),
-	
 					poolAuthority: new PublicKey(userAddress),
+					escrowAccount: new PublicKey(rewardPoolAccount.escrowAccount),
+					vaultAccount: new PublicKey(rewardPoolAccount.vaultAccount),
 	
 					// tokenProgram: TOKEN_PROGRAM_ID,
 					// rent: web3.SYSVAR_RENT_PUBKEY,
