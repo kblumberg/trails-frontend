@@ -157,7 +157,7 @@ function App() {
 		let trailheads: Trailhead[] = response.data;
 		// trailheads = trailheads.filter(x => x.hidden == false);
 		trailheads = trailheads.sort((a, b) => (a.id >= 10 && b.id >= 10) ? a.id - b.id : b.id - a.id);
-		// trailheads = trailheads.filter(x => x.hidden == false);
+		trailheads = trailheads.filter(x => x.id != 6);
 		dispatch(actions.setTrailheads(trailheads));
 	}
 	const loadHikes = async (address: string) => {

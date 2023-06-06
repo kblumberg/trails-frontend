@@ -8,6 +8,9 @@ export class Hike {
     slide: number;
     timestamp: number;
     txId: string;
+    trailId: string | null;
+    slideId: string | null;
+    expeditionInviteId: string | null;
     result: VerifyTransactionResult;
 
 	constructor(
@@ -18,6 +21,9 @@ export class Hike {
         , timestamp: number = 0
         , txId: string = ''
         , result: VerifyTransactionResult = VerifyTransactionResult.WRONG_TX
+        , trailId: string | null = null
+        , slideId: string | null = null
+        , expeditionInviteId: string | null = null
     ) {
         this.address = address;
         this.trailheadId = trailheadId;
@@ -26,6 +32,9 @@ export class Hike {
         this.timestamp = timestamp;
         this.txId = txId;
         this.result = result;
+        this.trailId = trailId;
+        this.slideId = slideId;
+        this.expeditionInviteId = expeditionInviteId;
     }
 
 }

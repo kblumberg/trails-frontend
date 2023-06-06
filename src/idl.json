@@ -119,6 +119,16 @@
           "isSigner": true
         },
         {
+          "name": "escrowAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "vaultAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "recipient",
           "isMut": false,
           "isSigner": false

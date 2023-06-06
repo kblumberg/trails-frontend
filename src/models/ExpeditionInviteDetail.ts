@@ -1,6 +1,7 @@
 
 export class ExpeditionInviteDetail {
 
+    id: string;
     expeditionId: string;
     trailheadId: number;
     trailId: string;
@@ -18,7 +19,8 @@ export class ExpeditionInviteDetail {
     submissionTxId: string;
 
 	constructor(
-        expeditionId: string = ''
+        id: string = ''
+        , expeditionId: string = ''
         , trailheadId: number = 0
         , trailId: string = ''
         , slideId: string = ''
@@ -34,6 +36,7 @@ export class ExpeditionInviteDetail {
         , payoutTxId: string = ''
         , submissionTxId: string = ''
     ) {
+        this.id = id;
         this.expeditionId = expeditionId;
         this.trailheadId = trailheadId;
         this.trailId = trailId;

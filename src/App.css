@@ -466,8 +466,31 @@ img.avatar {
 }
 .expeditions-page {
 	/* color: #315274; */
-	color: rgb(149	202	195	);
+	/* color: rgb(149	202	195	); */
 }
+.expeditions-table-header {
+	background-color: rgb(89 55 49 );
+	color: white;
+	padding: 10px;
+	border-top-left-radius: 8px;
+	border-top-right-radius: 8px;
+}
+.expeditions-table {
+	border: 1px solid rgb(89 55 49 );
+	border-radius: 10px;
+}
+.expeditions-table {
+	border: 1px solid rgb(89 55 49 );
+}
+.expeditions-table-row {
+	padding: 10px;
+}
+.expeditions-table-row .col {
+	margin: auto;
+	font-size: 14px;
+	font-weight: 300;
+}
+
 .launching-soon {
 	font-weight: 900;
     font-size: 48px;
@@ -1167,3 +1190,33 @@ body, html {
 	color: inherit;
 	box-shadow: inset 1000px 0 0 0 rgb(183, 225, 139);
 }
+.expeditions-table img.icon {
+	height: 30px;
+    width: 30px;
+    background-color: #282828;
+    border-radius: 40px;
+}
+
+.outer-ring:nth-child(1) {
+	/* background-color: blue; */
+	/* background-color: rgb(134 205 194 ); */
+}
+.outer-ring {
+	font-size: 12px;
+	padding: 15px;
+	text-transform: uppercase;
+}
+.char-1 {
+	-webkit-transform: rotate(-60deg);
+	-moz-transform: rotate(6deg);
+	-ms-transform: rotate(6deg);
+	-o-transform: rotate(6deg);
+	transform: rotate(6deg);
+  }
+  .char2 {
+	-webkit-transform: rotate(12deg);
+	-moz-transform: rotate(12deg);
+	-ms-transform: rotate(12deg);
+	-o-transform: rotate(12deg);
+	transform: rotate(12deg);
+  }

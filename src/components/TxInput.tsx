@@ -47,7 +47,7 @@ const cleanTxId = (txId: string) => {
 }
 
 
-const saveHike = async (address: string, trailheadId: number, step: number, slide: number, trailId: string, slideId: string, txId: string, xp: number, data: IState, dispatch: Dispatch) => {
+const saveHike = async (address: string, trailheadId: number, step: number, slide: number, trailId: string, slideId: string, txId: string, xp: number, expeditionInviteId: string, data: IState, dispatch: Dispatch) => {
     const fields = {
         'address': address
         , 'trailheadId': trailheadId
@@ -56,6 +56,7 @@ const saveHike = async (address: string, trailheadId: number, step: number, slid
         , 'trailId': trailId
         , 'slideId': slideId
         , 'txId': txId
+        , 'expeditionInviteId': expeditionInviteId
         , 'token': data.token
     };
     console.log(`fields`);
@@ -63,17 +64,10 @@ const saveHike = async (address: string, trailheadId: number, step: number, slid
     let response = await axios({
         method: 'post',
         url: BACKEND_URL+'/api/hikes/saveHike2',
-        data: {
-            'address': address
-            , 'trailheadId': trailheadId
-            , 'step': step
-            , 'slide': slide
-            , 'trailId': trailId
-            , 'slideId': slideId
-            , 'txId': txId
-            , 'token': data.token
-        }
+        data: fields
     });
+    console.log(`saveHike2 response`);
+    console.log(response);
     if (response.data == VerifyTransactionResult.VERIFIED) {
         const newXp = xp + data.xp;
         dispatch(setUserXp(newXp));
@@ -255,7 +249,9 @@ const TxInput = (props: any) => {
 
                 const txId = cleanTxId(value);
                 
-                const status = await saveHike(data.address, props.trailheadId, props.step, props.slide, props.trailId, props.slideId, txId, props.xp, data, dispatch);
+                const status = await saveHike(data.address, props.trailheadId, props.step, props.slide, props.trailId, props.slideId, txId, props.xp, props.expeditionInviteId, data, dispatch);
+                console.log(`status`);
+                console.log(status);
                 const val = status.data;
                 const hike = new Hike(data.address, props.trailheadId, props.step, props.slide, Date.now(), txId, val);
                 const hikes = data.hikes;
@@ -283,7 +279,11 @@ const TxInput = (props: any) => {
                     } else if (val == VerifyTransactionResult.STALE_TX) {
                         setErrorText('Transaction is too old. Check the About Us page.');
                     } else if (val == VerifyTransactionResult.INVALID_TOKEN) {
-                        setErrorText('Invalid token.');
+                        setErrorText('Invalid token');
+                    } else if (val == VerifyTransactionResult.INVALID_INVITE) {
+                        setErrorText('Invalid expedition invite');
+                    } else if (val == VerifyTransactionResult.INVITE_EXPIRED) {
+                        setErrorText('Expedition invite expired');
                     } else {
                         // alert('Incorrect Tx!');
                         setErrorText('Incorrect transaction');

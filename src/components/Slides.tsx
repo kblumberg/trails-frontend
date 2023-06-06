@@ -24,7 +24,7 @@ import 'react-tooltip/dist/react-tooltip.css';
 import { Xp } from 'src/models/Xp';
 import Countdown from 'react-countdown';
 import BurstButton from './BurstButton';
-import Slides from './Slides';
+import { Trail } from 'src/models/Trail';
 
 const completeMp3 = require('../assets/sounds/complete.mp3');
 const correctMp3 = require('../assets/sounds/correct.mp3');
@@ -120,11 +120,11 @@ const saveUserXp = async (address: string, trailheadId: number, step: number, sl
     return(response);
 }
 
-const ProgramPage = (props: any) => {
+const Slides = (props: any) => {
     const { program } = useParams();
     const dispatch = useDispatch();
 
-    const [show, setShow] = useState(false);
+    // const [show, setShow] = useState(false);
     const [step, setStep] = useState(0);
     const [slideNum, setSlideNum] = useState(0);
     const [completed, setCompleted] = useState(false);
@@ -134,22 +134,41 @@ const ProgramPage = (props: any) => {
     const [selectedOption, setSelectedOption] = useState(-1);
     const [timeout, setTimeout] = useState(0);
 
+    console.log(`Slides expeditionInviteId = ${props.expeditionInviteId}`)
+
     const handleClose = () => {
-        setShow(false);
+        // setShow(false);
         setSlideNum(0);
+        props.handleClose()
     };
-    const handleShow = () => setShow(true);
+    // const handleShow = () => setShow(true);
 
 
 	const data: IState = useSelector((state: any) => state.data);
 
-    const curTrailheads = data.trailheads.filter(x => x.name == program?.replaceAll('_', ' ')).map(x => x.id);
-    const curTrailheadId = curTrailheads.length ? curTrailheads[0] : -1;
-    const curTrails = data.trails.filter(x => curTrailheads.includes(x.trailheadId)).sort((a, b) => a.step - b.step);
+    // const curTrailheads = data.trailheads.filter(x => x.name == program?.replaceAll('_', ' ')).map(x => x.id);
+    // const curTrailheadId = curTrailheads.length ? curTrailheads[0] : -1;
+    // const curTrails = data.trails.filter(x => curTrailheads.includes(x.trailheadId)).sort((a, b) => a.step - b.step);
+    let curTrailheadId = -1;
+    let curTrails: Trail[] = []
+
+    if (props.trailId) {
+        console.log(`props.trailId = ${props.trailId}`);
+        curTrails = data.trails.filter(x => x.id == props.trailId ).sort((a, b) => a.step - b.step);
+        if (curTrails.length) {
+            curTrailheadId = curTrails[0].trailheadId;
+        }
+    } else if (props.trailheadId >= 0) {
+        console.log(`props.trailheadId = ${props.trailheadId}`);
+        curTrails = data.trails.filter(x => x.trailheadId == props.trailheadId).sort((a, b) => a.step - b.step);
+        curTrailheadId = props.trailheadId;
+    }
+
+
 
     
-    // console.log(`curTrails`);
-    // console.log(curTrails);
+    console.log(`curTrails`);
+    console.log(curTrails);
     const trailList = curTrails.map((x, i) => {
         const slides = x.slides.map((y, j) => {
             let item = null;
@@ -198,7 +217,8 @@ const ProgramPage = (props: any) => {
                 </div>
             } else {
                 const colSize = y.colSize ? parseInt(y.colSize) : 6;
-                const img = require(`../assets/${program}/${x.step}/${program}-${x.step}-${j}.${y.extension}`);
+                const p = data.trailheads.filter(t => t.id == x.trailheadId)[0].name;
+                const img = require(`../assets/${p}/${x.step}/${p}-${x.step}-${j}.${y.extension}`);
                 const imgStyle: any = y.maxHeight ? {'maxHeight': y.maxHeight} : {};
                 if (y.imgHeight) {
                     imgStyle['height'] = y.imgHeight;
@@ -229,6 +249,7 @@ const ProgramPage = (props: any) => {
                                 slideId = {y.id}
                                 setCompleted = {setCompleted}
                                 xp = {y.xp ? y.xp : 0}
+                                expeditionInviteId = {props.expeditionInviteId ? props.expeditionInviteId : ''}
                             />
                         </div>
                     }
@@ -251,13 +272,23 @@ const ProgramPage = (props: any) => {
         )
         return(slides);
     })
+    console.log(`trailList`);
+    console.log(trailList);
+    
     const slides = trailList[step];
-    const now = Math.round(100 * slideNum / (slides.length - 1));
-    const trailId = curTrails[step].id;
-    const slideId = curTrails[step].slides[slideNum]?.id;
-    const title = curTrails[step].slides[slideNum]?.title;
-    const programIds = curTrails[step].slides[slideNum]?.programIds;
-    const quiz = curTrails[step].slides[slideNum]?.quiz;
+    let now = 0;
+    let trailId = '', slideId = '', title = '';
+    let programIds: any[] = [];
+    let quiz = null;
+    const slidesLength = slides && slides.length ? slides.length : 0;
+    if (slidesLength) {
+        now = Math.round(100 * slideNum / (slides.length - 1));
+        trailId = curTrails[step].id;
+        slideId = curTrails[step].slides[slideNum]?.id;
+        title = curTrails[step].slides[slideNum]?.title;
+        programIds = curTrails[step].slides[slideNum]?.programIds;
+        quiz = curTrails[step].slides[slideNum]?.quiz;
+    }
 
     useEffect(() => {
         setSelectedOption(-1);
@@ -310,178 +341,108 @@ const ProgramPage = (props: any) => {
 
         }
     }, [slideNum]);
-    const isLastSlide = slideNum == slides.length - 1;
+    const isLastSlide = slideNum == slidesLength - 1;
     const className = isLastSlide ? '' : 'hidden';
-    const alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
-
-    // the trails that you see when you first enter the page
-    const trailDivs = curTrails.map((trail, i) => {
-        // only trails where you submit a tx are repeatable
-        const isRepeatable = curTrails[i].slides.filter(x => x.programIds && (x.programIds.length > 0)).length > 0 && curTrailheadId != 12;
-        // todo: make sure it's all the way complete
-        const lastComplete = data.xps.filter(x => x.trailId == trail.id ).reduce((a, b) => Math.max(a, b.timestamp), 0);
-
-        const lastCompleteSecondsAgo = (Date.now() - lastComplete) / 1000;
-        const wait = Math.max(0, (24 * 60 * 60) - lastCompleteSecondsAgo);
-
-        const content = isRepeatable && wait > 0 ? 
-            <>
-                <span>{curTrails[i].title}<br/>{`Repeat this trail in `}</span>
-                <Countdown zeroPadDays={0} renderer={Renderer} date={Date.now() + (wait * 1000)} />
-                <span> for more XP!</span>
-            </>
-        : lastComplete > 0 && !isRepeatable ? <span>{curTrails[i].title}<br/>This trail is complete</span>
-        : <span>{curTrails[i].title}</span>;
-        const isLocked = false;
-        const isGray = wait > 0 || (lastComplete > 0 && !isRepeatable);
-
-        return(
-            <div key={i} className={`trail ${i % 2 ? 'even' : 'odd'} ${alphabet[i]}`}>
-                <div className='inner'>
-                    <div className='marker'>
-                        <div className='dotted'></div>
-                        <div id={`button_${i}`} className={`button ${isGray ? 'gray' : ''} ${isLocked ? 'locked' : ''}`} onClick={() => {
-                            if (!isLocked) {
-                                handleShow()
-                                setStep(i)
-                            }
-                        }}>
-                        <div className='icon'>
-                            {/* <Countdown date={Date.now() + (wait * 1000)} /> */}
-                        {/* <a data-tooltip-id={`button_${i}`} data-tooltip-content={content}> */}
-                        <a id={`button_${i}`}>
-                            {
-                                lastComplete > 0
-                                ? '✔️'
-                                : '⭐'
-                            }
-                            </a>
-                            </div>
-                            
-                        </div>
-                            <Tooltip anchorSelect={`#button_${i}`} >{content}</Tooltip>
-                    </div>
-                </div>
-            </div>
-        )
-
-    })
     
-    // 
     const hasCompleted = data.xps.filter(x => x.slideId == slideId ).length > 0;
     const hasQuiz = (quiz != null && quiz.options.length > 0);
     // console.log(`hasQuiz = ${hasQuiz}. completed = ${completed}. step = ${step}. hasCompleted = ${hasCompleted}`)
     return (
-        <>
-            <div className='program-page'>
-                <div className='trailhead'>
-                    <h3>
-                        <div className='back-arrow'>
-                            <NavLink to ='/'>
-                                <ArrowLeftCircleFill />
-                            </NavLink>
+        !slidesLength ? null :
+        <Modal className='trails-modal' show={props.show} onHide={handleClose}>
+            <Modal.Body>
+                <div className='modal-progress'>
+                    <div className='flex-container'>
+                        <div className='flex-child-1'>
+                            <button onClick={handleClose} type="button" className="btn-close" aria-label="Close"></button>
                         </div>
-                        {program}
-                        <div className='forward-arrow'>
-                            <ArrowLeftCircleFill />
+                        <div className='flex-child-10'>
+                            <ProgressBar className='trails-green-background' now={now} label={`${now}%`} />
                         </div>
-                    </h3>
-                    <div>{`Learn the basics of ${program}`}</div>
+                    </div>
                 </div>
-                {trailDivs}
-            </div>
-            {
-                <Slides show={show} trailheadId={curTrailheadId} handleClose={handleClose} />
-            }
-            {/* <Modal className='trails-modal' show={show} onHide={handleClose}>
-                <Modal.Body>
-                    <div className='modal-progress'>
-                        <div className='flex-container'>
-                            <div className='flex-child-1'>
-                                <button onClick={handleClose} type="button" className="btn-close" aria-label="Close"></button>
-                            </div>
-                            <div className='flex-child-10'>
-                                <ProgressBar className='trails-green-background' now={now} label={`${now}%`} />
+                <div className='modal-main'>
+                    <div className='modal-main-header'>
+                        {title}
+                    </div>
+                    <div className='modal-main-description'>
+                        {slides[slideNum]}
+                        <div className={`${isLastSlide ? 'level-complete-outer' : ''}`}>
+                            <div id='burst' className={`level-complete fade-button ${className}`} onClick={async () => {}}>
+                                <div className='level-complete-text'>Level<br/>Complete</div>
+                                <div id='success-timeline' className={'correctClass'}></div>
                             </div>
                         </div>
                     </div>
-                    <div className='modal-main'>
-                        <div className='modal-main-header'>
-                            {title}
-                        </div>
-                        <div className='modal-main-description'>
-                            {slides[slideNum]}
-                            <div className={`${isLastSlide ? 'level-complete-outer' : ''}`}>
-                                <div id='burst' className={`level-complete fade-button ${className}`} onClick={async () => {}}>
-                                    <div className='level-complete-text'>Level<br/>Complete</div>
-                                    <div id='success-timeline' className={'correctClass'}></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </Modal.Body>
-                <Modal.Footer>
-                    <div className='row'>
-                            {
-                                slideNum == 0 ? null
-                                : 
-                                <div className='col'>
-                                    <Button className='inner trails-button' variant="primary" onClick={() => {
-                                        const num = slideNum;
-                                        saveSlideMovement(data.address, curTrailheadId, step, num, false, dispatch, data);
-                                        setSlideNum(num - 1);
-                                    }}>
+                </div>
+            </Modal.Body>
+            <Modal.Footer>
+                <div className='row'>
+                        {
+                            slideNum == 0 ? null
+                            : 
+                            <div className='col'>
+                                <Button className='inner trails-button' variant="primary" onClick={() => {
+                                    const num = slideNum;
+                                    saveSlideMovement(data.address, curTrailheadId, step, num, false, dispatch, data);
+                                    setSlideNum(num - 1);
+                                }}>
+                                    <div>
                                         <div>
-                                            <div>
-                                                Back
-                                            </div>
+                                            Back
                                         </div>
-                                    </Button>
-                                </div>
-                            }
-                        <div className='col'>
-                            <Button className='trails-button' disabled={ !completed && !hasCompleted && ((programIds && programIds.length > 0) || hasQuiz) } variant="primary" onClick={() => {
-                                const num = slideNum;
-                                setCompleted(false);
-                                saveSlideMovement(data.address, curTrailheadId, step, num, true, dispatch, data);
+                                    </div>
+                                </Button>
+                            </div>
+                        }
+                    <div className='col'>
+                        <Button className='trails-button' disabled={ !completed && !hasCompleted && ((programIds && programIds.length > 0) || hasQuiz) } variant="primary" onClick={() => {
+                            const num = slideNum;
+                            setCompleted(false);
+                            saveSlideMovement(data.address, curTrailheadId, step, num, true, dispatch, data);
+                            // TODO: check if they've completed this slide before. if not, add xp
 
-                                console.log(`num = ${num}. slides.length = ${slides.length}`);
+                            console.log(`num = ${num}. slidesLength = ${slidesLength}`);
 
-                                if (num + 1 == slides.length) {
-                                    setSlideNum(0);
-                                    handleClose();
-                                } else {
-                                    if (num + 2 == slides.length) {
+                            if (num + 1 == slidesLength) {
+                                setSlideNum(0);
+                                handleClose();
+                            } else {
+                                if (num + 2 == slidesLength) {
 
-                                        const finalSlideId = curTrails[step].slides[num]?.id;
-                                        console.log(`finalSlideId = ${finalSlideId}`);
+                                    const finalSlideId = curTrails[step].slides[num]?.id;
+                                    console.log(`finalSlideId = ${finalSlideId}`);
 
-                                        const hasCompleted = data.xps.filter(x => 
-                                            x.address == data.address
-                                            && x.slideId == finalSlideId
-                                            && x.xp == curTrails[step].xp
-                                        )
-                                        playComplete();
-                                        successTimeline.play();
-                                        console.log(`hasCompleted = ${hasCompleted}`)
-                                        if (!hasCompleted.length) {
-                                            console.log(`461 saveUserXp`)
-                                            const response = saveUserXp(data.address, curTrailheadId, step, num, trailId, finalSlideId, curTrails[step].xp, dispatch, data);
-                                        }
-                                    } else {
-                                        playCorrect();
+                                    const hasCompleted = data.xps.filter(x => 
+                                        x.address == data.address
+                                        && x.slideId == finalSlideId
+                                        && x.xp == curTrails[step].xp
+                                    )
+                                    playComplete();
+                                    successTimeline.play();
+                                    console.log(`hasCompleted = ${hasCompleted}`)
+                                    if (!hasCompleted.length) {
+                                        console.log(`461 saveUserXp`)
+                                        const response = saveUserXp(data.address, curTrailheadId, step, num, trailId, finalSlideId, curTrails[step].xp, dispatch, data);
                                     }
-                                    setSlideNum(num + 1);
+                                } else {
+                                    playCorrect();
                                 }
-                            }}>
-                                { slideNum == slides.length - 1 ? 'Return to Trail' : 'Next'}
-                            </Button>
-                        </div>
+                                setSlideNum(num + 1);
+                            }
+                        }}>
+                            { slideNum == slidesLength - 1 ? 'Return to Trail' : 'Next'}
+                        </Button>
                     </div>
-                </Modal.Footer>
-            </Modal> */}
-        </>
+                    {/* <div className='col'>
+                        <Button variant="secondary" onClick={handleClose}>
+                            Close
+                        </Button>
+                    </div> */}
+                </div>
+            </Modal.Footer>
+        </Modal>
 	);
 }
 
-export default ProgramPage;
+export default Slides;

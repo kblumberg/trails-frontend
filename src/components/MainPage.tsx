@@ -47,6 +47,7 @@ const MainPage = (props: any) => {
 
 	const divs: any[] = [];
 	for (let i = 0; i < programs.length; i++) {
+		const style = i ? {} : {'backgroundColor': 'rgb(134,205,194 );'}
 		const trailheadId = data.trailheads[i].id;
 		const trails = data.trails.filter(x => x.trailheadId == trailheadId);
 		if (trails.length == 0) {
@@ -59,10 +60,30 @@ const MainPage = (props: any) => {
 		const level = Object.hasOwn(levels, programs[i]) ? levels[programs[i]] : 1;
 		// const img = (`./assets/${programs[i].toLowerCase()}.${ext}`);
 		// console.log(`img = ${img}`)
+		const letters = 'RECOMMENDED'.split('').map((l, ind) => {
+			const r = 60 - (ind * 12);
+			const b = (-(8 * (ind > 4 ? 10 - ind : ind))) - 80;
+			return(<span style={{'position': 'absolute', 'bottom': `${(b)-20}px`, 'left': `${12*ind}px`, 'transform': `rotate(${r}deg)`}}>{l}</span>)
+		})
 		const cur = 
 			<div key={i} className='col-6 col-md-6 col-lg-4 col-xl-3'>
 				{/* <div className={`outer-ring pie no-round pct_${i}`} > */}
-				<div className={`outer-ring`} >
+				<div className={`outer-ring`} style={style} >
+					<span style={{'position':'absolute','left':'10px'}}>{ i == 0 ? 
+					<>
+					{letters}
+						{/* <span className='char-1' style={{'position': 'absolute', 'bottom': '-1px;'}}>R</span>
+						<span className='char-2' style={{'position': 'absolute', 'bottom': '-5px;', 'left': '10px'}}>e</span>
+						<span className='char-3' style={{'position': 'absolute', 'bottom': '10px;', 'left': '20px'}}>c</span>
+						<span className='char-4' style={{'position': 'absolute', 'bottom': '15px;', 'left': '30px'}}>o</span>
+						<span className='char-5' style={{'position': 'absolute', 'bottom': '20px;', 'left': '40px'}} >m</span>
+						<span className='char-6' style={{'position': 'absolute', 'bottom': '-1px;', 'left': '50px'}} >m</span>
+						<span className='char-7' style={{'position': 'absolute', 'bottom': '-1px;', 'left': '60px'}} >e</span>
+						<span className='char-8' style={{'position': 'absolute', 'bottom': '-1px;', 'left': '70px'}} >n</span>
+						<span className='char-9' style={{'position': 'absolute', 'bottom': '-1px;', 'left': '80px'}} >d</span>
+						<span className='char-10' style={{'position': 'absolute', 'bottom': '-1px;', 'left': '90px'}} >e</span>
+						<span className='char-11' style={{'position': 'absolute', 'bottom': '-1px;', 'left': '100px'}}>d</span> */}
+					</> : <></>}</span>
 					<div className='inner-ring'>
 						<Link to={`/${name.replace(/ /g,'')}`}>
 							<div className='card'>
