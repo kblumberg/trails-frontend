@@ -744,7 +744,7 @@ body, html {
 		padding: 0;
 	}
 	.modal-main .slideshow.middle img {
-		height: 300px;
+		max-height: 300px;
 	}
 	.modal-main-header {
 		padding: 15px;
@@ -814,6 +814,12 @@ body, html {
 	/* border-top-right-radius: 12px; */
 	/* border-top-left-radius: 12px; */
 	border-radius: 150px;
+}
+.cards .card .img.white-bg {
+	background-color: white;
+}
+.cards .card .img.white-bg:hover {
+	background-color: #282828;
 }
 .cards .card .img {
 	border-radius: 150px;

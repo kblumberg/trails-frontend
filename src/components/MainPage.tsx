@@ -61,6 +61,7 @@ const MainPage = (props: any) => {
 		const level = Object.hasOwn(levels, programs[i]) ? levels[programs[i]] : 1;
 		// const img = (`./assets/${programs[i].toLowerCase()}.${ext}`);
 		// console.log(`img = ${img}`)
+		const imgClass = programs[i].toLowerCase() == 'psyfi' ? 'white-bg': '';
 		const cur = 
 			<div key={i} className='col-6 col-md-6 col-lg-4 col-xl-3'>
 				{/* <div className={`outer-ring pie no-round pct_${i}`} > */}
@@ -68,7 +69,7 @@ const MainPage = (props: any) => {
 					<div className='inner-ring'>
 						<Link to={`/${programs[i].replace(/ /g,'')}`}>
 							<div className='card'>
-								<div className='img'>
+								<div className={`img ${imgClass}`}>
 									<img className='icon' alt='logo' src={String(img)}></img>
 									<div className='project-name'>{name}</div>
 								</div>
