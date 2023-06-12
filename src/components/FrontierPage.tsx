@@ -20,13 +20,13 @@ const FrontierPage = (props: any) => {
             <span>⛏️</span>The Frontier Program is designed to reward early Trails adopters
             </div>
             <div>
-                <span>🗻</span>The first 50 users to complete the new PsyFi Trail earn a reward depending on your XP
+                <span>🗻</span>The first 50 users to complete the new Helius Trail earn a reward depending on your XP
             </div>
             <div>
-                <span>🟠</span>If you have 500+ XP, you will get 0.5 $SOL, if you have under 500 XP, you will get 0.25 $SOL
+                <span>💪</span>If you have 500+ XP, you will get 0.5 $SOL, if you have under 500 XP, you will get 0.25 $SOL
             </div>
             <div>
-                <span>🐦</span>You must be following <a target={'_blank'} href='https://twitter.com/TrailsProtocol'>@TrailsProtocol</a> and <a target={'_blank'} href='https://twitter.com/PsyOptions'>@PsyOptions</a> to earn the prize
+                <span>🐦</span>You must be following <a target={'_blank'} href='https://twitter.com/TrailsProtocol'>@TrailsProtocol</a> and <a target={'_blank'} href='https://twitter.com/heliuslabs'>@heliuslabs</a> to earn the prize
             </div>
             <div>
                 <span>💰</span>DM us at<a target={'_blank'} href='https://twitter.com/TrailsProtocol'>@TrailsProtocol</a> with your address and if you are have 500+ XP to receive your prize
