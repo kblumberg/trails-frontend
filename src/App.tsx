@@ -146,6 +146,7 @@ function App() {
 		let trailheads: Trailhead[] = response.data;
 		trailheads = trailheads.sort((a, b) => b.id - a.id);
 		trailheads = trailheads.filter(x => x.id != 16);
+		trailheads = trailheads.filter(x => x.id != 20);
 		// trailheads = trailheads.filter(x => x.hidden == false);
 		dispatch(actions.setTrailheads(trailheads));
 	}
