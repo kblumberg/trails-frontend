@@ -11,6 +11,7 @@ const frontier = require('../assets/icons/frontier-icon.png');
 const twitter = require('../assets/logos/twitter-logo.png');
 const docs = require('../assets/logos/docs-icon-2.png');
 const telegram = require('../assets/logos/telegram-icon-2.png');
+const flipside = require('../assets/logos/flipside-gradient.png');
 
 
 const LeftBar = (props: any) => {
@@ -55,6 +56,16 @@ const LeftBar = (props: any) => {
                 </NavLink>
             </div>
             <div className='left-bar-socials'>
+                <div className='flipside' style={{'paddingBottom': '5px'}}>
+                    <div className=''>Powered by</div>
+                    <div className=''><a target={'_blank'} href='http://flipsidecrypto.xyz/'><img src={String(flipside)} /></a></div>
+                    {/* <div className=''>adventure</div> */}
+                    {/* Trails is a <a target={'_blank'} href='http://flipsidecrypto.xyz/'><p><img src={String(flipside)} /></p></a> adventure */}
+
+
+                    {/* Trails is a adventure */}
+                    {/* </div> */}
+                </div>
                 <div className='row'>
                     <div className='col-12 col-md-4'><a target={'_blank'} href='https://twitter.com/TrailsProtocol'><img src={String(twitter)} /></a></div>
                     <div className='col-12 col-md-4'><a target={'_blank'} href='https://t.me/trailsprotocol'><img src={String(telegram)} /></a></div>
