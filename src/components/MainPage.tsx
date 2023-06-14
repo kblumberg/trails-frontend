@@ -30,6 +30,7 @@ const MainPage = (props: any) => {
 	const program_d: any = {
 		'Magic': 'Magic Eden'
 		, 'Exchange': 'Exchange Art'
+		, 'MadWars': 'Mad Wars'
 		, 'FamousFoxFederation': 'Famous Fox Federation'
 		, 'FamousFoxFederation2': 'Famous Fox Federation'
 		, 'ZetaMarkets': 'Zeta Markets'

@@ -615,6 +615,26 @@ body, html {
 	width: 100%;
 	margin-left: -10px;
 }
+.left-bar-socials .flipside img {
+	-webkit-filter: unset;
+	filter: unset;
+	float: left;
+	display: inline;
+	padding: 0 5px;
+	height: 16px;
+	margin-bottom: -2px;
+}
+.flipside {
+	text-align: center;
+	font-weight: 100;
+	color: rgb(157, 157, 157);
+}
+.flipside > div {
+	padding: 0;
+	margin: 0;
+	display: inline-block;
+}
+	
 .left-bar-socials img {
 	height: 35px;
 	-webkit-filter: grayscale(100%);
