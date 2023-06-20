@@ -253,7 +253,7 @@ const TxInput = (props: any) => {
                 console.log(`status`);
                 console.log(status);
                 const val = status.data;
-                const hike = new Hike(data.address, props.trailheadId, props.step, props.slide, Date.now(), txId, val);
+                const hike = new Hike(data.address, props.trailheadId, props.step, props.slide, Date.now(), txId, val, props.trailId, props.slideId, props.expeditionInviteId);
                 const hikes = data.hikes;
                 hikes.push(hike);
                 dispatch(setHikes(hikes));

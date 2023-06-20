@@ -370,6 +370,19 @@ const ProgramPage = (props: any) => {
     // 
     const hasCompleted = data.xps.filter(x => x.slideId == slideId ).length > 0;
     const hasQuiz = (quiz != null && quiz.options.length > 0);
+
+	const program_d: any = {
+		'Magic': 'Magic Eden'
+		, 'Exchange': 'Exchange Art'
+		, 'MadWars': 'Mad Wars'
+		, 'FamousFoxFederation': 'Famous Fox Federation'
+		, 'FamousFoxFederation2': 'Famous Fox Federation'
+		, 'ZetaMarkets': 'Zeta Markets'
+		, 'JupiterExchange': 'Jupiter Exchange'
+		, 'AverExchange': 'Aver Exchange'
+		, 'MarinadeFinance': 'Marinade Finance'
+	};
+    const programName: string = program && Object.hasOwn(program_d, program) ? program_d[program] : program;
     // console.log(`hasQuiz = ${hasQuiz}. completed = ${completed}. step = ${step}. hasCompleted = ${hasCompleted}`)
     return (
         <>
@@ -381,12 +394,12 @@ const ProgramPage = (props: any) => {
                                 <ArrowLeftCircleFill />
                             </NavLink>
                         </div>
-                        {program}
+                        {programName}
                         <div className='forward-arrow'>
                             <ArrowLeftCircleFill />
                         </div>
                     </h3>
-                    <div>{`Learn the basics of ${program}`}</div>
+                    <div>{`Learn the basics of ${programName}`}</div>
                 </div>
                 {trailDivs}
             </div>

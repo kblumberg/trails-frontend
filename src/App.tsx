@@ -43,6 +43,8 @@ import FrontierPage from './components/FrontierPage';
 import { Trail } from './models/Trail';
 import { Trailhead } from './models/Trailhead';
 
+import 'react-toastify/dist/ReactToastify.css';
+
 require('@solana/wallet-adapter-react-ui/styles.css');
 const S3_BUCKET = 'trails-avatars';
 const REGION = 'us-east-1';
@@ -155,8 +157,11 @@ function App() {
 			url: BACKEND_URL+'/api/trailheads/trailheads',
 		});
 		let trailheads: Trailhead[] = response.data;
+		trailheads = trailheads.sort((a, b) => b.id - a.id);
+		trailheads = trailheads.filter(x => x.id != 16);
+		trailheads = trailheads.filter(x => x.id != 20);
 		// trailheads = trailheads.filter(x => x.hidden == false);
-		trailheads = trailheads.sort((a, b) => (a.id >= 10 && b.id >= 10) ? a.id - b.id : b.id - a.id);
+		// trailheads = trailheads.sort((a, b) => (a.id >= 10 && b.id >= 10) ? a.id - b.id : b.id - a.id);
 		trailheads = trailheads.filter(x => x.id != 6);
 		dispatch(actions.setTrailheads(trailheads));
 	}

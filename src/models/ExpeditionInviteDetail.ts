@@ -1,6 +1,5 @@
 
 export class ExpeditionInviteDetail {
-
     id: string;
     expeditionId: string;
     trailheadId: number;
@@ -12,7 +11,11 @@ export class ExpeditionInviteDetail {
     mint: string;
     amount: number;
     maxNumClaims: number;
-    rewardPoolVaultAccount: string;
+    currentClaims: number;
+    distributionAuthority: string;
+    vaultAccount: string;
+    escrowAccount: string;
+    recipient: string;
     claimTimestamp: number;
     payoutTimestamp: number;
     payoutTxId: string;
@@ -30,7 +33,11 @@ export class ExpeditionInviteDetail {
         , mint: string = ''
         , amount: number = 0
         , maxNumClaims: number = 0
-        , rewardPoolVaultAccount: string = ''
+        , currentClaims: number = 0
+        , distributionAuthority: string = ''
+        , vaultAccount: string = ''
+        , escrowAccount: string = ''
+        , recipient: string = ''
         , claimTimestamp: number = 0
         , payoutTimestamp: number = 0
         , payoutTxId: string = ''
@@ -47,7 +54,11 @@ export class ExpeditionInviteDetail {
         this.mint = mint;
         this.amount = amount;
         this.maxNumClaims = maxNumClaims;
-        this.rewardPoolVaultAccount = rewardPoolVaultAccount;
+        this.currentClaims = currentClaims;
+        this.distributionAuthority = distributionAuthority;
+        this.vaultAccount = vaultAccount;
+        this.escrowAccount = escrowAccount;
+        this.recipient = recipient;
         this.claimTimestamp = claimTimestamp;
         this.payoutTimestamp = payoutTimestamp;
         this.payoutTxId = payoutTxId;

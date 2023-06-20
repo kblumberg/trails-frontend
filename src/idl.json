@@ -131,15 +131,25 @@
         {
           "name": "recipient",
           "isMut": false,
-          "isSigner": false
+          "isSigner": true
         },
         {
           "name": "token",
           "isMut": false,
           "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
         }
       ],
-      "args": []
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
     },
     {
       "name": "closePool",

@@ -697,6 +697,26 @@ body, html {
 	width: 100%;
 	margin-left: -10px;
 }
+.left-bar-socials .flipside img {
+	-webkit-filter: unset;
+	filter: unset;
+	float: left;
+	display: inline;
+	padding: 0 5px;
+	height: 16px;
+	margin-bottom: -2px;
+}
+.flipside {
+	text-align: center;
+	font-weight: 100;
+	color: rgb(157, 157, 157);
+}
+.flipside > div {
+	padding: 0;
+	margin: 0;
+	display: inline-block;
+}
+	
 .left-bar-socials img {
 	height: 35px;
 	-webkit-filter: grayscale(100%);
@@ -826,7 +846,7 @@ body, html {
 		padding: 0;
 	}
 	.modal-main .slideshow.middle img {
-		height: 300px;
+		max-height: 300px;
 	}
 	.modal-main-header {
 		padding: 15px;
@@ -896,6 +916,12 @@ body, html {
 	/* border-top-right-radius: 12px; */
 	/* border-top-left-radius: 12px; */
 	border-radius: 150px;
+}
+.cards .card .img.white-bg {
+	background-color: white;
+}
+.cards .card .img.white-bg:hover {
+	background-color: #282828;
 }
 .cards .card .img {
 	border-radius: 150px;
@@ -1220,3 +1246,28 @@ body, html {
 	-o-transform: rotate(12deg);
 	transform: rotate(12deg);
   }
+  .claim-button {
+	padding: 5px;
+	font-size: 12px;
+}
+.expeditions-table-row, .expeditions-table-row button.btn {
+	font-size: 12px;
+}
+.expeditions-table-row td {
+	vertical-align: middle;
+}
+.expedition-icon {
+	height: 25px;
+	width: 25px;
+}
+.expeditions-page table tr {
+	border-bottom: 1px solid rgb(150 202 195 );
+}
+
+.expeditions-page {
+	height: 700px;
+	border-radius: 10px;
+	/* background-color: rgb(96	42	32	); */
+	background-color: rgb(89	55	49	);
+	padding: 10px;
+}

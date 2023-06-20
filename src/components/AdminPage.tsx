@@ -5,7 +5,7 @@ import { Button, Modal, Form, ButtonGroup, Dropdown, ToggleButtonGroup, ToggleBu
 // import ButtonGroup from 'react-bootstrap/ButtonGroup';
 // import Dropdown from 'react-bootstrap/Dropdown';
 import { account, Mint, Wallet } from 'easy-spl';
-import { CONFIG, NETWORK, SOL_ADDRESS, PROGRAM_ID, BACKEND_URL } from '../constants/constants';
+import { CONFIG, NETWORK, SOL_ADDRESS, PROGRAM_ID, BACKEND_URL, TEST_TOKEN } from '../constants/constants';
 import { IState } from 'src/store/interfaces/state';
 import { useSelector } from 'react-redux';
 
@@ -50,7 +50,8 @@ const depositFunds = async (
 				provider,
 			);
 
-			const mint = new PublicKey(SOL_ADDRESS)
+			const mint = new PublicKey(mintAddress)
+			console.log(`mint = ${mint.toString()}`)
 
 			let txId = ''
 			if (isDeposit) {
@@ -366,6 +367,10 @@ const AdminPage = (props: any) => {
 			'name': 'BONK'
 			, 'mint': 'DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263'
 		}
+		, {
+			'name': 'USDC'
+			, 'mint': TEST_TOKEN.toString()
+		}
 	]
 
 
@@ -480,6 +485,7 @@ const AdminPage = (props: any) => {
 						style={{'width':'200px'}}
 						onClick={async () => {
 							if (data.rewardPoolAccount) {
+								console.log(`mint = ${mint}`);
 								depositFunds(6, data.rewardPoolAccount, data.address, walletContext, mint, parseFloat(value), toggle == 'deposit').then( () => {
 									const cur = {...userBalances}
 									getSpecificUserTokenBalances(cur, [mint], data.address);

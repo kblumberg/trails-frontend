@@ -134,7 +134,7 @@ const Slides = (props: any) => {
     const [selectedOption, setSelectedOption] = useState(-1);
     const [timeout, setTimeout] = useState(0);
 
-    console.log(`Slides expeditionInviteId = ${props.expeditionInviteId}`)
+    // console.log(`Slides expeditionInviteId = ${props.expeditionInviteId}`)
 
     const handleClose = () => {
         // setShow(false);
@@ -167,8 +167,8 @@ const Slides = (props: any) => {
 
 
     
-    console.log(`curTrails`);
-    console.log(curTrails);
+    // console.log(`curTrails`);
+    // console.log(curTrails);
     const trailList = curTrails.map((x, i) => {
         const slides = x.slides.map((y, j) => {
             let item = null;
@@ -272,8 +272,8 @@ const Slides = (props: any) => {
         )
         return(slides);
     })
-    console.log(`trailList`);
-    console.log(trailList);
+    // console.log(`trailList`);
+    // console.log(trailList);
     
     const slides = trailList[step];
     let now = 0;

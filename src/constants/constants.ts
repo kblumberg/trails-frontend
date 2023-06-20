@@ -29,3 +29,5 @@ export const PROGRAM_ID: PublicKey = new PublicKey(
 
 // {address:"734bdC9L1YD6FDLjuHdr1wNHe1kHtqQa6hpvpAeDdqA"}
 // {trailheadId: 7, step:3}
+
+export const TEST_TOKEN = new PublicKey('5SosK71HJr9UpcwopNam8X9ZnuonDoGERjziWSnws4u4');

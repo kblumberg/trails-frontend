@@ -30,7 +30,9 @@ const MainPage = (props: any) => {
 	const program_d: any = {
 		'Magic': 'Magic Eden'
 		, 'Exchange': 'Exchange Art'
+		, 'MadWars': 'Mad Wars'
 		, 'FamousFoxFederation': 'Famous Fox Federation'
+		, 'FamousFoxFederation2': 'Famous Fox Federation'
 		, 'ZetaMarkets': 'Zeta Markets'
 		, 'JupiterExchange': 'Jupiter Exchange'
 		, 'AverExchange': 'Aver Exchange'
@@ -38,7 +40,6 @@ const MainPage = (props: any) => {
 	};
 
 	// const programs = [ 'jupiter','magic','zetamarkets','jupiter','genopets','staratlas','raydium','famousfoxfederation','tensorswap','hadeswap','wormhole','hyperspace','openbook','opensea','jito' ];
-
 	// const programs = [ 'Jupiter','Magic','Raydium','Orca','Hadeswap','Saber','Exchange','Hyperspace','Solanart','Opensea' ]
 	// const programs = [ 'Jupiter','Raydium','Orca','Hadeswap','Saber','Exchange','Hyperspace','Solanart','Opensea' ]
 	const programs = data.trailheads.map(x => x.name);
@@ -54,6 +55,7 @@ const MainPage = (props: any) => {
 			continue;
 		}
 		const name: string = Object.hasOwn(program_d, programs[i]) ? program_d[programs[i]] : programs[i];
+		// const project = name == 
 		// const ext = ['Opensea','JupiterExchange','FamousFoxFederation','AverExchange','Openbook','Exchange','Orca','Bonk','MarinadeFinance','DriftProtocol'].includes(programs[i]) ? 'png' : 'jpeg'
 		const ext = 'png'
 		const img = require(`../assets/projects/${programs[i].toLowerCase().replaceAll(' ', '')}.${ext}`);
@@ -65,6 +67,7 @@ const MainPage = (props: any) => {
 			const b = (-(8 * (ind > 4 ? 10 - ind : ind))) - 80;
 			return(<span style={{'position': 'absolute', 'bottom': `${(b)-20}px`, 'left': `${12*ind}px`, 'transform': `rotate(${r}deg)`}}>{l}</span>)
 		})
+		const imgClass = programs[i].toLowerCase() == 'psyfi' ? 'white-bg': '';
 		const cur = 
 			<div key={i} className='col-6 col-md-6 col-lg-4 col-xl-3'>
 				{/* <div className={`outer-ring pie no-round pct_${i}`} > */}
@@ -85,9 +88,9 @@ const MainPage = (props: any) => {
 						<span className='char-11' style={{'position': 'absolute', 'bottom': '-1px;', 'left': '100px'}}>d</span> */}
 					</> : <></>}</span>
 					<div className='inner-ring'>
-						<Link to={`/${name.replace(/ /g,'')}`}>
+						<Link to={`/${programs[i].replace(/ /g,'')}`}>
 							<div className='card'>
-								<div className='img'>
+								<div className={`img ${imgClass}`}>
 									<img className='icon' alt='logo' src={String(img)}></img>
 									<div className='project-name'>{name}</div>
 								</div>
