@@ -3,6 +3,7 @@ import { Trailhead } from 'src/models/Trailhead';
 import { Trail } from 'src/models/Trail';
 import { SlideMovement } from 'src/models/SlideMovement';
 import { Xp } from 'src/models/Xp';
+import { MadTrailScorecard } from 'src/models/MadTrailScorecard';
 
 export interface IState{
     xps: Xp[];
@@ -17,6 +18,7 @@ export interface IState{
     trailheads: Trailhead[];
     quizDisabledUntil: number;
     slideMovements: SlideMovement[];
+    madTrailScorecard: MadTrailScorecard;
     leaderboard: [string, string, string, number, boolean][];
 }
 

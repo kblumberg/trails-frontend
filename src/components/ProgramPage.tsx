@@ -20,7 +20,6 @@ import { SlideMovement } from 'src/models/SlideMovement';
 import { Dispatch } from 'redux';
 import { Tooltip } from 'react-tooltip'
 
-import 'react-tooltip/dist/react-tooltip.css';
 import { Xp } from 'src/models/Xp';
 import Countdown from 'react-countdown';
 import BurstButton from './BurstButton';

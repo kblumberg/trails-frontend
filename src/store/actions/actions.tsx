@@ -12,6 +12,13 @@ export const setToken = (token: string) => {
     };
 };
 
+export const setMadTrailScorecard = (token: string) => {
+    return {
+        type: types.SET_MAD_TRAIL_SCORECARD,
+        data: token
+    };
+};
+
 export const setQuizDisabledUntil = (quizDisabledUntil: number) => {
     return {
         type: types.SET_QUIZ_DISABLED_UNTIL,

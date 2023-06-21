@@ -56,7 +56,7 @@ const LeftBar = (props: any) => {
                 </NavLink>
             </div>
             <div className='left-bar-socials'>
-                <div className='flipside' style={{'paddingBottom': '5px'}}>
+                <div className='flipside' style={{'paddingBottom': '10px'}}>
                     <div className=''>Powered by</div>
                     <div className=''><a target={'_blank'} href='http://flipsidecrypto.xyz/'><img src={String(flipside)} /></a></div>
                     {/* <div className=''>adventure</div> */}

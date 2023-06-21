@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux';
 import { IState } from '../interfaces/state';
-import { SET_HIKES, SET_TRAILS, SET_TRAILHEADS, SET_ADDRESS, SET_LEADERBOARD, SET_IMAGE, SET_USER_XP, SET_SLIDE_MOVEMENTS, SET_USER_XPS, SET_USER_DATE, SET_USERNAME, SET_TOKEN, SET_QUIZ_DISABLED_UNTIL } from '../types/types';
+import { SET_HIKES, SET_TRAILS, SET_TRAILHEADS, SET_ADDRESS, SET_LEADERBOARD, SET_IMAGE, SET_USER_XP, SET_SLIDE_MOVEMENTS, SET_USER_XPS, SET_USER_DATE, SET_USERNAME, SET_TOKEN, SET_QUIZ_DISABLED_UNTIL, SET_MAD_TRAIL_SCORECARD } from '../types/types';
+import { MadTrailScorecard } from '../../models/MadTrailScorecard';
 
 export const INITIAL_STATE: IState = {
     address: ''
@@ -16,6 +17,7 @@ export const INITIAL_STATE: IState = {
     , trails: []
     , trailheads: []
     , quizDisabledUntil: 0
+    , madTrailScorecard: new MadTrailScorecard()
 };
 
 const reducer = (state: IState = INITIAL_STATE, action: any): IState => {
@@ -25,6 +27,11 @@ const reducer = (state: IState = INITIAL_STATE, action: any): IState => {
             return {
                 ...state,
                 token: action.data
+            }
+        case SET_MAD_TRAIL_SCORECARD:
+            return {
+                ...state,
+                madTrailScorecard: action.data
             }
         case SET_QUIZ_DISABLED_UNTIL:
             return {

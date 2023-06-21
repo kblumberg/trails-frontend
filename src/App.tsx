@@ -42,6 +42,8 @@ import FrontierPage from './components/FrontierPage';
 import { Trail } from './models/Trail';
 import { Trailhead } from './models/Trailhead';
 
+import 'react-tooltip/dist/react-tooltip.css';
+
 require('@solana/wallet-adapter-react-ui/styles.css');
 const S3_BUCKET = 'trails-avatars';
 const REGION = 'us-east-1';
@@ -173,6 +175,14 @@ function App() {
 		});
 		dispatch(actions.setSlideMovements(response.data));
 	}
+	const loadMadTrailScorecard = async (address: string) => {
+		let response = await axios({
+			method: 'post',
+			url: BACKEND_URL+'/api/madWars/updateMadTrail',
+			data: {'address': address}
+		});
+		dispatch(actions.setMadTrailScorecard(response.data));
+	}
 	const loadUserXp = async (address: string) => {
 		if (!address) {
 			return([]);
@@ -182,7 +192,10 @@ function App() {
 			url: BACKEND_URL+'/api/user/loadUserXp',
 			data: {'address': address}
 		});
-		const xps: Xp[] = response.data
+		const xps: Xp[] = response.data;
+		if (xps.filter(x => x.trailId == 'MadTrail')) {
+			loadMadTrailScorecard(address);
+		}
 		dispatch(actions.setUserXp(xps.reduce((a, b) => a + b.xp, 0 )));
 		dispatch(actions.setUserXps(response.data));
 	}
