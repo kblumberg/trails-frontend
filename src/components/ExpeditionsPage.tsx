@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from "react-router-dom"
 import { BACKEND_URL, CONFIG, NETWORK, PROGRAM_ID } from 'src/constants/constants';
 import { IState } from 'src/store/interfaces/state';
-import { formatDate, getCurrentTimestamp, getTokenFromMint, getTxUrl, parseMessage } from 'src/utils/utils';
+import { createAssociatedTokenAccountSendUnsigned, formatDate, getCurrentTimestamp, getTokenFromMint, getTxUrl, parseMessage } from 'src/utils/utils';
 import Slides from './Slides';
 import { VerifyTransactionResult } from 'src/enums/VerifyTransactionResult';
 import idl from '../idl.json';
@@ -20,6 +20,7 @@ import { ExpeditionInviteDetail } from '../models/ExpeditionInviteDetail';
 import { ToastContainer, toast } from 'react-toastify';
 import Table from 'react-bootstrap/Table';
 import { setExpeditionInvites } from 'src/store/actions/actions';
+import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 
 // TODO: hide if there are not enough tokens in the vault (the claim reward tx will eventually error out)
 
@@ -63,91 +64,115 @@ const claimRewards = async (
 
             const amount = new BN(expeditionInvite.amount * LAMPORTS_PER_SOL);
 
-            // initialize the claim tx
-            const txId = await program.methods
-            .distributeReward(amount)
-            .accounts({
-                distributionAuthority: new PublicKey(expeditionInvite.distributionAuthority),
-                escrowAccount: new PublicKey(expeditionInvite.escrowAccount),
-                vaultAccount: new PublicKey(expeditionInvite.vaultAccount),
-                recipient: new PublicKey(expeditionInvite.recipient),
-                token: new PublicKey(expeditionInvite.mint),
-                systemProgram: web3.SystemProgram.programId,
-            })
-            // .rpc()
-            .transaction();
-            console.log(`104`);
-            console.log(txId);
+
+            if (walletContext && walletContext.publicKey && walletContext.signTransaction) {
+
+                const recipientTokenAccount = await createAssociatedTokenAccountSendUnsigned(
+                    connection
+                    , new PublicKey(expeditionInvite.mint)
+                    , walletContext.publicKey
+                    , walletContext
+                )
+                console.log(`recipientTokenAccount = ${recipientTokenAccount.toString()}`);
     
-            txId.recentBlockhash = (
-                await program.provider.connection.getLatestBlockhash()
-            ).blockhash;
-            console.log(`109`);
-            txId.feePayer = new PublicKey(expeditionInvite.recipient);
+                const vaultTokenAccount = await createAssociatedTokenAccountSendUnsigned(
+                    connection
+                    , new PublicKey(expeditionInvite.mint)
+                    , new PublicKey(expeditionInvite.vaultAccount)
+                    , walletContext
+                )
     
-            console.log(`txId`);
-            console.log(txId);
-            console.log(txId.signature);
-            
-            
-            if (walletContext && walletContext.signTransaction) {
-                // txId.sign(walletContext);
-                // const serializedTx = txId.serialize({ requireAllSignatures: false });
-                // send serialized tx to backend
-                // const serialized = txId.serialize({ requireAllSignatures: false }) 
-                // const serializedTx = Buffer.from(serialized).toString('base64');
+                const feeTokenAccount = await createAssociatedTokenAccountSendUnsigned(
+                    connection
+                    , new PublicKey(expeditionInvite.mint)
+                    , new PublicKey(expeditionInvite.vaultAccount)
+                    , walletContext
+                )
+                // initialize the claim tx
+                const txId = await program.methods
+                .distributeReward(amount)
+                .accounts({
+                    distributionAuthority: new PublicKey(expeditionInvite.distributionAuthority),
+                    escrowAccount: new PublicKey(expeditionInvite.escrowAccount),
+                    vaultAccount: new PublicKey(expeditionInvite.vaultAccount),
+                    vaultTokenAccount: vaultTokenAccount,
+                    recipient: new PublicKey(expeditionInvite.recipient),
+                    recipientTokenAccount: recipientTokenAccount,
+                    token: new PublicKey(expeditionInvite.mint),
+                    systemProgram: web3.SystemProgram.programId,
+                    tokenProgram: TOKEN_PROGRAM_ID,
+                })
+                // .rpc()
+                .transaction();
+                console.log(`104`);
+                console.log(txId);
+        
+                txId.recentBlockhash = (
+                    await program.provider.connection.getLatestBlockhash()
+                ).blockhash;
+                console.log(`109`);
+                txId.feePayer = new PublicKey(expeditionInvite.recipient);
+        
+                console.log(`txId`);
+                console.log(txId);
+                console.log(txId.signature);
                 
-                // const transactionBuf = Buffer.from(
-                //     serializedTx
-                //     , 'base64'
-                // )
-                // const versionedTransaction = VersionedTransaction.deserialize(transactionBuf);
-                // console.log(`versionedTransaction`);
-                // console.log(versionedTransaction);
-                const signedTx = await walletContext.signTransaction(txId);
-                const serialized = signedTx.serialize({ requireAllSignatures: false });
-                const serializedTx = Buffer.from(serialized).toString('base64');
-                // console.log(`txId`);
-                // console.log(txId);
                 
-                // const serialized = txId.serialize();
-                // const serializedTx = Buffer.from(serialized).toString('base64');
-                const response = await sendClaimRewardRequest(serializedTx, expeditionInvite.id);
-                console.log(response.data);
-                console.log(response.data.status == ClaimRewardResult.SUCCESS);
-                if (response.data.status == ClaimRewardResult.SUCCESS) {
-                    const txId = response.data.tx;
-                    const msg = () => toast(
-                        <div>
-                            Transaction Succeeded<br/><a target='_blank' href={getTxUrl(txId)}>View in Solana FM</a>
-                            {/* {`Transaction Succeeded ${response.data.tx}`} */}
-                        </div>
-                        , {
-                            'theme': 'light'
-                            , 'type': 'success'
-                        }
-                    );
-                    msg()
-                    addExpeditionInvite(expeditionInvite.id, txId);
-                } else {
-                    // setErrorText( parseMessage(response.data.status) );
-                    const msg = () => toast(
-                        <div>
-                            Transaction Failed<br/><b>{`${parseMessage(response.data.status)}`}</b>
-                        </div>
-                        , {
-                            'theme': 'light'
-                            , 'type': 'error'
-                        }
-                    );
-                    msg()
+                    // txId.sign(walletContext);
+                    // const serializedTx = txId.serialize({ requireAllSignatures: false });
+                    // send serialized tx to backend
+                    // const serialized = txId.serialize({ requireAllSignatures: false }) 
+                    // const serializedTx = Buffer.from(serialized).toString('base64');
+                    
+                    // const transactionBuf = Buffer.from(
+                    //     serializedTx
+                    //     , 'base64'
+                    // )
+                    // const versionedTransaction = VersionedTransaction.deserialize(transactionBuf);
+                    // console.log(`versionedTransaction`);
+                    // console.log(versionedTransaction);
+                    const signedTx = await walletContext.signTransaction(txId);
+                    const serialized = signedTx.serialize({ requireAllSignatures: false });
+                    const serializedTx = Buffer.from(serialized).toString('base64');
+                    // console.log(`txId`);
+                    // console.log(txId);
+                    
+                    // const serialized = txId.serialize();
+                    // const serializedTx = Buffer.from(serialized).toString('base64');
+                    const response = await sendClaimRewardRequest(serializedTx, expeditionInvite.id);
+                    console.log(response.data);
+                    console.log(response.data.status == ClaimRewardResult.SUCCESS);
+                    if (response.data.status == ClaimRewardResult.SUCCESS) {
+                        const txId = response.data.tx;
+                        const msg = () => toast(
+                            <div>
+                                Transaction Succeeded<br/><a target='_blank' href={getTxUrl(txId)}>View in Solana FM</a>
+                                {/* {`Transaction Succeeded ${response.data.tx}`} */}
+                            </div>
+                            , {
+                                'theme': 'light'
+                                , 'type': 'success'
+                            }
+                        );
+                        msg()
+                        addExpeditionInvite(expeditionInvite.id, txId);
+                    } else {
+                        // setErrorText( parseMessage(response.data.status) );
+                        const msg = () => toast(
+                            <div>
+                                Transaction Failed<br/><b>{`${parseMessage(response.data.status)}`}</b>
+                            </div>
+                            , {
+                                'theme': 'light'
+                                , 'type': 'error'
+                            }
+                        );
+                        msg()
+                    }
+    
+    
                 }
-
-
             }
-
-            return;
-
             // console.log(`txId`);
             // console.log(txId);
 
@@ -206,7 +231,7 @@ const claimRewards = async (
             //     console.log(`res`);
             //     console.log(res);
             // }
-            return(ClaimRewardResult.SUCCESS);
+            // return(ClaimRewardResult.SUCCESS);
     
             // versionedTransaction.sign([walletContext]);
     
@@ -231,7 +256,7 @@ const claimRewards = async (
         //     const res = await provider.connection.confirmTransaction(final_tx, "confirmed");
         //     console.log(`res`);
         //     console.log(res);
-        }
+        // }
     } catch (err) {
         console.log(`claimRewards err`);
         console.log(err);
@@ -439,7 +464,7 @@ const ExpeditionsPage = (props: any) => {
                     </tbody>
                 </table> */}
 
-                <div className='expeditions-table'>
+                {/* <div className='expeditions-table'>
                     <div className='row expeditions-table-header'>
                         <div className='col'>Project</div>
                         <div className='col'>Expedition</div>
@@ -451,7 +476,7 @@ const ExpeditionsPage = (props: any) => {
                         {
                             rows
                         }
-                </div>
+                </div> */}
             </div>
             {
                 <Slides expeditionInviteId={expeditionInviteId} show={show} trailId={trailId} handleClose={handleClose} />

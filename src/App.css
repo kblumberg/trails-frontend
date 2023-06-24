@@ -1271,3 +1271,12 @@ body, html {
 	background-color: rgb(89	55	49	);
 	padding: 10px;
 }
+
+.projects-dropdown img {
+	height: 30px;
+	width: 30px;
+	border-radius: 30px;
+}
+#dropdown-projects {
+	min-width: 260px;
+}

@@ -21,6 +21,11 @@
           "isSigner": true
         },
         {
+          "name": "feeAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "poolAuthority",
           "isMut": false,
           "isSigner": false
@@ -35,6 +40,14 @@
         {
           "name": "nonce",
           "type": "u8"
+        },
+        {
+          "name": "feeAmount",
+          "type": "u8"
+        },
+        {
+          "name": "feeDecimals",
+          "type": "u8"
         }
       ]
     },
@@ -47,6 +60,16 @@
           "isSigner": true
         },
         {
+          "name": "token",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "poolAuthorityTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "escrowAccount",
           "isMut": false,
           "isSigner": false
@@ -57,12 +80,17 @@
           "isSigner": false
         },
         {
-          "name": "token",
-          "isMut": false,
+          "name": "vaultTokenAccount",
+          "isMut": true,
           "isSigner": false
         },
         {
           "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
           "isMut": false,
           "isSigner": false
         }
@@ -83,6 +111,16 @@
           "isSigner": true
         },
         {
+          "name": "token",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "poolAuthorityTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "escrowAccount",
           "isMut": false,
           "isSigner": false
@@ -93,12 +131,17 @@
           "isSigner": false
         },
         {
-          "name": "token",
-          "isMut": false,
+          "name": "vaultTokenAccount",
+          "isMut": true,
           "isSigner": false
         },
         {
           "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
           "isMut": false,
           "isSigner": false
         }
@@ -124,7 +167,22 @@
           "isSigner": false
         },
         {
+          "name": "feeAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "feeTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "vaultAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vaultTokenAccount",
           "isMut": true,
           "isSigner": false
         },
@@ -134,12 +192,22 @@
           "isSigner": true
         },
         {
+          "name": "recipientTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "token",
           "isMut": false,
           "isSigner": false
         },
         {
           "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
           "isMut": false,
           "isSigner": false
         }
@@ -180,6 +248,18 @@
           {
             "name": "distributionAuthority",
             "type": "publicKey"
+          },
+          {
+            "name": "feeAccount",
+            "type": "publicKey"
+          },
+          {
+            "name": "feeAmount",
+            "type": "u8"
+          },
+          {
+            "name": "feeDecimals",
+            "type": "u8"
           },
           {
             "name": "nonce",

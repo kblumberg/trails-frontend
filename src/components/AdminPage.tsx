@@ -5,7 +5,7 @@ import { Button, Modal, Form, ButtonGroup, Dropdown, ToggleButtonGroup, ToggleBu
 // import ButtonGroup from 'react-bootstrap/ButtonGroup';
 // import Dropdown from 'react-bootstrap/Dropdown';
 import { account, Mint, Wallet } from 'easy-spl';
-import { CONFIG, NETWORK, SOL_ADDRESS, PROGRAM_ID, BACKEND_URL, TEST_TOKEN } from '../constants/constants';
+import { CONFIG, NETWORK, SOL_ADDRESS, PROGRAM_ID, BACKEND_URL, TEST_TOKEN, SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID, ADMIN_ADDRESS, FEE_AMOUNT, FEE_DECIMALS } from '../constants/constants';
 import { IState } from 'src/store/interfaces/state';
 import { useSelector } from 'react-redux';
 
@@ -18,8 +18,28 @@ import { useWallet, WalletContextState } from '@solana/wallet-adapter-react';
 import axios from 'axios';
 import HttpStatusCodes from 'http-status-codes';
 import { CustomWallet } from '../models/CustomWallet';
+import { createAssociatedTokenAccountSendUnsigned, cleanProjectName, getTxUrl, parseMessage } from '../utils/utils';
+import { TOKEN_PROGRAM_ID } from '@project-serum/anchor/dist/cjs/utils/token';
+import { ToastContainer, toast } from 'react-toastify';
 
 
+
+const findAssociatedTokenAddress = (
+	walletAddress: PublicKey,
+	tokenMintAddress: PublicKey
+) => {
+	if (tokenMintAddress.toString() == SOL_ADDRESS) {
+		return(walletAddress);
+	}
+	return PublicKey.findProgramAddressSync(
+		[
+			walletAddress.toBuffer(),
+			TOKEN_PROGRAM_ID.toBuffer(),
+			tokenMintAddress.toBuffer(),
+		],
+		SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID
+	)[0];
+}
 
 const depositFunds = async (
 	trailheadId: number
@@ -40,8 +60,10 @@ const depositFunds = async (
 
 		const programIdl: any = idl;
         const programId = new anchor.web3.PublicKey(PROGRAM_ID);
+		const escrowAccount = new PublicKey(rewardPoolAccount.escrowAccount);
+		const vaultAccount = new PublicKey(rewardPoolAccount.vaultAccount);
 
-		if (walletContext) {
+		if (walletContext && walletContext.publicKey) {
 			// @ts-ignore
 			const provider = new anchor.AnchorProvider(connection, walletContext, CONFIG);
 			const program = new anchor.Program(
@@ -53,6 +75,36 @@ const depositFunds = async (
 			const mint = new PublicKey(mintAddress)
 			console.log(`mint = ${mint.toString()}`)
 
+			// const vaultTokenAccount = findAssociatedTokenAddress(vaultAccount, mint);
+			// const poolAuthorityTokenAccount = findAssociatedTokenAddress(new PublicKey(userAddress), mint);
+			
+			const poolAuthorityTokenAccount = await createAssociatedTokenAccountSendUnsigned(
+				connection
+				, mint
+				, walletContext.publicKey
+				, walletContext
+			)
+			console.log(`poolAuthorityTokenAccount = ${poolAuthorityTokenAccount.toString()}`);
+
+			const vaultTokenAccount = await createAssociatedTokenAccountSendUnsigned(
+				connection
+				, mint
+				, vaultAccount
+				, walletContext
+			)
+			console.log({
+				'poolAuthorityTokenAccount': poolAuthorityTokenAccount.toString()
+				, 'vaultTokenAccount': vaultTokenAccount.toString()
+			})
+			// return;
+
+			// const vaultTokenAccount: PublicKey = await createAssociatedTokenAccountSendUnsigned(
+			// 	connection
+			// 	, mint
+			// 	, escrowAccount
+			// 	, walletContext
+			// );
+
 			let txId = ''
 			if (isDeposit) {
 				txId = await program.methods
@@ -61,8 +113,11 @@ const depositFunds = async (
 					poolAuthority: new PublicKey(userAddress),
 					escrowAccount: new PublicKey(rewardPoolAccount.escrowAccount),
 					vaultAccount: new PublicKey(rewardPoolAccount.vaultAccount),
+					poolAuthorityTokenAccount: poolAuthorityTokenAccount,
+					vaultTokenAccount: vaultTokenAccount,
 					token: mint,
 					systemProgram: web3.SystemProgram.programId,
+					tokenProgram: TOKEN_PROGRAM_ID,
 				})
 				.rpc()
 			} else {
@@ -72,6 +127,8 @@ const depositFunds = async (
 					poolAuthority: new PublicKey(userAddress),
 					escrowAccount: new PublicKey(rewardPoolAccount.escrowAccount),
 					vaultAccount: new PublicKey(rewardPoolAccount.vaultAccount),
+					poolAuthorityTokenAccount: poolAuthorityTokenAccount,
+					vaultTokenAccount: vaultTokenAccount,
 	
 					// tokenProgram: TOKEN_PROGRAM_ID,
 					// rent: web3.SYSVAR_RENT_PUBKEY,
@@ -79,6 +136,7 @@ const depositFunds = async (
 					// systemProgram: web3.SystemProgram.programId,
 					token: mint,
 					systemProgram: web3.SystemProgram.programId,
+					tokenProgram: TOKEN_PROGRAM_ID,
 				})
 				// .signers([rewardPoolAccount])
 				// .transaction() // use .transaction instead of .rpc
@@ -115,7 +173,7 @@ const addRewardPool = async (
 			method: 'post',
 			url: BACKEND_URL+'/api/rewardPoolAccount/getRewardPoolAccounts',
 			data: {
-				'trailheadId': 6
+				'trailheadId': trailheadId
 			}
 		});
         if (response.status != HttpStatusCodes.OK) {
@@ -167,13 +225,15 @@ const addRewardPool = async (
 
 
 
+			console.log('227')
 			const txId = await program.methods
-			.initializeEscrow(nonce)
+			.initializeEscrow(new BN(nonce), new BN(FEE_AMOUNT), new BN(FEE_DECIMALS))
 			.accounts({
 				escrowAccount: escrowAccount.publicKey,
 				vaultAccount: vaultAccount,
 				authority: new PublicKey(userAddress),
 
+				feeAccount: new PublicKey(ADMIN_ADDRESS),
 				poolAuthority: new PublicKey(poolAuthorityKey),
 
 				// tokenProgram: TOKEN_PROGRAM_ID,
@@ -191,10 +251,36 @@ const addRewardPool = async (
 			let response = await axios({
 				method: 'post',
 				url: BACKEND_URL+'/api/rewardPoolAccount/addPool',
-				data: {'txId': txId, 'trailheadId': 6}
+				data: {'txId': txId, 'trailheadId': trailheadId, 'feeAmount': FEE_AMOUNT, 'feeDecimals': FEE_DECIMALS}
 			});
 			console.log(`response`);
 			console.log(response);
+			if (response.status == 200) {
+				// const txId = response.data.tx;
+				const msg = () => toast(
+					<div>
+						Transaction Succeeded<br/><a target='_blank' href={getTxUrl(txId)}>View in Solana FM</a>
+						{/* {`Transaction Succeeded ${response.data.tx}`} */}
+					</div>
+					, {
+						'theme': 'light'
+						, 'type': 'success'
+					}
+				);
+				msg()
+			} else {
+				// setErrorText( parseMessage(response.data.status) );
+				const msg = () => toast(
+					<div>
+						Transaction Failed<br/><b>{`${parseMessage(response.data.status)}`}</b>
+					</div>
+					, {
+						'theme': 'light'
+						, 'type': 'error'
+					}
+				);
+				msg()
+			}
 
 			// send txid to the backend to save the pool
 
@@ -292,6 +378,7 @@ const AdminPage = (props: any) => {
 	const vaultAccount = data.rewardPoolAccount?.vaultAccount || '';
 
 	const [token, setToken] = useState('SOL');
+	const [trailheadId, setTrailheadId] = useState(0);
 	const [mint, setMint] = useState('So11111111111111111111111111111111111111112');
     const [buttonClass, setButtonClass] = useState('success');
     const [toggle, setToggle] = useState('deposit');
@@ -334,9 +421,19 @@ const AdminPage = (props: any) => {
 					// userBalance = await new Mint(connection, new PublicKey(token)).getBalance( new PublicKey(address) );
 					userBalance = await connection.getBalance(new PublicKey(address)) / LAMPORTS_PER_SOL;
 				} else {
-					userBalance = await new Mint(connection, new PublicKey(token)).getBalance( new PublicKey(address) );
+					const k = findAssociatedTokenAddress(new PublicKey(address), new PublicKey(token));
+					const mint = await new Mint(connection, new PublicKey(token));
+					const n = (await connection.getTokenAccountBalance(
+						k
+					)).value.uiAmount;
+					userBalance = n ? n : 0;
+					// userBalance = await connection.getBalance(k) / Math.pow(10, await mint.getDecimals());
+					// userBalance = await mint.getBalance( k );
 				}
+				console.log(`${token.toString()} balance: ${userBalance}`)
 			} catch (error) {
+				console.log(`error`);
+				console.log(error);
 			}
 			d[token.toString()] = userBalance;
 		}
@@ -367,7 +464,8 @@ const AdminPage = (props: any) => {
 			'name': 'BONK'
 			, 'mint': 'DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263'
 		}
-		, {
+		,
+		 {
 			'name': 'USDC'
 			, 'mint': TEST_TOKEN.toString()
 		}
@@ -415,10 +513,67 @@ const AdminPage = (props: any) => {
 				type='button'
 				style={{'width':'200px'}}
 				onClick={async () => {
-					addRewardPool(6, `9VhsSZ6ni7dZtmKRHE81yAd3UQW1oKu9LNEWRGFMA5wj`, data.address, walletContext);
+					addRewardPool(trailheadId, value, data.address, walletContext);
 				}}
 			>{`Create Pool`}</Button>
 		</div>
+	const projectDropdown = data.trailheads.map(
+		(x, i) => {
+			const img = require(`../assets/projects/${x.name.toLowerCase().replaceAll(' ', '')}.png`);
+			return(
+				<Dropdown.Item key={i} eventKey={i} onClick={() => {
+					setTrailheadId(x.id);
+				}}>
+					<img src={String(img)} />
+					<span style={{'padding': '0 10px'}}>{cleanProjectName(x.name)}</span>
+				</Dropdown.Item>
+			)
+		}
+	)
+	const isTrails = data.address == ADMIN_ADDRESS;
+	const header = 
+		<div className='admin-header-outer'>
+			<div className='admin-header'>
+				{ isTrails ? null : <img className='admin-header-image' src={String(headerImg)} />}
+				Trailblazer Rewards
+			</div>
+		</div>
+	if (isTrails) {
+		const curProject = data.trailheads.filter(x => x.id == trailheadId)[0];
+		const curProjectImg = require(`../assets/projects/${curProject.name.toLowerCase().replaceAll(' ', '')}.png`);
+		return(
+			<div className='admin-page'>
+				{header}
+				<div className='row'>
+					<div className='col'>
+					<Dropdown style={{'height': '50px'}} className='projects-dropdown' as={ButtonGroup}>
+						<Dropdown.Toggle id='dropdown-projects'>
+							<img src={String(curProjectImg)} />
+							<span style={{'padding': '0 10px'}}>{ cleanProjectName(curProject.name)}</span>
+						</Dropdown.Toggle>
+						<Dropdown.Menu className='dropdown-projects'>
+							{projectDropdown}
+						</Dropdown.Menu>
+					</Dropdown>
+					</div>
+					<div className='col'>
+						<Form.Group className='mb-3' controlId='formBasicAddress'>
+							{/* <Form.Label>Transaction ID</Form.Label> */}
+							<Form.Control style={{'height': '50px'}} type='address' placeholder='Authority Address' onChange={(e) => {
+								// @ts-ignore
+								setValue(e.target.value)
+							}} />
+						</Form.Group>
+					</div>
+					<div className='col'>
+						{createPoolButton}
+					</div>
+				</div>
+				<ToastContainer
+					position="bottom-left"/>
+			</div>
+		)
+	}
 	
 	return (
 		<div className='admin-page'>
@@ -428,11 +583,24 @@ const AdminPage = (props: any) => {
 					Trailblazer Rewards
 				</div>
 			</div>
-			<div>
+			<div style={{'paddingBottom': '10px'}}>
 				Reward Pool Account: <a target='_blank' href={`https://solana.fm/address/${vaultAccount}?cluster=http%253A%252F%252F127.0.0.1%253A8899%252F`}>{vaultAccount}</a>
 			</div>
 			{
-				createPoolButton
+				data.address == ADMIN_ADDRESS ? createPoolButton : null
+			}
+			{
+				data.address == ADMIN_ADDRESS ? 
+				<Dropdown className='token-dropdown' as={ButtonGroup}>
+					<Dropdown.Toggle id='dropdown-tokens'>
+						<img src={String(curImg)} />
+						<span>{token}</span>
+					</Dropdown.Toggle>
+					<Dropdown.Menu className='dropdown-tokens'>
+						{projectDropdown}
+					</Dropdown.Menu>
+				</Dropdown>
+				 : null
 			}
 			<ToggleButtonGroup
 				className='token-toggle'

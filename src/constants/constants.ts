@@ -26,8 +26,17 @@ export const CONFIG: ConnectionConfig = {
 export const PROGRAM_ID: PublicKey = new PublicKey(
     'TraiLS6XoUXJPS3GovqUnSvoUPjBZBcSzkDQB9VARYx'
 );
+// Program ID of the Solana program
+export const ADMIN_ADDRESS = 'TrAiLs4aH8ahRL91vEQUEsQNWgc8eZvzzuRDt9CwJjU';
+
+export const FEE_AMOUNT = 100
+export const FEE_DECIMALS = 3
 
 // {address:"734bdC9L1YD6FDLjuHdr1wNHe1kHtqQa6hpvpAeDdqA"}
 // {trailheadId: 7, step:3}
 
 export const TEST_TOKEN = new PublicKey('5SosK71HJr9UpcwopNam8X9ZnuonDoGERjziWSnws4u4');
+
+export const SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID: PublicKey = new PublicKey(
+	'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+  );

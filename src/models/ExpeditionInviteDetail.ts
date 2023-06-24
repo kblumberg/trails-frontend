@@ -15,6 +15,7 @@ export class ExpeditionInviteDetail {
     distributionAuthority: string;
     vaultAccount: string;
     escrowAccount: string;
+    feeAccount: string;
     recipient: string;
     claimTimestamp: number;
     payoutTimestamp: number;
@@ -37,6 +38,7 @@ export class ExpeditionInviteDetail {
         , distributionAuthority: string = ''
         , vaultAccount: string = ''
         , escrowAccount: string = ''
+        , feeAccount: string = ''
         , recipient: string = ''
         , claimTimestamp: number = 0
         , payoutTimestamp: number = 0
@@ -58,6 +60,7 @@ export class ExpeditionInviteDetail {
         this.distributionAuthority = distributionAuthority;
         this.vaultAccount = vaultAccount;
         this.escrowAccount = escrowAccount;
+        this.feeAccount = feeAccount;
         this.recipient = recipient;
         this.claimTimestamp = claimTimestamp;
         this.payoutTimestamp = payoutTimestamp;
