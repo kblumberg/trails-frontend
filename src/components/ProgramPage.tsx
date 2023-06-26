@@ -397,7 +397,7 @@ const ProgramPage = (props: any) => {
                             <ArrowLeftCircleFill />
                         </div>
                     </h3>
-                    <div>{`Learn the basics of ${programName}`}</div>
+                    <div>{`Get introduced to ${programName}`}</div>
                 </div>
                 {trailDivs}
             </div>
