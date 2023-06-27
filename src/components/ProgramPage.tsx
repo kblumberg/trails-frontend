@@ -20,7 +20,6 @@ import { SlideMovement } from 'src/models/SlideMovement';
 import { Dispatch } from 'redux';
 import { Tooltip } from 'react-tooltip'
 
-import 'react-tooltip/dist/react-tooltip.css';
 import { Xp } from 'src/models/Xp';
 import Countdown from 'react-countdown';
 import BurstButton from './BurstButton';
@@ -373,7 +372,7 @@ const ProgramPage = (props: any) => {
 	const program_d: any = {
 		'Magic': 'Magic Eden'
 		, 'Exchange': 'Exchange Art'
-		, 'MadWars': 'Mad Wars'
+		, 'MadWars': 'Mad Trail'
 		, 'FamousFoxFederation': 'Famous Fox Federation'
 		, 'FamousFoxFederation2': 'Famous Fox Federation'
 		, 'ZetaMarkets': 'Zeta Markets'
@@ -398,7 +397,7 @@ const ProgramPage = (props: any) => {
                             <ArrowLeftCircleFill />
                         </div>
                     </h3>
-                    <div>{`Learn the basics of ${programName}`}</div>
+                    <div>{`Get introduced to ${programName == 'Mad Trail' ? 'the Mad Wars' : programName}`}</div>
                 </div>
                 {trailDivs}
             </div>

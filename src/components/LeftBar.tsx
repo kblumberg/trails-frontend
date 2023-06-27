@@ -1,5 +1,7 @@
 import React from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { Link, NavLink, useLocation } from 'react-router-dom';
+import { IState } from 'src/store/interfaces/state';
 import { isMobile } from 'src/utils/utils';
 
 const home = require('../assets/icons/trailhead.png');
@@ -15,8 +17,11 @@ const flipside = require('../assets/logos/flipside-gradient.png');
 
 
 const LeftBar = (props: any) => {
+
+  const location = useLocation();
+
 	return (
-        <div className='left-bar'>
+        <div className={`left-bar ${location.pathname == '/MadWars' ? 'black-bg' : ''}`}>
             {
                 isMobile ? null :
                 <div className='left-bar-header'>
@@ -56,7 +61,7 @@ const LeftBar = (props: any) => {
                 </NavLink>
             </div>
             <div className='left-bar-socials'>
-                <div className='flipside' style={{'paddingBottom': '5px'}}>
+                <div className='flipside' style={{'paddingBottom': '10px'}}>
                     <div className=''>Powered by</div>
                     <div className=''><a target={'_blank'} href='http://flipsidecrypto.xyz/'><img src={String(flipside)} /></a></div>
                     {/* <div className=''>adventure</div> */}

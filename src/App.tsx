@@ -42,6 +42,9 @@ import FrontierPage from './components/FrontierPage';
 import { Trail } from './models/Trail';
 import { Trailhead } from './models/Trailhead';
 
+import 'react-tooltip/dist/react-tooltip.css';
+import MainPanel from './components/MainPanel';
+
 require('@solana/wallet-adapter-react-ui/styles.css');
 const S3_BUCKET = 'trails-avatars';
 const REGION = 'us-east-1';
@@ -173,6 +176,16 @@ function App() {
 		});
 		dispatch(actions.setSlideMovements(response.data));
 	}
+	const loadMadTrailScorecard = async (address: string) => {
+		let response = await axios({
+			method: 'post',
+			url: BACKEND_URL+'/api/madWars/updateMadTrail',
+			data: {'address': address}
+		});
+		console.log(`loadMadTrailScorecard`);
+		console.log(response.data);
+		dispatch(actions.setMadTrailScorecard(response.data));
+	}
 	const loadUserXp = async (address: string) => {
 		if (!address) {
 			return([]);
@@ -182,7 +195,10 @@ function App() {
 			url: BACKEND_URL+'/api/user/loadUserXp',
 			data: {'address': address}
 		});
-		const xps: Xp[] = response.data
+		const xps: Xp[] = response.data;
+		if (xps.filter(x => x.trailId == 'MadTrail')) {
+			loadMadTrailScorecard(address);
+		}
 		dispatch(actions.setUserXp(xps.reduce((a, b) => a + b.xp, 0 )));
 		dispatch(actions.setUserXps(response.data));
 	}
@@ -271,48 +287,12 @@ function App() {
 	}
 	const rightPanel = <div className='col-12 col-md-4 right-col' style={{'paddingRight': '0'}}><RightPanel /></div>
 
-
 	
 	return (
 		<BrowserRouter>
 			<div className='App'>
 				<XpCard />
-				<div className='row'>
-        			<div className='col-3 col-sm-2 col-md-4 col-lg-3 col-xl-2' style={{'paddingLeft': '0'}}>
-						<LeftBar />
-					</div>
-        			<div className='col-9 col-sm-10 col-md-8 col-lg-9 col-xl-10' style={{'paddingLeft': '0'}}>
-						<div className='row' style={{'paddingTop': '55px', 'maxWidth': '1100px', 'margin': '0 auto'}}>
-						{/* <div className='main'> */}
-							{/* <div className='row'> */}
-								{
-									isMobile ? rightPanel : null
-								}
-								<div className={`col middle-col`}>
-									{
-										useAddress == '' ? <MainPage />
-										:
-										<Routes>
-											<Route path='/' element={<MainPage />} />
-											<Route path='/expeditions' element={<ExpeditionsPage />} />
-											<Route path='/settings' element={<SettingsPage />} />
-											<Route path='/leaderboard' element={<LeaderboardPage />} />
-											<Route path='/frontier' element={<FrontierPage />} />
-											<Route path='/about' element={<AboutPage />} />
-											<Route path='/:program' element={<ProgramPage />} />
-											<Route path="*" element={<MainPage />} />
-										</Routes>
-									}
-								</div>
-								{
-									isMobile ? null
-									: rightPanel
-								}
-							</div>
-						</div>
-					</div>
-					{/* </div> */}
-				{/* </div> */}
+				<MainPanel />
 			</div>
 		</BrowserRouter>
 	);
