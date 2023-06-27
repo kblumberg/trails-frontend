@@ -12,7 +12,8 @@ import { Tooltip } from 'react-tooltip'
 
 const LeaderboardPage = (props: any) => {
 	const data: IState = useSelector((state: any) => state.data);
-    const [activeTab, setActiveTab] = useState('Mad Trail');
+    // const [activeTab, setActiveTab] = useState('Mad Trail');
+    const [activeTab, setActiveTab] = useState('Overall');
     const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
 
@@ -259,12 +260,12 @@ const LeaderboardPage = (props: any) => {
 
 	return (
         <div>
-        <div className='light-text'>0.5 $SOL for the top 20 on the Mad Trail Leaderboard on June 28th at 9pm UTC</div>
+        {/* <div className='light-text'>0.5 $SOL for the top 20 on the Mad Trail Leaderboard on June 28th at 9pm UTC</div> */}
         <div className='leaderboard-page'>
         <div className='leaderboard-tabs row'>
-            <div className={`col ${activeTab == 'Mad Trail' ? 'active' : ''}`} onClick={handleTabClick}>
+            {/* <div className={`col ${activeTab == 'Mad Trail' ? 'active' : ''}`} onClick={handleTabClick}>
                 Mad Trail
-            </div>
+            </div> */}
             <div className={`col ${activeTab == 'Overall' ? 'active' : ''}`} onClick={handleTabClick}>
                 Overall
             </div>
