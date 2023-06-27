@@ -372,7 +372,7 @@ const ProgramPage = (props: any) => {
 	const program_d: any = {
 		'Magic': 'Magic Eden'
 		, 'Exchange': 'Exchange Art'
-		, 'MadWars': 'Mad Wars'
+		, 'MadWars': 'Mad Trail'
 		, 'FamousFoxFederation': 'Famous Fox Federation'
 		, 'FamousFoxFederation2': 'Famous Fox Federation'
 		, 'ZetaMarkets': 'Zeta Markets'
@@ -397,7 +397,7 @@ const ProgramPage = (props: any) => {
                             <ArrowLeftCircleFill />
                         </div>
                     </h3>
-                    <div>{`Get introduced to ${programName}`}</div>
+                    <div>{`Get introduced to ${programName == 'Mad Trail' ? 'the Mad Wars' : programName}`}</div>
                 </div>
                 {trailDivs}
             </div>

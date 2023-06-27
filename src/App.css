@@ -1187,17 +1187,23 @@ body, html {
 	scale: 1.05;
 }
 .mad-trail-scorecard .row > .col .circle:not(.no-bg) {
-    background-color: rgb(28, 176, 246);
+    background-color: rgb(246 33 56 );
+    /* background-color: rgb(28, 176, 246); */
 }
-.mad-trail-scorecard .row > .col .circle.completed {
+.mad-trail-scorecard .row > .col div.circle.completed {
 	opacity: 1;
 }
+.mad-trail-scorecard .row > .col div.circle:not(.completed) {
+	opacity: 0.3;
+}
+.mad-trail-scorecard .row > .col div.circle:not(.completed):hover {
+	opacity: 0.5;
+}
 .mad-trail-scorecard .row > .col .circle {
-    /* background-color: rgb(246 33 56 ); */
 	color: white;
+	/* color: black; */
 	font-size: 12px;
     /* background-color: black; */
-	opacity: 1.3;
 	/* background-color: blue; */
 	border-radius: 40px;
 	height: 40px;
@@ -1222,4 +1228,21 @@ body, html {
     bottom: 0;
     left: 0;
 	padding: 0 20px 10px;
+}
+.max-text {
+	font-size: 11px;
+	opacity: 0.9;
+}
+.black-bg.left-bar {
+	padding-right: 0;
+}
+.black-bg {
+	background-color: rgb(13, 13, 13);
+	border: none;
+}
+.mad-trail {
+	/* background-image: 'madtrail.png'; */
+	background: url('assets/bg/madtrail.png');
+	/* background-size: contain; */
+	background-size: cover;
 }

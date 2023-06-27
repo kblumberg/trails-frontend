@@ -87,30 +87,30 @@ const LeaderboardPage = (props: any) => {
     console.log('data.madTrailScorecard');
     console.log(data.madTrailScorecard);
 
-    const d: [string, number][][] = [
+    const d: [string, number, string, number, number][][] = [
         [
-            ['Achievements', 0]
-            , ['Long', data.madTrailScorecard.hasLong ? 1 : 0]
-            , ['Short', data.madTrailScorecard.hasShort ? 1 : 0]
-            , ['', 0]
-            , ['', 0]
-            , ['', 0]
+            ['Achievements', 0, '', 0, 0]
+            , ['Long', data.madTrailScorecard.hasLong ? 1 : 0, 'Take a long position', 1, 10]
+            , ['Short', data.madTrailScorecard.hasShort ? 1 : 0, 'Take a short position', 1, 10]
+            , ['', 0, '', 1, 0]
+            , ['', 0, '', 1, 0]
+            , ['', 0, '', 1, 0]
         ]
         , [
-            ['Markets', 0]
-            , ['SOL', 0]
-            , ['BTC', 0]
-            , ['ETH', 0]
-            , ['APT', 0]
-            , ['ARB', 0]
+            ['Markets', 0, '', 0, 0]
+            , ['SOL', data.madTrailScorecard.hasSol ? 1 : 0, 'Take a $SOL position', 1, 10]
+            , ['BTC', data.madTrailScorecard.hasBtc ? 1 : 0, 'Take a $BTC position', 1, 10]
+            , ['ETH', data.madTrailScorecard.hasEth ? 1 : 0, 'Take an $ETH position', 1, 10]
+            , ['APT', data.madTrailScorecard.hasApt ? 1 : 0, 'Take an $APT position', 1, 10]
+            , ['ARB', data.madTrailScorecard.hasArb ? 1 : 0, 'Take an $ARB position', 1, 10]
         ]
         , [
-            ['Size', 0]
-            , ['$10', 0]
-            , ['$50', 0]
-            , ['$100', 0]
-            , ['$500', 0]
-            , ['$1k', 0]
+            ['Size', 0, '', 0, 0]
+            , ['$10', data.madTrailScorecard.numVolume10, 'Make a trade of $10-$50', 3, 5]
+            , ['$50', data.madTrailScorecard.numVolume50, 'Make a trade of $50-$100', 3, 10]
+            , ['$100', data.madTrailScorecard.numVolume100, 'Make a trade of $100-$500', 3, 20]
+            , ['$500', data.madTrailScorecard.numVolume500, 'Make a trade of $500-$1k', 3, 50]
+            , ['$1k', data.madTrailScorecard.numVolume1000, 'Make a trade of $1k+', 3, 100]
         ]
         // , [
         //     'Profit'
@@ -123,6 +123,7 @@ const LeaderboardPage = (props: any) => {
     ]
 
     const scorecardRows = d.map((x, ind) => {
+        let xp = 0;
         const cols = x.map((y, i) => {
             let val = <>{y[0]}</>;
             let className = '';
@@ -136,13 +137,19 @@ const LeaderboardPage = (props: any) => {
                 val
             }</div>
             // const img = ['BTC','SOL','ARB','APT','ETH'].includes(y) ? <img src={String()}/>
+            const totXp = Math.min(y[3], y[1]) * y[4];
+            xp += totXp
             return(
                 <div className={`col ${ i ? `col-10` : `first-col col-${20}` }-pct`}>
                     {
                         i && y ? <>
-                        <Tooltip anchorSelect={`#item-${ind}-${i}`} >{'content'}</Tooltip>
+                        <Tooltip anchorSelect={`#item-${ind}-${i}`} >
+                            <div>{`${y[2]}`}</div>
+                            <div>{`${y[1]} x ${y[4]}xp = ${totXp}xp`}</div>
+                            <div className='max-text'>{`Max ${y[3]}`}</div>
+                        </Tooltip>
                         {img}
-                        </> : <>{y}</>
+                        </> : <>{y[0]}</>
                     }
                 </div>
             )
@@ -150,7 +157,7 @@ const LeaderboardPage = (props: any) => {
         return(
             <div className='row scorecard-row'>
                 {cols}
-                <div className={`col col-10-pct`}>10 XP</div>
+                <div className={`col col-10-pct`}>{`${xp}`}xp</div>
             </div>
         )
     })
