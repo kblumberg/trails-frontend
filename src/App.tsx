@@ -138,7 +138,7 @@ function App() {
 			url: BACKEND_URL+'/api/trails/trails',
 		});
 		let trails: Trail[] = response.data;
-		trails = trails.filter(x => x.hidden == false);
+		// trails = trails.filter(x => x.hidden == false);
 		dispatch(actions.setTrails(trails));
 	}
 	const loadTrailheads = async () => {
@@ -150,7 +150,7 @@ function App() {
 		trailheads = trailheads.sort((a, b) => b.id - a.id);
 		trailheads = trailheads.filter(x => x.id != 16);
 		trailheads = trailheads.filter(x => x.id != 20);
-		trailheads = trailheads.filter(x => x.hidden == false);
+		// trailheads = trailheads.filter(x => x.hidden == false);
 		dispatch(actions.setTrailheads(trailheads));
 	}
 	const loadHikes = async (address: string) => {
@@ -203,12 +203,15 @@ function App() {
 		dispatch(actions.setUserXps(response.data));
 	}
 	const loadLeaderboard = async () => {
+		console.log(`starting loadLeaderboard`)
 		let response = await axios({
 			method: 'get',
 			url: BACKEND_URL+'/api/hikes/leaderboard',
 			// data: {'address': address}
 		});
 		let leaderboard = response.data;
+		console.log(`done loadLeaderboard`)
+		console.log(leaderboard)
 		dispatch(actions.setLeaderboard(leaderboard));
 	}
 	const loadUserDate = async (address: string) => {

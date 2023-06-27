@@ -6,14 +6,13 @@ import { Button } from 'react-bootstrap';
 import axios from 'axios';
 import { BACKEND_URL } from 'src/constants/constants';
 import { setMadTrailScorecard, setUserXp, setUserXps } from 'src/store/actions/actions';
-import { getCurrentTimestamp, getXpFromMadWarsScorecard } from 'src/utils/utils';
+import { getCurrentTimestamp, getXpFromMadWarsScorecard, ordinal_suffix_of } from 'src/utils/utils';
 import { Xp } from 'src/models/Xp';
 import { Tooltip } from 'react-tooltip'
 
 const LeaderboardPage = (props: any) => {
 	const data: IState = useSelector((state: any) => state.data);
-    // const [activeTab, setActiveTab] = useState('Mad Trail');
-    const [activeTab, setActiveTab] = useState('Overall');
+    const [activeTab, setActiveTab] = useState('Mad Trail');
     const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
 
@@ -48,10 +47,10 @@ const LeaderboardPage = (props: any) => {
 
 		let response = await axios({
 			method: 'post',
-			url: BACKEND_URL+'/api/madWars/register',
+			url: BACKEND_URL+'/api/madWars/updateMadTrail',
 			data: {'address': data.address}
 		});
-        console.log(`register response`);
+        console.log(`updateMadTrail response`);
         console.log(response);
 
         const xp = getXpFromMadWarsScorecard(response.data);
@@ -74,6 +73,8 @@ const LeaderboardPage = (props: any) => {
         setLoading(false);
     }
     const img = require(`../assets/projects/madwars.png`);
+    console.log(`data.leaderboard`);
+    console.log(data.leaderboard);
 
     const totColors = colors.length;
     const cur: [string, string, string, number, boolean] = ['Overall', data.address, data.username, data.xp, false];
@@ -163,12 +164,29 @@ const LeaderboardPage = (props: any) => {
         )
     })
 
+    // if (leaderboard.length == 0) {
+    //     leaderboard.push(cur);
+    // } else if (data.xp >= leaderboard[leaderboard.length - 1][2] || leaderboard.length < 20) {
+    //     console.log('adding')
+    //     leaderboard.push(cur);
+    // }
+    if (activeTab == 'Overall') {
+        leaderboard.push(cur);
+    } else {
+        if (isRegistered) {
+            leaderboard.push(curC);
+        }
+    }
+    leaderboard = leaderboard.sort((a, b) => a[3] != b[3] ? b[3] - a[3] : a[2] == data.username ? -1 : a[3] < b[3] ? -1 : 1 );
+    const place = leaderboard.map(x => x[1]).indexOf(data.address) + 1;
+    // console.log(`leaderboard`);
+    // console.log(leaderboard);
     const header = isRegistered ? 
     <div className='mad-trail-scorecard row'>
         <div className='col col-lg-2 scorecard-profile'>
             {userImg}
             <div>{curXp} XP</div>
-            <div>21st</div>
+            <div>{`${ordinal_suffix_of(place)}`}</div>
             <img className='profile-img' src={String(img)}/>
         </div>
         <div className='col col-lg-10'>
@@ -185,22 +203,7 @@ const LeaderboardPage = (props: any) => {
             }</div>
         </Button>
     </div>
-    // if (leaderboard.length == 0) {
-    //     leaderboard.push(cur);
-    // } else if (data.xp >= leaderboard[leaderboard.length - 1][2] || leaderboard.length < 20) {
-    //     console.log('adding')
-    //     leaderboard.push(cur);
-    // }
-    if (activeTab == 'Overall') {
-        leaderboard.push(cur);
-    } else {
-        if (isRegistered) {
-            leaderboard.push(curC);
-        }
-    }
-    leaderboard = leaderboard.sort((a, b) => a[3] != b[3] ? b[3] - a[3] : a[2] == data.username ? -1 : a[3] < b[3] ? -1 : 1 );
-    // console.log(`leaderboard`);
-    // console.log(leaderboard);
+
     const rows = [];
     for (let index = 0; index < 20; index ++) {
         if (index >= leaderboard.length) {
@@ -260,12 +263,12 @@ const LeaderboardPage = (props: any) => {
 
 	return (
         <div>
-        {/* <div className='light-text'>0.5 $SOL for the top 20 on the Mad Trail Leaderboard on June 28th at 9pm UTC</div> */}
+        <div className='light-text'>0.5 $SOL for the top 20 on the Mad Trail Leaderboard on June 28th at 9pm UTC</div>
         <div className='leaderboard-page'>
         <div className='leaderboard-tabs row'>
-            {/* <div className={`col ${activeTab == 'Mad Trail' ? 'active' : ''}`} onClick={handleTabClick}>
+            <div className={`col ${activeTab == 'Mad Trail' ? 'active' : ''}`} onClick={handleTabClick}>
                 Mad Trail
-            </div> */}
+            </div>
             <div className={`col ${activeTab == 'Overall' ? 'active' : ''}`} onClick={handleTabClick}>
                 Overall
             </div>
