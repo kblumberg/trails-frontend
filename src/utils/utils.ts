@@ -8,6 +8,7 @@ export const getCurrentTimestamp = () => {
 }
 
 export const getXpFromMadWarsScorecard = (s: MadTrailScorecard) => {
+    const amt = Math.min(1000000, s.volume);
     return(
         (s.hasApt ? 10 : 0)
         + (s.hasArb ? 10 : 0)
@@ -16,16 +17,18 @@ export const getXpFromMadWarsScorecard = (s: MadTrailScorecard) => {
         + (s.hasLong ? 10 : 0)
         + (s.hasShort ? 10 : 0)
         + (s.hasSol ? 10 : 0)
-        + (s.numProfit1 * 10)
-        + (s.numProfit5 * 20)
-        + (s.numProfit10 * 30)
-        + (s.numProfit50 * 40)
-        + (s.numProfit100 * 50)
-        + (s.numVolume10 * 10)
-        + (s.numVolume50 * 20)
-        + (s.numVolume100 * 30)
-        + (s.numVolume500 * 40)
-        + (s.numVolume1000 * 50)
+        // + (s.numProfit1 * 5)
+        // + (s.numProfit5 * 10)
+        // + (s.numProfit10 * 20)
+        // + (s.numProfit50 * 50)
+        // + (s.numProfit100 * 100)
+        // + (Math.min(3, s.numVolume10) * 5)
+        // + (Math.min(3, s.numVolume50) * 10)
+        // + (Math.min(3, s.numVolume100) * 20)
+        // + (Math.min(3, s.numVolume500) * 50)
+        // + (Math.min(3, s.numVolume1000) * 100)
+        + Math.floor(amt / 1000)
+        + Math.floor(Math.log10(amt)) * 15
     )
 }
 

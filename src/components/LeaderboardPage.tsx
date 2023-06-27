@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { IState } from 'src/store/interfaces/state';
 import Table from 'react-bootstrap/Table';
-import { Button } from 'react-bootstrap';
+import { Button, ProgressBar } from 'react-bootstrap';
 import axios from 'axios';
 import { BACKEND_URL } from 'src/constants/constants';
 import { setMadTrailScorecard, setUserXp, setUserXps } from 'src/store/actions/actions';
 import { getCurrentTimestamp, getXpFromMadWarsScorecard, ordinal_suffix_of } from 'src/utils/utils';
 import { Xp } from 'src/models/Xp';
 import { Tooltip } from 'react-tooltip'
+import { QuestionCircle } from 'react-bootstrap-icons';
 
 const LeaderboardPage = (props: any) => {
 	const data: IState = useSelector((state: any) => state.data);
@@ -91,6 +92,14 @@ const LeaderboardPage = (props: any) => {
 
     const d: [string, number, string, number, number][][] = [
         [
+            ['Volume', data.madTrailScorecard.volume, '', 0, 0]
+            // , ['$10', data.madTrailScorecard.numVolume10, 'Make a trade of $10-$50', 3, 5]
+            // , ['$50', data.madTrailScorecard.numVolume50, 'Make a trade of $50-$100', 3, 10]
+            // , ['$100', data.madTrailScorecard.numVolume100, 'Make a trade of $100-$500', 3, 20]
+            // , ['$500', data.madTrailScorecard.numVolume500, 'Make a trade of $500-$1k', 3, 50]
+            // , ['$1k', data.madTrailScorecard.numVolume1000, 'Make a trade of $1k+', 3, 100]
+        ]
+        , [
             ['Achievements', 0, '', 0, 0]
             , ['Long', data.madTrailScorecard.hasLong ? 1 : 0, 'Take a long position', 1, 10]
             , ['Short', data.madTrailScorecard.hasShort ? 1 : 0, 'Take a short position', 1, 10]
@@ -106,14 +115,6 @@ const LeaderboardPage = (props: any) => {
             , ['APT', data.madTrailScorecard.hasApt ? 1 : 0, 'Take an $APT position', 1, 10]
             , ['ARB', data.madTrailScorecard.hasArb ? 1 : 0, 'Take an $ARB position', 1, 10]
         ]
-        , [
-            ['Size', 0, '', 0, 0]
-            , ['$10', data.madTrailScorecard.numVolume10, 'Make a trade of $10-$50', 3, 5]
-            , ['$50', data.madTrailScorecard.numVolume50, 'Make a trade of $50-$100', 3, 10]
-            , ['$100', data.madTrailScorecard.numVolume100, 'Make a trade of $100-$500', 3, 20]
-            , ['$500', data.madTrailScorecard.numVolume500, 'Make a trade of $500-$1k', 3, 50]
-            , ['$1k', data.madTrailScorecard.numVolume1000, 'Make a trade of $1k+', 3, 100]
-        ]
         // , [
         //     'Profit'
         //     , '$5'
@@ -126,7 +127,54 @@ const LeaderboardPage = (props: any) => {
 
     const scorecardRows = d.map((x, ind) => {
         let xp = 0;
-        const cols = x.map((y, i) => {
+        if (x[0][0] == 'Volume') {
+            const amt = Math.round(x[0][1]);
+            // const amt = 5;
+            const amtLabel = amt.toLocaleString()
+            const xp = Math.floor(Math.min(1000, amt / 1000));
+            const pct = Math.max(0, Math.floor(100 * (Math.log10(amt) / Math.log10(1000000))));
+            const div = 
+            <div className='row scorecard-row'>
+                <div className={`col first-col col-${20}-pct`}>
+                    Volume
+                    <QuestionCircle style={{'marginLeft': '5px', 'paddingLeft': '1px'}} id='question-circle' />
+                    <Tooltip anchorSelect={`#question-circle`} >
+                        <div>+15xp for each volume checkpoint<br/>+1xp for every $1k of volume</div>
+                    </Tooltip>
+                </div>
+                <div className={`col`} style={{'position': 'relative'}}>
+                    <div className='checkpoint' id={`volume-1`} style={{'left': '16.667%'}}>|</div>
+                    <Tooltip anchorSelect={`#volume-1`} >
+                        <div>$10</div>
+                        <div className='max-text'>+15xp</div>
+                    </Tooltip>
+                    <div className='checkpoint' id={`volume-2`} style={{'left': '33.33%'}}>|</div>
+                    <Tooltip anchorSelect={`#volume-2`} >
+                        <div>$100</div>
+                        <div className='max-text'>+15xp</div>
+                    </Tooltip>
+                    <div className='checkpoint' id={`volume-3`} style={{'left': '50%'}}>|</div>
+                    <Tooltip anchorSelect={`#volume-3`} >
+                        <div>$1k</div>
+                        <div className='max-text'>+15xp</div>
+                    </Tooltip>
+                    <div className='checkpoint' id={`volume-4`} style={{'left': '66.667%'}}>|</div>
+                    <Tooltip anchorSelect={`#volume-4`} >
+                        <div>$10k</div>
+                        <div className='max-text'>+15xp</div>
+                    </Tooltip>
+                    <div className='checkpoint' id={`volume-5`} style={{'left': '83.333%'}}>|</div>
+                    <Tooltip anchorSelect={`#volume-5`} >
+                        <div>$100k</div>
+                        <div className='max-text'>+15xp</div>
+                    </Tooltip>
+                    <ProgressBar className='mad-lads-red-background' now={pct} label={`$${amtLabel}`} />
+                </div>
+                <div className={`col col-10-pct`}>{`${xp}`}xp</div>
+            </div>
+            return(div);
+        }
+        let cols = x.map((y, i) => {
             let val = <>{y[0]}</>;
             let className = '';
             if (['BTC','SOL','ARB','APT','ETH'].includes(y[0])) {
@@ -144,6 +192,7 @@ const LeaderboardPage = (props: any) => {
             return(
                 <div className={`col ${ i ? `col-10` : `first-col col-${20}` }-pct`}>
                     {
+                        y[0] == '' ? null :
                         i && y ? <>
                         <Tooltip anchorSelect={`#item-${ind}-${i}`} >
                             <div>{`${y[2]}`}</div>
@@ -182,15 +231,40 @@ const LeaderboardPage = (props: any) => {
     // console.log(`leaderboard`);
     // console.log(leaderboard);
     const header = isRegistered ? 
-    <div className='mad-trail-scorecard row'>
-        <div className='col col-lg-2 scorecard-profile'>
-            {userImg}
-            <div>{curXp} XP</div>
-            <div>{`${ordinal_suffix_of(place)}`}</div>
-            <img className='profile-img' src={String(img)}/>
+    <div className='mad-trail-scorecard'>
+        <div className='row scorecard-profile'>
+            <div className='col-lg-2'>
+                {userImg}
+                <div>{curXp} XP</div>
+                <div>{`${ordinal_suffix_of(place)}`}</div>
+            </div>
+            <div className='col-lg-10'>
+                <div className='row'>
+                    {/* <div className='inline-block' style={{'position':'absolute', 'left': '0px'}}>
+                        <img className='profile-img' src={String(img)}/>
+                    </div> */}
+                    <div className='inline-block scorecard-header'>Mad Trail Scorecard</div>
+                </div>
+                <div className='scorecard-subheader'>Mad Trainee WL for traders that reach 100xp</div>
+                <div className='row'>
+                    <div>
+                        <ProgressBar className='black-background' now={Math.min(100, curXp)} label={`${curXp}xp`} />
+                    </div>
+                </div>
+                <div className='row' style={{'height': '50px'}}>
+                </div>
+            </div>
         </div>
-        <div className='col col-lg-10'>
-            {scorecardRows}
+        <div className='row'>
+            {/* <div className='col col-lg-2 scorecard-profile'>
+                {userImg}
+                <div>{curXp} XP</div>
+                <div>{`${ordinal_suffix_of(place)}`}</div>
+                <img className='profile-img' src={String(img)}/>
+            </div> */}
+            <div className='col col-lg-12'>
+                {scorecardRows}
+            </div>
         </div>
     </div>
     :
@@ -263,7 +337,7 @@ const LeaderboardPage = (props: any) => {
 
 	return (
         <div>
-        <div className='light-text'>0.5 $SOL for the top 20 on the Mad Trail Leaderboard on June 28th at 9pm UTC</div>
+        <div className='light-text'>1 $SOL for the top 20 on the Mad Trail Leaderboard on July 5th at 9pm UTC</div>
         <div className='leaderboard-page'>
         <div className='leaderboard-tabs row'>
             <div className={`col ${activeTab == 'Mad Trail' ? 'active' : ''}`} onClick={handleTabClick}>

@@ -23,6 +23,8 @@ export class MadTrailScorecard {
     numProfit50: number;
     numProfit100: number;
 
+    volume: number;
+
 	constructor(
         address: string = ''
         , hasLong: boolean = false
@@ -45,6 +47,7 @@ export class MadTrailScorecard {
         , numProfit10: number = 0
         , numProfit50: number = 0
         , numProfit100: number = 0
+        , volume: number = 0
 
     ) {
         this.address = address;
@@ -67,6 +70,7 @@ export class MadTrailScorecard {
         this.numProfit10 = numProfit10;
         this.numProfit50 = numProfit50;
         this.numProfit100 = numProfit100;
+        this.volume = volume;
     }
 
 }
