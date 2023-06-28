@@ -1292,6 +1292,9 @@ body, html {
 	opacity: 0.9;
 	padding-bottom: 10px;
 }
+.scorecard-subheader a {
+	color: white;
+}
 .mad-trail-subheader {
 	color: rgb(246 33 56 );
 	/* color: rgba(255, 255, 255, 0.8); */
