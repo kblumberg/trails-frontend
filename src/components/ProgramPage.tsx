@@ -398,7 +398,7 @@ const ProgramPage = (props: any) => {
                         </div>
                     </h3>
                     <div>{`Get introduced to ${programName == 'Mad Trail' ? 'the Mad Wars' : programName}`}</div>
-                    <div className='mad-trail-subheader'>{programName == 'Mad Trail' ? <>After completing the Mad Trail, climb the <NavLink to='/leaderboard'>leaderboard</NavLink> to earn your Mad Trainee WL</> : null}</div>
+                    <div className='mad-trail-subheader'>{programName == 'Mad Trail' ? <>After completing the Mad Trail, climb the <NavLink to='/leaderboard'>leaderboard</NavLink> to earn your <a target='blank' href='https://docs.zeta.markets/mad-wars/whitelists/mad-trainee'>Mad Trainee WL</a></> : null}</div>
                 </div>
                 {trailDivs}
             </div>

@@ -247,7 +247,7 @@ const LeaderboardPage = (props: any) => {
                     </div> */}
                     <div className='inline-block scorecard-header'>Mad Trail Scorecard</div>
                 </div>
-                <div className='scorecard-subheader'>Mad Trainee WL for traders that reach 100xp</div>
+                <div className='scorecard-subheader'><a target='blank' href='https://docs.zeta.markets/mad-wars/whitelists/mad-trainee'>Mad Trainee WL</a> for traders that reach 100xp</div>
                 <div className='row'>
                     <div>
                         <ProgressBar className='black-background' now={Math.min(100, curXp)} label={`${curXp}xp`} />
@@ -269,7 +269,7 @@ const LeaderboardPage = (props: any) => {
     </div>
     :
     <div>
-        <div style={{paddingBottom: '10px'}}>Earn $SOL and a Mad Trainee WL by climbing up the Mad Trail leaderboard</div>
+        <div style={{paddingBottom: '10px'}}>Earn $SOL and <a target='blank' href='https://docs.zeta.markets/mad-wars/whitelists/mad-trainee'>Mad Trainee WL</a> by climbing up the Mad Trail leaderboard</div>
         <Button disabled={loading} className='register-button' onClick={register}>
             <img className='button-img' src={String(img)}/>
             <div className='register-label'>{

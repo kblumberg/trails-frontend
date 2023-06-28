@@ -35,7 +35,7 @@ const MainPanel = (props: any) => {
 	const rightPanel = <div className='col-12 col-md-4 right-col' style={{'paddingRight': '0'}}><RightPanel /></div>
     const location = useLocation();
 
-    const img = require(`../assets/bg/madtrail.png`);
+    const img = require(`../assets/bg/madtrail-2.png`);
 
 	return (
         <div className='row'>

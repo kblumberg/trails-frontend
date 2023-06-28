@@ -291,6 +291,19 @@ html, body, .App {
 	border-top: 30px solid #c4ab92;
 	border-bottom: 30px solid #c4ab92;
 }
+.mad-trail .trail.even .inner {
+	border-right: 30px solid rgb(13, 13, 13);
+	border-top: 30px solid rgb(13, 13, 13);
+	border-bottom: 30px solid rgb(13, 13, 13);
+}
+.mad-trail .trail.odd .inner {
+	border-left: 30px solid rgb(13, 13, 13);
+	border-bottom: 30px solid rgb(13, 13, 13);
+	border-top: 30px solid rgb(13, 13, 13);
+}
+.mad-trail .trailhead {
+	background-color: rgb(13, 13, 13);
+}
 
 .trail.c .inner, .trail.e .inner {
 	margin-top: -30px;
@@ -1247,7 +1260,7 @@ body, html {
 }
 .mad-trail {
 	/* background-image: 'madtrail.png'; */
-	background: url('assets/bg/madtrail.png');
+	background: url('assets/bg/madtrail-2.png');
 	/* background-size: contain; */
 	background-size: cover;
 }
@@ -1280,14 +1293,15 @@ body, html {
 	padding-bottom: 10px;
 }
 .mad-trail-subheader {
-	color: rgb(13, 13, 13);
+	color: rgb(246 33 56 );
+	/* color: rgba(255, 255, 255, 0.8); */
 	font-size: 12px;
 }
 .mad-trail-subheader a {
-	text-decoration: none;
+	/* text-decoration: none; */
 	color: rgb(246 33 56 );
 }
 .mad-trail-subheader a:hover {
-	text-decoration: underline;
+	/* text-decoration: underline; */
 	color: rgb(246 33 56 );
 }
