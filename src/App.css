@@ -272,6 +272,9 @@ html, body, .App {
 	background-color: #b8e28a;
 	/* border-left: 2px dashed #aaa; */
 }
+.mad-trail .trail .button {
+	background-color: rgb(246 33 56 );
+}
 .trail.odd .inner {
 	position: absolute;
 	border-left: 30px solid #c4ab92;
