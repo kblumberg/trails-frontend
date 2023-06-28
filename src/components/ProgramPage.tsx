@@ -422,7 +422,7 @@ const ProgramPage = (props: any) => {
                             {slides[slideNum]}
                             <div className={`${isLastSlide ? 'level-complete-outer' : ''}`}>
                                 {
-                                    programName == 'Mad Trail' && isLastSlide ? 
+                                    programName == 'Mad Trail' && isLastSlide && step == 3 ? 
                                     <div style={{'textAlign':'center', 'paddingBottom': '30px', 'position': 'relative', 'zIndex': '9999'}}>Congratulations soldier! Keep your training going by climbing up the <NavLink to='/leaderboard'>Mad Trail leaderboard</NavLink> and earning your Mad Trainee WL!</div>
                                     : null
                                 }
