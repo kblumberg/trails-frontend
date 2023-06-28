@@ -398,6 +398,7 @@ const ProgramPage = (props: any) => {
                         </div>
                     </h3>
                     <div>{`Get introduced to ${programName == 'Mad Trail' ? 'the Mad Wars' : programName}`}</div>
+                    <div className='mad-trail-subheader'>{programName == 'Mad Trail' ? <>After completing the Mad Trail, climb the <NavLink to='/leaderboard'>leaderboard</NavLink> to earn your Mad Trainee WL</> : null}</div>
                 </div>
                 {trailDivs}
             </div>
@@ -420,6 +421,11 @@ const ProgramPage = (props: any) => {
                         <div className='modal-main-description'>
                             {slides[slideNum]}
                             <div className={`${isLastSlide ? 'level-complete-outer' : ''}`}>
+                                {
+                                    programName == 'Mad Trail' && isLastSlide ? 
+                                    <div style={{'textAlign':'center', 'paddingBottom': '30px', 'position': 'relative', 'zIndex': '9999'}}>Congratulations soldier! Keep your training going by climbing up the <NavLink to='/leaderboard'>Mad Trail leaderboard</NavLink> and earning your Mad Trainee WL!</div>
+                                    : null
+                                }
                                 <div id='burst' className={`level-complete fade-button ${className}`} onClick={async () => {}}>
                                     <div className='level-complete-text'>Level<br/>Complete</div>
                                     <div id='success-timeline' className={'correctClass'}></div>

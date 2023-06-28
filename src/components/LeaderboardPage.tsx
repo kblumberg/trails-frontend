@@ -128,10 +128,12 @@ const LeaderboardPage = (props: any) => {
     const scorecardRows = d.map((x, ind) => {
         let xp = 0;
         if (x[0][0] == 'Volume') {
-            const amt = Math.round(x[0][1]);
+            // const amt = Math.round(x[0][1]);
+            const amt = Math.round(Math.min(1000000, x[0][1]));
+            const xp = Math.floor(amt / 1000) + Math.floor(Math.log10(amt)) * 15
             // const amt = 5;
             const amtLabel = amt.toLocaleString()
-            const xp = Math.floor(Math.min(1000, amt / 1000));
+            // const xp = Math.floor(Math.min(1000, amt / 1000));
             const pct = Math.max(0, Math.floor(100 * (Math.log10(amt) / Math.log10(1000000))));
             const div = 
             <div className='row scorecard-row'>
@@ -250,8 +252,6 @@ const LeaderboardPage = (props: any) => {
                     <div>
                         <ProgressBar className='black-background' now={Math.min(100, curXp)} label={`${curXp}xp`} />
                     </div>
-                </div>
-                <div className='row' style={{'height': '50px'}}>
                 </div>
             </div>
         </div>
