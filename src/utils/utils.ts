@@ -6,6 +6,7 @@ import { Slide } from "../models/Slide";
 import { ClaimRewardResult } from "src/enums/ClaimRewardResult";
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { SOL_ADDRESS } from 'src/constants/constants';
+import { MadTrailScorecard } from "../models/MadTrailScorecard";
 
 export const cleanProjectName = (program: string) => {
 	const program_d: any = {
@@ -137,4 +138,44 @@ export const createAssociatedTokenAccountSendUnsigned = async (
 		}
 	}
 	return('');
+}
+
+export const getXpFromMadWarsScorecard = (s: MadTrailScorecard) => {
+    const amt = Math.min(1000000, s.volume);
+    return(
+        (s.hasApt ? 10 : 0)
+        + (s.hasArb ? 10 : 0)
+        + (s.hasBtc ? 10 : 0)
+        + (s.hasEth ? 10 : 0)
+        + (s.hasLong ? 10 : 0)
+        + (s.hasShort ? 10 : 0)
+        + (s.hasSol ? 10 : 0)
+        // + (s.numProfit1 * 5)
+        // + (s.numProfit5 * 10)
+        // + (s.numProfit10 * 20)
+        // + (s.numProfit50 * 50)
+        // + (s.numProfit100 * 100)
+        // + (Math.min(3, s.numVolume10) * 5)
+        // + (Math.min(3, s.numVolume50) * 10)
+        // + (Math.min(3, s.numVolume100) * 20)
+        // + (Math.min(3, s.numVolume500) * 50)
+        // + (Math.min(3, s.numVolume1000) * 100)
+        + Math.floor(amt / 1000)
+        + Math.floor(Math.log10(amt)) * 15
+    )
+}
+
+
+export const ordinal_suffix_of = (i: number) => {
+    const j = i % 10, k = i % 100;
+    if (j == 1 && k != 11) {
+        return(i + 'st');
+    }
+    if (j == 2 && k != 12) {
+        return(i + 'nd');
+    }
+    if (j == 3 && k != 13) {
+        return(i + 'rd');
+    }
+    return(i + 'th');
 }

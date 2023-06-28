@@ -20,7 +20,6 @@ import { SlideMovement } from 'src/models/SlideMovement';
 import { Dispatch } from 'redux';
 import { Tooltip } from 'react-tooltip'
 
-import 'react-tooltip/dist/react-tooltip.css';
 import { Xp } from 'src/models/Xp';
 import Countdown from 'react-countdown';
 import BurstButton from './BurstButton';
@@ -374,7 +373,7 @@ const ProgramPage = (props: any) => {
 	const program_d: any = {
 		'Magic': 'Magic Eden'
 		, 'Exchange': 'Exchange Art'
-		, 'MadWars': 'Mad Wars'
+		, 'MadWars': 'Mad Trail'
 		, 'FamousFoxFederation': 'Famous Fox Federation'
 		, 'FamousFoxFederation2': 'Famous Fox Federation'
 		, 'ZetaMarkets': 'Zeta Markets'
@@ -399,7 +398,8 @@ const ProgramPage = (props: any) => {
                             <ArrowLeftCircleFill />
                         </div>
                     </h3>
-                    <div>{`Learn the basics of ${programName}`}</div>
+                    <div>{`Get introduced to ${programName == 'Mad Trail' ? 'the Mad Wars' : programName}`}</div>
+                    <div className='mad-trail-subheader'>{programName == 'Mad Trail' ? <>After completing the Mad Trail, climb the <NavLink to='/leaderboard'>leaderboard</NavLink> to earn your <a target='blank' href='https://docs.zeta.markets/mad-wars/whitelists/mad-trainee'>Mad Trainee WL</a></> : null}</div>
                 </div>
                 {trailDivs}
             </div>
@@ -425,6 +425,11 @@ const ProgramPage = (props: any) => {
                         <div className='modal-main-description'>
                             {slides[slideNum]}
                             <div className={`${isLastSlide ? 'level-complete-outer' : ''}`}>
+                                {
+                                    programName == 'Mad Trail' && isLastSlide && step == 3 ? 
+                                    <div style={{'textAlign':'center', 'paddingBottom': '30px', 'position': 'relative', 'zIndex': '9999'}}>Congratulations soldier! Keep your training going by climbing up the <NavLink to='/leaderboard'>Mad Trail leaderboard</NavLink> and earning your Mad Trainee WL!</div>
+                                    : null
+                                }
                                 <div id='burst' className={`level-complete fade-button ${className}`} onClick={async () => {}}>
                                     <div className='level-complete-text'>Level<br/>Complete</div>
                                     <div id='success-timeline' className={'correctClass'}></div>

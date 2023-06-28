@@ -5,6 +5,7 @@ import { SlideMovement } from 'src/models/SlideMovement';
 import { Xp } from 'src/models/Xp';
 import { IRewardPoolAccount } from 'src/models/RewardPoolAccount';
 import { ExpeditionInviteDetail } from 'src/models/ExpeditionInviteDetail';
+import { MadTrailScorecard } from 'src/models/MadTrailScorecard';
 
 export interface IState{
     xps: Xp[];
@@ -22,6 +23,7 @@ export interface IState{
     quizDisabledUntil: number;
     slideMovements: SlideMovement[];
     expeditionInvites: ExpeditionInviteDetail[];
+    madTrailScorecard: MadTrailScorecard;
     leaderboard: [string, string, string, number, boolean][];
 }
 
