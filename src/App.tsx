@@ -59,16 +59,12 @@ const s3 = new AWS.S3({
 })
 
 const getTransactionsOfUser = async (address: string, options: any, connection: Connection) => {
-    console.log({ address, options });
-	console.log(`getTransactionsOfUser`);
     try {
       const publicKey = new PublicKey(address);
       const transSignatures =
         await connection.getConfirmedSignaturesForAddress2(publicKey, options);
-      console.log({ transSignatures });
       const transactions = [];
       for (let i = 0; i < transSignatures.length; i++) {
-		console.log(`transSignatures ${i}`);
         const signature = transSignatures[i].signature;
 
 		const config = {
@@ -82,8 +78,8 @@ const getTransactionsOfUser = async (address: string, options: any, connection: 
 		);
 		// if (signature == 'zbcrRgSGdTjdnrvZVC1qKe3qxW492xbdx911My1Qsm4QgAZK1ugFhac1rT4Cdvf67piSg5f8m7VBSwrAYdsBtic') {
 		if (signature == '33zKK8tXNv43DS6iX8AgCaVy3hpeaNNTVaBwWgHyHWQ5AW5DuRexyHTx5FBPEX5y8TNn8wzbC9JpXwJXAwm6onHS') {
-			console.log(`confirmedTransaction`);
-			console.log(confirmedTransaction);
+			// console.log(`confirmedTransaction`);
+			// console.log(confirmedTransaction);
 		}
         if (confirmedTransaction) {
           const { meta } = confirmedTransaction;
@@ -138,7 +134,7 @@ function App() {
 			url: BACKEND_URL+'/api/trails/trails',
 		});
 		let trails: Trail[] = response.data;
-		trails = trails.filter(x => x.hidden == false);
+		// trails = trails.filter(x => x.hidden == false);
 		dispatch(actions.setTrails(trails));
 	}
 	const loadTrailheads = async () => {
@@ -150,7 +146,7 @@ function App() {
 		trailheads = trailheads.sort((a, b) => b.id - a.id);
 		trailheads = trailheads.filter(x => x.id != 16);
 		trailheads = trailheads.filter(x => x.id != 20);
-		trailheads = trailheads.filter(x => x.hidden == false);
+		// trailheads = trailheads.filter(x => x.hidden == false);
 		dispatch(actions.setTrailheads(trailheads));
 	}
 	const loadHikes = async (address: string) => {
@@ -182,8 +178,8 @@ function App() {
 			url: BACKEND_URL+'/api/madWars/updateMadTrail',
 			data: {'address': address}
 		});
-		console.log(`loadMadTrailScorecard`);
-		console.log(response.data);
+		// console.log(`loadMadTrailScorecard`);
+		// console.log(response.data);
 		dispatch(actions.setMadTrailScorecard(response.data));
 	}
 	const loadUserXp = async (address: string) => {
@@ -196,7 +192,8 @@ function App() {
 			data: {'address': address}
 		});
 		const xps: Xp[] = response.data;
-		if (xps.filter(x => x.trailId == 'MadTrail')) {
+		if (xps.filter(x => x.trailId == 'MadTrail').length > 0) {
+			// console.log(`loadUserXp loadMadTrailScorecard`)
 			loadMadTrailScorecard(address);
 		}
 		dispatch(actions.setUserXp(xps.reduce((a, b) => a + b.xp, 0 )));

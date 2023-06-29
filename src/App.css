@@ -272,6 +272,9 @@ html, body, .App {
 	background-color: #b8e28a;
 	/* border-left: 2px dashed #aaa; */
 }
+.mad-trail .trail .button {
+	background-color: rgb(246 33 56 );
+}
 .trail.odd .inner {
 	position: absolute;
 	border-left: 30px solid #c4ab92;
@@ -290,6 +293,19 @@ html, body, .App {
 	border-right: 30px solid #c4ab92;
 	border-top: 30px solid #c4ab92;
 	border-bottom: 30px solid #c4ab92;
+}
+.mad-trail .trail.even .inner {
+	border-right: 30px solid rgb(13, 13, 13);
+	border-top: 30px solid rgb(13, 13, 13);
+	border-bottom: 30px solid rgb(13, 13, 13);
+}
+.mad-trail .trail.odd .inner {
+	border-left: 30px solid rgb(13, 13, 13);
+	border-bottom: 30px solid rgb(13, 13, 13);
+	border-top: 30px solid rgb(13, 13, 13);
+}
+.mad-trail .trailhead {
+	background-color: rgb(13, 13, 13);
 }
 
 .trail.c .inner, .trail.e .inner {
@@ -1175,6 +1191,9 @@ body, html {
 	width: 28%;
 	padding: 0;
 }
+.mad-trail-scorecard {
+	padding-bottom: 15px;
+}
 .mad-trail-scorecard .row > .col {
 	text-align: center;
 	margin: auto;
@@ -1218,16 +1237,18 @@ body, html {
 .scorecard-profile {
 	color: white;
     background-color: rgb(246 33 56 );
-	padding-top: 10px;
+	padding: 10px 0;
 	position: relative;
-	min-height: 175px;
+	/* height: 100px; */
 }
 .profile-img {
-	max-width: 100%;
-	position: absolute;
-    bottom: 0;
-    left: 0;
-	padding: 0 20px 10px;
+	/* max-width: 100%; */
+	height: 50px;
+	/* width: 45px; */
+	/* position: absolute; */
+    /* bottom: 0; */
+    /* left: 0; */
+	/* padding: 0 20px 10px; */
 }
 .max-text {
 	font-size: 11px;
@@ -1242,7 +1263,51 @@ body, html {
 }
 .mad-trail {
 	/* background-image: 'madtrail.png'; */
-	background: url('assets/bg/madtrail.png');
+	background: url('assets/bg/madtrail-2.png');
 	/* background-size: contain; */
 	background-size: cover;
+}
+.checkpoint {
+	opacity: 0.25;
+	cursor: pointer;
+	position: absolute;
+	bottom: -2px;
+	/* color: #999; */
+	font-weight: 900;
+}
+.mad-lads-red-background > .progress-bar {
+    background-color: rgb(246 33 56 );
+}
+.black-background > .progress-bar {
+	background-color: rgb(13, 13, 13);
+}
+.inline-block {
+	display: inline-block;
+}
+.scorecard-header {
+	text-align: center;
+	letter-spacing: 2px;
+	font-size: 20px;
+	font-weight: 900;
+}
+.scorecard-subheader {
+	font-size: 12px;
+	opacity: 0.9;
+	padding-bottom: 10px;
+}
+.scorecard-subheader a {
+	color: white;
+}
+.mad-trail-subheader {
+	color: rgb(246 33 56 );
+	/* color: rgba(255, 255, 255, 0.8); */
+	font-size: 12px;
+}
+.mad-trail-subheader a {
+	/* text-decoration: none; */
+	color: rgb(246 33 56 );
+}
+.mad-trail-subheader a:hover {
+	/* text-decoration: underline; */
+	color: rgb(246 33 56 );
 }
