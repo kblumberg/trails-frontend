@@ -337,7 +337,7 @@ const LeaderboardPage = (props: any) => {
 
 	return (
         <div>
-        <div className='light-text'>1 $SOL for the top 20 on the Mad Trail Leaderboard on July 5th at 9pm UTC</div>
+        <div className='light-text'>1 $SOL for the top 20 on the Mad Trail Leaderboard on July 6th at 5pm UTC<br/>Refresh page to update your stats</div>
         <div className='leaderboard-page'>
         <div className='leaderboard-tabs row'>
             <div className={`col ${activeTab == 'Mad Trail' ? 'active' : ''}`} onClick={handleTabClick}>
