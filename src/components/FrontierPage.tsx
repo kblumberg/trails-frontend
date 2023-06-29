@@ -23,7 +23,7 @@ const FrontierPage = (props: any) => {
                 <span>🗻</span>The first 100 users to complete the Mad Trail earn 0.5 $SOL
             </div>
             <div>
-                <span>💪</span>Users in the top 20 on the Mad Trail Leaderboard on July 5th at 9pm UTC earn 1 $SOL
+                <span>💪</span>Users in the top 20 on the Mad Trail Leaderboard on July 6th at 5pm UTC earn 1 $SOL
             </div>
             <div>
                 <span>🐦</span>You must be following <a target={'_blank'} href='https://twitter.com/TrailsProtocol'>@TrailsProtocol</a> and <a target={'_blank'} href='https://twitter.com/ZetaMarkets'>@ZetaMarkets</a> to earn the prize
