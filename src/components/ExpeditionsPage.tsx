@@ -21,6 +21,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import Table from 'react-bootstrap/Table';
 import { setExpeditionInvites } from 'src/store/actions/actions';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
+import { Mint } from 'easy-spl';
 
 // TODO: hide if there are not enough tokens in the vault (the claim reward tx will eventually error out)
 
@@ -62,7 +63,15 @@ const claimRewards = async (
                 provider,
             );
 
-            const amount = new BN(expeditionInvite.amount * LAMPORTS_PER_SOL);
+            
+            const mint = new Mint(connection, new PublicKey( expeditionInvite.mint ));
+            const mult = Math.pow(10, await mint.getDecimals());
+    
+            // @ts-ignore
+            const amount = expeditionInvite.amount * mult;
+            const feeAmount = Math.round(amount * expeditionInvite.feePct);
+
+            // const amount = new BN(expeditionInvite.amount * LAMPORTS_PER_SOL);
 
 
             if (walletContext && walletContext.publicKey && walletContext.signTransaction) {
@@ -82,20 +91,34 @@ const claimRewards = async (
                     , walletContext
                 )
     
+                console.log(`93`)
+                console.log(expeditionInvite);
                 const feeTokenAccount = await createAssociatedTokenAccountSendUnsigned(
                     connection
                     , new PublicKey(expeditionInvite.mint)
-                    , new PublicKey(expeditionInvite.vaultAccount)
+                    , new PublicKey(expeditionInvite.feeAccount)
                     , walletContext
                 )
                 // initialize the claim tx
+                console.log(`new PublicKey(expeditionInvite.distributionAuthority)`);
+                console.log(new PublicKey(expeditionInvite.distributionAuthority));
+                console.log(`new PublicKey(expeditionInvite.escrowAccount)`);
+                console.log(new PublicKey(expeditionInvite.escrowAccount));
+                console.log(`new PublicKey(expeditionInvite.vaultAccount)`);
+                console.log(new PublicKey(expeditionInvite.vaultAccount));
+                console.log(`new PublicKey(expeditionInvite.recipient)`);
+                console.log(new PublicKey(expeditionInvite.recipient));
+                console.log(`new PublicKey(expeditionInvite.mint)`);
+                console.log(new PublicKey(expeditionInvite.mint));
                 const txId = await program.methods
-                .distributeReward(amount)
+                .distributeReward(new BN(amount), new BN(feeAmount))
                 .accounts({
                     distributionAuthority: new PublicKey(expeditionInvite.distributionAuthority),
                     escrowAccount: new PublicKey(expeditionInvite.escrowAccount),
                     vaultAccount: new PublicKey(expeditionInvite.vaultAccount),
                     vaultTokenAccount: vaultTokenAccount,
+                    feeAccount: new PublicKey(expeditionInvite.feeAccount),
+                    feeTokenAccount: feeTokenAccount,
                     recipient: new PublicKey(expeditionInvite.recipient),
                     recipientTokenAccount: recipientTokenAccount,
                     token: new PublicKey(expeditionInvite.mint),
@@ -346,6 +369,8 @@ const ExpeditionsPage = (props: any) => {
     // console.log(data.expeditionInvites)
     const isActive = activeTab == 'Active';
     // at least 2 claims left (provide buffer to prevent going over; could also implement a "claim when you start" system)
+    console.log(`data.expeditionInvites`)
+    console.log(data.expeditionInvites)
     const rows = data.expeditionInvites.filter( x => isActive ? ( !x.payoutTxId ) && (x.maxNumClaims >= (x.currentClaims + 2)) : x.payoutTxId ).map( x => {
         const projects = data.trailheads.filter(trailhead => trailhead.id == x.trailheadId)
         // const status = x.claimTimestamp

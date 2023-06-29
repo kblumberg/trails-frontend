@@ -28,6 +28,7 @@ import { Trail } from '../models/Trail';
 import { Trailhead } from '../models/Trailhead';
 
 import 'react-tooltip/dist/react-tooltip.css';
+import AdminPage from './AdminPage';
 
 
 const MainPanel = (props: any) => {
@@ -59,6 +60,7 @@ const MainPanel = (props: any) => {
                                     <Route path='/settings' element={<SettingsPage />} />
                                     <Route path='/leaderboard' element={<LeaderboardPage />} />
                                     <Route path='/frontier' element={<FrontierPage />} />
+                                    <Route path='/admin' element={<AdminPage />} />
                                     <Route path='/about' element={<AboutPage />} />
                                     <Route path='/:program' element={<ProgramPage />} />
                                     <Route path="*" element={<MainPage />} />

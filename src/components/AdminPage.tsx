@@ -18,10 +18,9 @@ import { useWallet, WalletContextState } from '@solana/wallet-adapter-react';
 import axios from 'axios';
 import HttpStatusCodes from 'http-status-codes';
 import { CustomWallet } from '../models/CustomWallet';
-import { createAssociatedTokenAccountSendUnsigned, cleanProjectName, getTxUrl, parseMessage } from '../utils/utils';
+import { createAssociatedTokenAccountSendUnsigned, cleanProjectName, getTxUrl, parseMessage, getTokenFromMint } from '../utils/utils';
 import { TOKEN_PROGRAM_ID } from '@project-serum/anchor/dist/cjs/utils/token';
 import { ToastContainer, toast } from 'react-toastify';
-
 
 
 const findAssociatedTokenAddress = (
@@ -145,13 +144,14 @@ const depositFunds = async (
 			}
 			console.log(`txId`);
 			console.log(txId);
+			return({'txId': txId, 'succeeded': true, 'message': `${isDeposit ? 'Deposited' : 'Withdrew'} ${amount} $${getTokenFromMint(mintAddress)}`})
 		}
-
+		return({'succeeded': false, 'message': `Wallet is not connected`});
 	}
 	catch (err) {			
 		console.log(`depositFunds error`);
 		console.log(err);
-		return(1);
+		return({'succeeded': false, 'message': err});
 	}
 }
 
@@ -227,7 +227,7 @@ const addRewardPool = async (
 
 			console.log('227')
 			const txId = await program.methods
-			.initializeEscrow(new BN(nonce), new BN(FEE_AMOUNT), new BN(FEE_DECIMALS))
+			.initializeEscrow(new BN(nonce))
 			.accounts({
 				escrowAccount: escrowAccount.publicKey,
 				vaultAccount: vaultAccount,
@@ -251,7 +251,7 @@ const addRewardPool = async (
 			let response = await axios({
 				method: 'post',
 				url: BACKEND_URL+'/api/rewardPoolAccount/addPool',
-				data: {'txId': txId, 'trailheadId': trailheadId, 'feeAmount': FEE_AMOUNT, 'feeDecimals': FEE_DECIMALS}
+				data: {'txId': txId, 'trailheadId': trailheadId}
 			});
 			console.log(`response`);
 			console.log(response);
@@ -386,8 +386,7 @@ const AdminPage = (props: any) => {
 	const [ userBalances, setUserBalances ] = React.useState({} as any);
 	const [ poolBalances, setPoolBalances ] = React.useState({} as any);
 
-	const headerImg = require(`../assets/projects/famousfoxfederation.png`);
-	// const headerImg = require(`../assets/projects/marinadefinance.png`);
+	const compass = require('../assets/icons/compass.png');
 
 	const walletContext = useWallet();
 	// const { publicKey, wallet, signTransaction, signAllTransactions } = useWallet();
@@ -452,20 +451,19 @@ const AdminPage = (props: any) => {
 			'name': 'SOL'
 			, 'mint': 'So11111111111111111111111111111111111111112'
 		}
+		// , {
+		// 	'name': 'mSOL'
+		// 	, 'mint': 'mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So'
+		// }
+		// , {
+		// 	'name': 'FOXY'
+		// 	, 'mint': 'FoXyMu5xwXre7zEoSvzViRk3nGawHUp9kUh97y2NDhcq'
+		// }
+		// , {
+		// 	'name': 'BONK'
+		// 	, 'mint': 'DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263'
+		// }
 		, {
-			'name': 'mSOL'
-			, 'mint': 'mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So'
-		}
-		, {
-			'name': 'FOXY'
-			, 'mint': 'FoXyMu5xwXre7zEoSvzViRk3nGawHUp9kUh97y2NDhcq'
-		}
-		, {
-			'name': 'BONK'
-			, 'mint': 'DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263'
-		}
-		,
-		 {
 			'name': 'USDC'
 			, 'mint': TEST_TOKEN.toString()
 		}
@@ -531,11 +529,12 @@ const AdminPage = (props: any) => {
 		}
 	)
 	const isTrails = data.address == ADMIN_ADDRESS;
+	// const project = data.trailheads.filter(x => x.id ==  )
 	const header = 
 		<div className='admin-header-outer'>
 			<div className='admin-header'>
-				{ isTrails ? null : <img className='admin-header-image' src={String(headerImg)} />}
-				Trailblazer Rewards
+				{ isTrails ? null : <img className='admin-header-image' src={String(compass)} />}
+				Expedition Rewards
 			</div>
 		</div>
 	if (isTrails) {
@@ -579,8 +578,8 @@ const AdminPage = (props: any) => {
 		<div className='admin-page'>
 			<div className='admin-header-outer'>
 				<div className='admin-header'>
-					<img className='admin-header-image' src={String(headerImg)} />
-					Trailblazer Rewards
+					<img className='admin-header-image' src={String(compass)} />
+					Expedition Rewards
 				</div>
 			</div>
 			<div style={{'paddingBottom': '10px'}}>
@@ -654,7 +653,34 @@ const AdminPage = (props: any) => {
 						onClick={async () => {
 							if (data.rewardPoolAccount) {
 								console.log(`mint = ${mint}`);
-								depositFunds(6, data.rewardPoolAccount, data.address, walletContext, mint, parseFloat(value), toggle == 'deposit').then( () => {
+								depositFunds(6, data.rewardPoolAccount, data.address, walletContext, mint, parseFloat(value), toggle == 'deposit').then( (res: any) => {
+
+									if (res.succeeded) {
+										// const txId = response.data.tx;
+										const msg = () => toast(
+											<div>
+												{res.message}<br/><a target='_blank' href={getTxUrl(res.txId)}>View in Solana FM</a>
+												{/* {`Transaction Succeeded ${response.data.tx}`} */}
+											</div>
+											, {
+												'theme': 'light'
+												, 'type': 'success'
+											}
+										);
+										msg()
+									} else {
+										// setErrorText( parseMessage(response.data.status) );
+										const msg = () => toast(
+											<div>
+												Transaction Failed<br/><br/>{res.message}
+											</div>
+											, {
+												'theme': 'light'
+												, 'type': 'error'
+											}
+										);
+										msg()
+									}
 									const cur = {...userBalances}
 									getSpecificUserTokenBalances(cur, [mint], data.address);
 									getSpecificUserTokenBalances(cur, [mint], vaultAccount);
@@ -665,6 +691,8 @@ const AdminPage = (props: any) => {
 					>{`${toggle.charAt(0).toUpperCase()}${toggle.substring(1)}`}</Button>
 				</div>
 			</div>
+			<ToastContainer
+				position="bottom-left"/>
 		</div>
 	);
 }

@@ -250,14 +250,6 @@ const ProgramPage = (props: any) => {
         )
         return(slides);
     })
-    const slides = trailList[step];
-    const now = Math.round(100 * slideNum / (slides.length - 1));
-    const trailId = curTrails[step].id;
-    const slideId = curTrails[step].slides[slideNum]?.id;
-    const title = curTrails[step].slides[slideNum]?.title;
-    const programIds = curTrails[step].slides[slideNum]?.programIds;
-    const quiz = curTrails[step].slides[slideNum]?.quiz;
-
     useEffect(() => {
         setSelectedOption(-1);
         try {
@@ -309,6 +301,17 @@ const ProgramPage = (props: any) => {
 
         }
     }, [slideNum]);
+    const slides = trailList[step];
+    if (!slides) {
+        return(null);
+    }
+    const now = Math.round(100 * slideNum / (slides.length - 1));
+    const trailId = curTrails[step].id;
+    const slideId = curTrails[step].slides[slideNum]?.id;
+    const title = curTrails[step].slides[slideNum]?.title;
+    const programIds = curTrails[step].slides[slideNum]?.programIds;
+    const quiz = curTrails[step].slides[slideNum]?.quiz;
+
     const isLastSlide = slideNum == slides.length - 1;
     const className = isLastSlide ? '' : 'hidden';
     const alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');

@@ -40,14 +40,6 @@
         {
           "name": "nonce",
           "type": "u8"
-        },
-        {
-          "name": "feeAmount",
-          "type": "u8"
-        },
-        {
-          "name": "feeDecimals",
-          "type": "u8"
         }
       ]
     },
@@ -216,6 +208,10 @@
         {
           "name": "amount",
           "type": "u64"
+        },
+        {
+          "name": "feeAmount",
+          "type": "u64"
         }
       ]
     },
@@ -252,14 +248,6 @@
           {
             "name": "feeAccount",
             "type": "publicKey"
-          },
-          {
-            "name": "feeAmount",
-            "type": "u8"
-          },
-          {
-            "name": "feeDecimals",
-            "type": "u8"
           },
           {
             "name": "nonce",

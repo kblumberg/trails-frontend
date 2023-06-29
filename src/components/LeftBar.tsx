@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Link, NavLink, useLocation } from 'react-router-dom';
+import { ADMIN_ADDRESS } from 'src/constants/constants';
 import { IState } from 'src/store/interfaces/state';
 import { isMobile } from 'src/utils/utils';
 
@@ -62,7 +63,7 @@ const LeftBar = (props: any) => {
                     </div>
                 </NavLink>
                 {
-                    data.isAdmin ? 
+                    data.isAdmin || data.address == ADMIN_ADDRESS ? 
                     <NavLink className={(navData) => (navData.isActive ? 'active' : '')} to ='/admin'>
                         <div className='left-bar-item'>
                             <img className='left-bar-logo' alt='logo' src={String(admin)} />{isMobile ? '' : 'Admin'}
