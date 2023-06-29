@@ -87,7 +87,6 @@ const saveSlideMovement = async (address: string, trailheadId: number, step: num
 }
 
 const saveUserXp = async (address: string, trailheadId: number, step: number, slide: number, trailId: string, slideId: string, xp: number, dispatch: Dispatch, data: IState) => {
-    console.log(`saveUserXp`)
     const fields = {
         'address': address
         , 'trailheadId': trailheadId
@@ -98,7 +97,6 @@ const saveUserXp = async (address: string, trailheadId: number, step: number, sl
         , 'xp': xp
         , 'token': data.token
     };
-    console.log(fields);
 
     const newXp = new Xp(address, trailheadId, step, slide, trailId, slideId, Date.now(), xp);
     let response = await axios({
@@ -106,8 +104,6 @@ const saveUserXp = async (address: string, trailheadId: number, step: number, sl
         url: BACKEND_URL+'/api/user/saveUserXp2',
         data: fields
     });
-    console.log(`saveUserXp response`)
-    console.log(response)
     if (response.status == 200) {
         const xps = data.xps;
         xps.push(newXp);
@@ -146,14 +142,10 @@ const ProgramPage = (props: any) => {
     const curTrails = data.trails.filter(x => curTrailheads.includes(x.trailheadId)).sort((a, b) => a.step - b.step);
 
     
-    // console.log(`curTrails`);
-    // console.log(curTrails);
     const trailList = curTrails.map((x, i) => {
         const slides = x.slides.map((y, j) => {
             let item = null;
             if (y.quiz) {
-                // console.log('y.quiz.correctOption');
-                // console.log(y.quiz.correctOption);
                 const hasCompleted = data.xps.filter(xp => xp.slideId == y.id ).length > 0;
                 const options = y.quiz.options.map( (op, index) => {
                     return(
@@ -161,7 +153,6 @@ const ProgramPage = (props: any) => {
                         <Button className='trails-button quiz-pill inner' variant="primary" onClick={() => {
                             playClick();
                             setSelectedOption(index);
-                            console.log(`setSelectedOption = ${index}`)
                             // const num = slideNum;
                             // saveSlideMovement(data.address, curTrailheadId, step, num, false, dispatch, data);
                             // setSlideNum(num - 1);
@@ -185,7 +176,6 @@ const ProgramPage = (props: any) => {
                                 isCorrect={selectedOption == y.quiz.correctOption}
                                 disabled={selectedOption < 0}
                                 onClick = {() => {
-                                    console.log(`BurstButton click hasCompleted = ${hasCompleted} isCorrect = ${selectedOption == y.quiz?.correctOption}`);
                                     if ((!hasCompleted) && selectedOption == y.quiz?.correctOption) {
                                         saveUserXp(data.address, curTrailheadId, step, slideNum, trailId, slideId, curTrails[step].xp, dispatch, data);
                                     }
@@ -381,7 +371,6 @@ const ProgramPage = (props: any) => {
 		, 'MarinadeFinance': 'Marinade Finance'
 	};
     const programName: string = program && Object.hasOwn(program_d, program) ? program_d[program] : program;
-    // console.log(`hasQuiz = ${hasQuiz}. completed = ${completed}. step = ${step}. hasCompleted = ${hasCompleted}`)
     return (
         <>
             <div className='program-page'>
@@ -422,7 +411,7 @@ const ProgramPage = (props: any) => {
                             {slides[slideNum]}
                             <div className={`${isLastSlide ? 'level-complete-outer' : ''}`}>
                                 {
-                                    programName == 'Mad Trail' && isLastSlide && step == 3 ? 
+                                    programName == 'Mad Trail' && isLastSlide && step == 5 ? 
                                     <div style={{'textAlign':'center', 'paddingBottom': '30px', 'position': 'relative', 'zIndex': '9999'}}>Congratulations soldier! Keep your training going by climbing up the <NavLink to='/leaderboard'>Mad Trail leaderboard</NavLink> and earning your Mad Trainee WL!</div>
                                     : null
                                 }
@@ -460,8 +449,6 @@ const ProgramPage = (props: any) => {
                                 saveSlideMovement(data.address, curTrailheadId, step, num, true, dispatch, data);
                                 // TODO: check if they've completed this slide before. if not, add xp
 
-                                console.log(`num = ${num}. slides.length = ${slides.length}`);
-
                                 if (num + 1 == slides.length) {
                                     setSlideNum(0);
                                     handleClose();
@@ -469,7 +456,6 @@ const ProgramPage = (props: any) => {
                                     if (num + 2 == slides.length) {
 
                                         const finalSlideId = curTrails[step].slides[num]?.id;
-                                        console.log(`finalSlideId = ${finalSlideId}`);
 
                                         const hasCompleted = data.xps.filter(x => 
                                             x.address == data.address
@@ -478,9 +464,7 @@ const ProgramPage = (props: any) => {
                                         )
                                         playComplete();
                                         successTimeline.play();
-                                        console.log(`hasCompleted = ${hasCompleted}`)
                                         if (!hasCompleted.length) {
-                                            console.log(`461 saveUserXp`)
                                             const response = saveUserXp(data.address, curTrailheadId, step, num, trailId, finalSlideId, curTrails[step].xp, dispatch, data);
                                         }
                                     } else {
