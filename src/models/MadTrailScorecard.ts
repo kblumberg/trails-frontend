@@ -1,3 +1,7 @@
+/*****************************/
+/*     MadTrailScorecard     */
+/*****************************/
+// the user's scorecard for the mad trail leaderboard
 
 export class MadTrailScorecard {
     address: string;

@@ -1,11 +1,11 @@
-import { Hike } from 'src/models/Hike';
-import { Trailhead } from 'src/models/Trailhead';
-import { Trail } from 'src/models/Trail';
-import { SlideMovement } from 'src/models/SlideMovement';
 import { Xp } from 'src/models/Xp';
+import { Hike } from 'src/models/Hike';
+import { Trail } from 'src/models/Trail';
+import { Trailhead } from 'src/models/Trailhead';
+import { SlideMovement } from 'src/models/SlideMovement';
+import { MadTrailScorecard } from 'src/models/MadTrailScorecard';
 import { IRewardPoolAccount } from 'src/models/RewardPoolAccount';
 import { ExpeditionInviteDetail } from 'src/models/ExpeditionInviteDetail';
-import { MadTrailScorecard } from 'src/models/MadTrailScorecard';
 
 export interface IState{
     xps: Xp[];
@@ -19,11 +19,11 @@ export interface IState{
     userDate: number;
     username: string;
     trailheads: Trailhead[];
-    rewardPoolAccount: IRewardPoolAccount | null;
     quizDisabledUntil: number;
     slideMovements: SlideMovement[];
-    expeditionInvites: ExpeditionInviteDetail[];
     madTrailScorecard: MadTrailScorecard;
+    expeditionInvites: ExpeditionInviteDetail[];
+    rewardPoolAccount: IRewardPoolAccount | null;
     leaderboard: [string, string, string, number, boolean][];
 }
 

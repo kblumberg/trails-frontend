@@ -1,21 +1,14 @@
-import { Connection, GetVersionedTransactionConfig, PublicKey, Transaction } from '@solana/web3.js';
-import React, { useEffect } from 'react';
-import { useParams } from "react-router-dom"
-import { CONFIG, NETWORK } from 'src/constants/constants';
+/***********************/
+/*     About Page     */
+/***********************/
+// Simple page to display info about Trails
+
+import React from 'react';
 import { MDBAccordion, MDBAccordionItem } from 'mdb-react-ui-kit';
 
 const AboutPage = (props: any) => {
-    const rows = [
-        []
-    ]
 	return (
         <div className='about-page'>
-            {/* <div>
-                About Us
-            </div>
-            <div>
-                We are cool
-            </div> */}
             <div>
                 <MDBAccordion initialActive={1}>
                     <MDBAccordionItem collapseId={1} headerTitle='What is Trails?'>

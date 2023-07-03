@@ -1,4 +1,9 @@
-import { Slide } from "./Slide";
+/*****************/
+/*     Trail     */
+/*****************/
+// each trailhead is made up of a list of trails
+
+import { Slide } from './Slide';
 
 export class Trail {
 

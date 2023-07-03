@@ -1,40 +1,31 @@
 import { BN, web3 } from '@project-serum/anchor';
-import { account, util, WalletI } from 'easy-spl';
+import { account, util } from 'easy-spl';
 import { ASSOCIATED_TOKEN_PROGRAM_ID, Token, TOKEN_PROGRAM_ID } from '@solana/spl-token';
-import { IState } from "src/store/interfaces/state";
-import { Slide } from "../models/Slide";
-import { ClaimRewardResult } from "src/enums/ClaimRewardResult";
 import { WalletContextState } from '@solana/wallet-adapter-react';
-import { SOL_ADDRESS } from 'src/constants/constants';
-import { MadTrailScorecard } from "../models/MadTrailScorecard";
+import { SOL_ADDRESS, SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID } from '../constants/constants';
+import { MadTrailScorecard } from '../models/MadTrailScorecard';
+import { PublicKey } from '@solana/web3.js';
+
+// check if device is mobile or desktop
+const width = (window.innerWidth > 0) ? window.innerWidth : window.screen.height;
+export const isMobile = width < 768;
 
 export const cleanProjectName = (program: string) => {
 	const program_d: any = {
-		'Magic': 'Magic Eden'
-		, 'Exchange': 'Exchange Art'
-		, 'MadWars': 'Mad Wars'
-		, 'FamousFoxFederation': 'Famous Fox Federation'
-		, 'FamousFoxFederation2': 'Famous Fox Federation'
-		, 'ZetaMarkets': 'Zeta Markets'
-		, 'JupiterExchange': 'Jupiter Exchange'
-		, 'AverExchange': 'Aver Exchange'
-		, 'MarinadeFinance': 'Marinade Finance'
 	};
-	const programName: string = program && Object.hasOwn(program_d, program) ? program_d[program] : program;
+	const programName: string = program && Object.hasOwn(program_d, program) ? program_d[program] : program.replace(/([A-Z])/g, ' $1').trim().replace(new RegExp('[0-9]', 'g'), '');
 	return(programName);
 }
 
-const width = (window.innerWidth > 0) ? window.innerWidth : window.screen.height;
-export const isMobile = width < 768;
 export const getTokenFromMint = (mint: string) => {
-		const mintToTokenMap: any = {
-				'So11111111111111111111111111111111111111112': 'SOL'
-				, '5SosK71HJr9UpcwopNam8X9ZnuonDoGERjziWSnws4u4': 'USDC'
-		}
-		if (Object.hasOwn(mintToTokenMap, mint)) {
-				return(mintToTokenMap[mint]);
-		}
-		return(mint);
+	const mintToTokenMap: any = {
+		'So11111111111111111111111111111111111111112': 'SOL'
+		, '5SosK71HJr9UpcwopNam8X9ZnuonDoGERjziWSnws4u4': 'USDC'
+	}
+	if (Object.hasOwn(mintToTokenMap, mint)) {
+			return(mintToTokenMap[mint]);
+	}
+	return(mint);
 }
 
 export const toTitleCase = (str: string) => {
@@ -51,58 +42,40 @@ export const parseMessage = (message: string) => {
 }
 
 export const getTxUrl = (txId: string) => {
+	// TODO: base this off of network (localnet vs devnet vs mainnet)
 	return(`https://solana.fm/tx/${txId}?cluster=http%253A%252F%252F127.0.0.1%253A8899%252F`);
 }
 
 export const formatDate = (timestamp: number, useMinutes: boolean = false, useWeekday: boolean = true) => {
-		const date = new Date(timestamp);
-	
-		// Get the day of the week (e.g., "Wed")
-		const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-		const dayOfWeek = `${daysOfWeek[date.getDay()]} `;
-	
-		// Get the month (e.g., "Jun")
-		const months = [
-			'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-			'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-		];
-		const month = months[date.getMonth()];
-	
-		// Get the day of the month (e.g., 10th, 1st, 2nd, etc.)
-		const day = date.getDate();
-		const suffix = getNumberSuffix(day); // Get the appropriate suffix for the day
-	
-		// Get the hour (e.g., 9) and AM/PM indicator
-		let hour = date.getHours();
-		let minute = date.getMinutes();
-		const minutes = useMinutes ? (minute >= 10 ? `:${minute}` : `:0${minute}`) : '';
-		const amPm = hour >= 12 ? 'pm' : 'am';
-		hour = hour % 12 || 12; // Convert to 12-hour format
+	const date = new Date(timestamp);
 
-		return `${useWeekday ? dayOfWeek : ''}${month} ${day}${suffix} ${hour}${minutes}${amPm}`;
-	}
+	// Get the day of the week (e.g., 'Wed')
+	const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+	const dayOfWeek = `${daysOfWeek[date.getDay()]} `;
+
+	// Get the month (e.g., 'Jun')
+	const months = [
+		'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+		'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+	];
+	const month = months[date.getMonth()];
+
+	// Get the day of the month (e.g., 10th, 1st, 2nd, etc.)
+	const day = date.getDate();
+	const suffix = ordinal_suffix_of(day); // Get the appropriate suffix for the day
+
+	// Get the hour (e.g., 9) and AM/PM indicator
+	let hour = date.getHours();
+	let minute = date.getMinutes();
+	const minutes = useMinutes ? (minute >= 10 ? `:${minute}` : `:0${minute}`) : '';
+	const amPm = hour >= 12 ? 'pm' : 'am';
+	hour = hour % 12 || 12; // Convert to 12-hour format
+
+	return `${useWeekday ? dayOfWeek : ''}${month} ${suffix} ${hour}${minutes}${amPm}`;
+}
 	
-	const getNumberSuffix = (number: number) => {
-		if (number >= 11 && number <= 13) {
-			return 'th';
-		}
-	
-		const lastDigit = number % 10;
-	
-		switch (lastDigit) {
-			case 1:
-				return 'st';
-			case 2:
-				return 'nd';
-			case 3:
-				return 'rd';
-			default:
-				return 'th';
-		}
-	}
-	
-	export const getCurrentTimestamp = () => {
-		return(new Date().getTime())
+export const getCurrentTimestamp = () => {
+	return(new Date().getTime())
 }
 
 
@@ -113,14 +86,13 @@ export const createAssociatedTokenAccountSendUnsigned = async (
 	owner: web3.PublicKey,
 	wallet: WalletContextState
 ) => {
-	// if (mint.toString() == SOL_ADDRESS) {
-	// 	return(owner);
-	// }
+	// if an address already has a token account, return it
 	const address = await Token.getAssociatedTokenAddress(ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID, mint, owner, true);
 	if (await account.exists(conn, address)) {
 		console.log(`token address for ${owner.toString()} exists ${address}`);
 		return address
 	}
+	// otherwise, create it
 	if (wallet.publicKey) {
 		const instruction = Token.createAssociatedTokenAccountInstruction(
 				ASSOCIATED_TOKEN_PROGRAM_ID,
@@ -141,6 +113,7 @@ export const createAssociatedTokenAccountSendUnsigned = async (
 }
 
 export const getXpFromMadWarsScorecard = (s: MadTrailScorecard) => {
+	// get the mad trail scorecard for a user
     const amt = Math.min(1000000, s.volume);
     return(
         (s.hasApt ? 10 : 0)
@@ -150,21 +123,10 @@ export const getXpFromMadWarsScorecard = (s: MadTrailScorecard) => {
         + (s.hasLong ? 10 : 0)
         + (s.hasShort ? 10 : 0)
         + (s.hasSol ? 10 : 0)
-        // + (s.numProfit1 * 5)
-        // + (s.numProfit5 * 10)
-        // + (s.numProfit10 * 20)
-        // + (s.numProfit50 * 50)
-        // + (s.numProfit100 * 100)
-        // + (Math.min(3, s.numVolume10) * 5)
-        // + (Math.min(3, s.numVolume50) * 10)
-        // + (Math.min(3, s.numVolume100) * 20)
-        // + (Math.min(3, s.numVolume500) * 50)
-        // + (Math.min(3, s.numVolume1000) * 100)
         + Math.floor(amt / 1000)
-        + Math.floor(Math.log10(amt)) * 15
+        + Math.floor(Math.max(0, Math.log10(amt))) * 15
     )
 }
-
 
 export const ordinal_suffix_of = (i: number) => {
     const j = i % 10, k = i % 100;
@@ -178,4 +140,31 @@ export const ordinal_suffix_of = (i: number) => {
         return(i + 'rd');
     }
     return(i + 'th');
+}
+
+export const findAssociatedTokenAddress = (
+	walletAddress: PublicKey,
+	tokenMintAddress: PublicKey
+) => {
+	// get a user's associated token address
+	if (tokenMintAddress.toString() == SOL_ADDRESS) {
+		return(walletAddress);
+	}
+	return PublicKey.findProgramAddressSync(
+		[
+			walletAddress.toBuffer(),
+			TOKEN_PROGRAM_ID.toBuffer(),
+			tokenMintAddress.toBuffer(),
+		],
+		SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID
+	)[0];
+}
+
+
+export const cleanTxId = (txId: string) => {
+	// users can submit urls when they submit their tx, so we do some cleaning
+    const cleaned_0 = txId.split('/')
+    const i = cleaned_0.length;
+    const cleaned_1 = cleaned_0[i - 1].split('?')[0];
+    return(cleaned_1);
 }

@@ -1,3 +1,7 @@
+/****************/
+/*     Quiz     */
+/****************/
+// the quiz model that appears in the trail slides to test comprehension
 
 export class Quiz {
 

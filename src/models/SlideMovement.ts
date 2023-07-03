@@ -1,3 +1,7 @@
+/*************************/
+/*     SlideMovement     */
+/*************************/
+// when a user moves from slide to slide, we save that data
 
 export class SlideMovement {
 

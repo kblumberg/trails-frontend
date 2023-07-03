@@ -1,4 +1,9 @@
-import { VerifyTransactionResult } from "src/enums/VerifyTransactionResult";
+/****************/
+/*     Hike     */
+/****************/
+// the hike model is for every transaction a user submits
+
+import { VerifyTransactionResult } from 'src/enums/VerifyTransactionResult';
 
 export class Hike {
 

@@ -1,4 +1,8 @@
-// RewardPoolAccount model
+/*****************************/
+/*     RewardPoolAccount     */
+/*****************************/
+// a RewardPoolAccount is the primary data structure for the rewards
+
 import {Schema, model, Model} from 'mongoose';
 
 export interface IRewardPoolAccount {

@@ -91,12 +91,10 @@
 	opacity: 0.8;
 }
 
-.quiz-pill .trails-button.btn.inner > div, .quiz .btn.inner > div {
-	border-radius: 100px;
-}
 .trails-button.btn.inner > div, .quiz .btn.inner > div {
 	background-color: white;
 	padding: 7px 67px;
+	/* color: transparent; */
 	border-radius: 0.375rem;
 }
 .trails-modal .modal-footer .btn.inner > div > div {
@@ -192,7 +190,7 @@
 	border-bottom-left-radius: 0px;
 }
 .trails-green-background {
-	/* background-color: rgb(184, 226, 138); */
+	background-color: rgb(184, 226, 138);
 }
 .trails-green-background > .progress-bar {
 	background-color: rgb(184, 226, 138);
@@ -530,7 +528,7 @@ body, html {
 .burst-button {
 	width: 250px;
 	height: 50px;
-	/* background-color: #CBDC41; */
+	background-color: #CBDC41;
 	cursor: pointer;
 	position: relative;
 	overflow: hidden;
@@ -1143,9 +1141,9 @@ body, html {
 	/* background-color: rgb(134 205 194 ); */
 }
 .outer-ring {
-	/* font-size: 12px; */
-	/* padding: 15px; */
-	/* text-transform: uppercase; */
+	font-size: 12px;
+	padding: 15px;
+	text-transform: uppercase;
 }
 .char-1 {
 	-webkit-transform: rotate(-60deg);
@@ -1354,8 +1352,4 @@ body, html {
 .mad-trail-subheader a:hover {
 	/* text-decoration: underline; */
 	color: rgb(246 33 56 );
-}
-.clickable {
-	text-decoration: underline;
-	cursor: pointer;
 }

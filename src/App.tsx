@@ -1,53 +1,30 @@
-import { ConnectionProvider, useWallet, WalletProvider } from '@solana/wallet-adapter-react';
-import { WalletModalProvider, WalletMultiButton } from '@solana/wallet-adapter-react-ui';
-import {
-  GlowWalletAdapter,
-  LedgerWalletAdapter,
-  PhantomWalletAdapter,
-  SlopeWalletAdapter,
-  SolflareWalletAdapter,
-  SolflareWalletAdapterConfig,
-  SolletExtensionWalletAdapter,
-  SolletWalletAdapter,
-  TorusWalletAdapter,
-} from '@solana/wallet-adapter-wallets';
-import { clusterApiUrl, Connection, PublicKey } from '@solana/web3.js';
-import React, { useEffect, useMemo, useState } from 'react';
+/***************/
+/*     App     */
+/***************/
+// the app page we use to house everything and load global state data when needed
 
-import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
+import AWS from 'aws-sdk';
+import axios from 'axios';
+import { Xp } from './models/Xp';
+import { Trail } from './models/Trail';
+import React, { useEffect } from 'react';
+import XpCard from './components/XpCard';
+import MainPage from './components/MainPage';
+import { Trailhead } from './models/Trailhead';
+import { BrowserRouter } from 'react-router-dom';
+import { IState } from './store/interfaces/state';
+import * as actions from './store/actions/actions';
+import { useDispatch, useSelector } from 'react-redux';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { AWS_KEY, AWS_SECRET, BACKEND_URL } from './constants/constants';
+
 
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.css';
-import MainPage from './components/MainPage';
-import ExpeditionsPage from './components/ExpeditionsPage';
-import SettingsPage from './components/SettingsPage';
-import LeaderboardPage from './components/LeaderboardPage';
-import LeftBar from './components/LeftBar';
-
-import { BrowserRouter, Route, Routes } from "react-router-dom"
-import ProgramPage from './components/ProgramPage';
-import RightPanel from './components/RightPanel';
-import { useDispatch, useSelector } from 'react-redux';
-import axios from 'axios';
-import { AWS_KEY, AWS_SECRET, BACKEND_URL, CONFIG, NETWORK } from './constants/constants';
-import * as actions from './store/actions/actions';
-import { IState } from './store/interfaces/state';
-
-import AWS from 'aws-sdk'
-import XpCard from './components/XpCard';
-import AboutPage from './components/AboutPage';
-import AdminPage from './components/AdminPage';
-import { Xp } from './models/Xp';
-import { isMobile } from './utils/utils';
-import FrontierPage from './components/FrontierPage';
-import { Trail } from './models/Trail';
-import { Trailhead } from './models/Trailhead';
-
-import 'react-toastify/dist/ReactToastify.css';
 import 'react-tooltip/dist/react-tooltip.css';
-import MainPanel from './components/MainPanel';
-
+import 'react-toastify/dist/ReactToastify.css';
 require('@solana/wallet-adapter-react-ui/styles.css');
+
 const S3_BUCKET = 'trails-avatars';
 const REGION = 'us-east-1';
 
@@ -60,100 +37,24 @@ const s3 = new AWS.S3({
     region: REGION,
 })
 
-const getTx = async (txId: string, connection: Connection) => {
-	const tx = await connection.getTransaction(txId);
-	// console.log(`getTx ${txId}`)
-	// console.log(tx);
-	// console.log(tx?.transaction.message.accountKeys.map(x => x.toString()));
-}
-
-const getTransactionsOfUser = async (address: string, options: any, connection: Connection) => {
-    console.log({ address, options });
-	console.log(`getTransactionsOfUser`);
-    try {
-      const publicKey = new PublicKey(address);
-      const transSignatures =
-        await connection.getConfirmedSignaturesForAddress2(publicKey, options);
-      console.log({ transSignatures });
-      const transactions = [];
-      for (let i = 0; i < transSignatures.length; i++) {
-		console.log(`transSignatures ${i}`);
-        const signature = transSignatures[i].signature;
-
-		const config = {
-			// 'commitment': 'confirmed',
-			'maxSupportedTransactionVersion': 100
-		};
-        // const confirmedTransaction = await connection.getConfirmedTransaction(
-        const confirmedTransaction = await connection.getTransaction(
-			signature,
-			config
-		);
-		// if (signature == 'zbcrRgSGdTjdnrvZVC1qKe3qxW492xbdx911My1Qsm4QgAZK1ugFhac1rT4Cdvf67piSg5f8m7VBSwrAYdsBtic') {
-		if (signature == '33zKK8tXNv43DS6iX8AgCaVy3hpeaNNTVaBwWgHyHWQ5AW5DuRexyHTx5FBPEX5y8TNn8wzbC9JpXwJXAwm6onHS') {
-			console.log(`confirmedTransaction`);
-			console.log(confirmedTransaction);
-		}
-        if (confirmedTransaction) {
-          const { meta } = confirmedTransaction;
-          if (meta) {
-            const oldBalance = meta.preBalances;
-            const newBalance = meta.postBalances;
-            const amount = oldBalance[0] - newBalance[0];
-            const transWithSignature = {
-              signature,
-              ...confirmedTransaction,
-              fees: meta?.fee,
-              amount,
-            };
-            transactions.push(transWithSignature);
-          }
-        }
-      }
-      return transactions;
-    } catch (err) {
-      throw err;
-    }
-  }
-
 function App() {
-	const solNetwork = WalletAdapterNetwork.Mainnet;
-	const endpoint = useMemo(() => clusterApiUrl(solNetwork), [solNetwork]);
-
-	const config: SolflareWalletAdapterConfig = {
-		'network': solNetwork
-	};
-
-	// const connection = new Connection(NETWORK, CONFIG);
-
-	// getTx('55zbj9kqnQKZoP9tSvtKgs4yqgih2aDqjcyc1saVbsQyWfttr2HpczgvQrmTkbZqpDqmevWQj76qfDPgLH36Jwy9', connection);
-
-	const wallets = [
-		new PhantomWalletAdapter(),
-		new GlowWalletAdapter(),
-		new SlopeWalletAdapter(),
-		new SolflareWalletAdapter(config),
-		new TorusWalletAdapter(),
-		new LedgerWalletAdapter(),
-		new SolletExtensionWalletAdapter(),
-		new SolletWalletAdapter(),
-	];
-
+	// react hooks
 	const dispatch = useDispatch();
-	const { publicKey, wallet, disconnect } = useWallet();
+	const { publicKey } = useWallet();
 	const data: IState = useSelector((state: any) => state.data);
 
 	const loadTrails = async () => {
+		// load all the trails
 		let response = await axios({
 			method: 'get',
 			url: BACKEND_URL+'/api/trails/trails',
 		});
 		let trails: Trail[] = response.data;
-		// trails = trails.filter(x => x.hidden == false);
 		trails = trails.filter(x => x.hidden == false);
 		dispatch(actions.setTrails(trails));
 	}
 	const loadTrailheads = async () => {
+		// load all the trailheads
 		let response = await axios({
 			method: 'get',
 			url: BACKEND_URL+'/api/trailheads/trailheads',
@@ -162,8 +63,6 @@ function App() {
 		trailheads = trailheads.sort((a, b) => b.id - a.id);
 		trailheads = trailheads.filter(x => x.id != 16);
 		trailheads = trailheads.filter(x => x.id != 20);
-		// trailheads = trailheads.filter(x => x.hidden == false);
-		// trailheads = trailheads.sort((a, b) => (a.id >= 10 && b.id >= 10) ? a.id - b.id : b.id - a.id);
 		trailheads = trailheads.filter(x => x.id != 6);
 		dispatch(actions.setTrailheads(trailheads));
 	}
@@ -221,7 +120,6 @@ function App() {
 		let response = await axios({
 			method: 'get',
 			url: BACKEND_URL+'/api/hikes/leaderboard',
-			// data: {'address': address}
 		});
 		let leaderboard = response.data;
 		console.log(`done loadLeaderboard`)
@@ -266,10 +164,7 @@ function App() {
 			url: BACKEND_URL+'/api/user/checkIsAdmin',
 			data: {'address': address, 'token': response.data}
 		});
-		console.log(`isAdminResponse`);
-		console.log(isAdminResponse);
 		const isAdmin = isAdminResponse && isAdminResponse.data.poolAuthority;
-		console.log(`isAdmin = ${isAdmin}`);
 		if (isAdmin) {
 			const rewardPoolAccount = isAdminResponse.data;
 			console.log(`rewardPoolAccount = ${rewardPoolAccount}`);
@@ -277,7 +172,6 @@ function App() {
 		}
 		dispatch(actions.setIsAdmin(isAdmin));
 	}
-
 	const loadExpeditions = async (address: string) => {
 		if (!address) {
 			return(1);
@@ -287,36 +181,19 @@ function App() {
 			url: BACKEND_URL+'/api/expedition/expeditionInvites',
 			data: {'address': address}
 		});
-		console.log(`expeditionInvites response`)
-		console.log(response);
 		dispatch(actions.setExpeditionInvites(response.data));
-		// let isAdminResponse: any = await axios({
-		// 	method: 'post',
-		// 	url: BACKEND_URL+'/api/user/checkIsAdmin',
-		// 	data: {'address': address, 'token': response.data}
-		// });
-		// console.log(`isAdminResponse`);
-		// console.log(isAdminResponse);
-		// const isAdmin = isAdminResponse && isAdminResponse.data.poolAuthority;
-		// console.log(`isAdmin = ${isAdmin}`);
-		// if (isAdmin) {
-		// 	const rewardPoolAccount = isAdminResponse.data;
-		// 	console.log(`rewardPoolAccount = ${rewardPoolAccount}`);
-		// 	dispatch(actions.setRewardPoolAccount(rewardPoolAccount));
-		// }
-		// dispatch(actions.setIsAdmin(isAdmin));
 	}
 
 	useEffect(() => {
+		// load data on page load
 		loadTrails();
 		loadTrailheads();
 		loadLeaderboard();
 	}, [])
 
-	// const userAccount: Wallet = new Wallet(connection, provider.wallet);
-	// const address = userAccount.publicKey;
 	const useAddress = publicKey ? publicKey.toString() : '';
 	if (useAddress !== data.address) {
+		// if we have changed wallets, update the data
 		dispatch(actions.setAddress(useAddress));
 		loadHikes(useAddress);
 		loadSlideMovements(useAddress);
@@ -327,16 +204,10 @@ function App() {
 		saveConnect(useAddress);
 
 		if (useAddress) {
-			// getTransactionsOfUser(useAddress, {'limit':1000, 'maxSupportedTransactionVersion': 0}, connection);
-		}
-
-		if (useAddress) {
 			var params = {Bucket: 'trails-avatars', Key: `${ useAddress }.png`};
 			s3.getObject(params).on('success', function(response: any) {
-				// console.log("Key was", response.request.params.Key);
 				dispatch(actions.setImage(`https://trails-avatars.s3.us-east-1.amazonaws.com/${response.request.params.Key}`));
 			}).on('error',function(error){
-				//error return a object with status code 404
 				dispatch(actions.setImage(``));
 				console.log(`topbar avatar error`);
 				console.log(error);
@@ -347,14 +218,12 @@ function App() {
 			dispatch(actions.setSlideMovements([]));
 		}
 	}
-	const rightPanel = <div className='col-12 col-md-4 right-col' style={{'paddingRight': '0'}}><RightPanel /></div>
-
 	
 	return (
 		<BrowserRouter>
 			<div className='App'>
 				<XpCard />
-				<MainPanel />
+				<MainPage />
 			</div>
 		</BrowserRouter>
 	);

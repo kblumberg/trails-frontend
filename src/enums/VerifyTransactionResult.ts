@@ -1,3 +1,8 @@
+/***********************************/
+/*     VerifyTransactionResult     */
+/***********************************/
+// when we verify a transaction on the backend, here are the possible return values
+
 export const enum VerifyTransactionResult {
     VERIFIED = 'VERIFIED',
     WRONG_TX = 'WRONG_TX',

@@ -1,3 +1,7 @@
+/*********************/
+/*     Trailhead     */
+/*********************/
+// there is a 1<>1 relationship between projects and trailheads
 
 export class Trailhead {
 

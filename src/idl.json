@@ -154,6 +154,11 @@
           "isSigner": true
         },
         {
+          "name": "token",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "escrowAccount",
           "isMut": false,
           "isSigner": false
@@ -189,11 +194,6 @@
           "isSigner": false
         },
         {
-          "name": "token",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
           "name": "systemProgram",
           "isMut": false,
           "isSigner": false
@@ -214,17 +214,6 @@
           "type": "u64"
         }
       ]
-    },
-    {
-      "name": "closePool",
-      "accounts": [
-        {
-          "name": "poolAuthority",
-          "isMut": true,
-          "isSigner": true
-        }
-      ],
-      "args": []
     }
   ],
   "accounts": [

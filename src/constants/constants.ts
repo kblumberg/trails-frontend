@@ -4,9 +4,9 @@ export const AWS_KEY = process.env.REACT_APP_AWS_KEY;
 export const AWS_SECRET = process.env.REACT_APP_AWS_SECRET;
 
 export const isDev = true;
+// export const isDev = false;
 
 // export const BACKEND_URL = 'https://trails-protocol-backend.herokuapp.com';
-// export const BACKEND_URL = 'https://trails-protocol-backend-dev.herokuapp.com';
 export const BACKEND_URL = 'http://localhost:5000';
 // export const BACKEND_URL: string = isDev ? 'http://localhost:5000' : 'https://trails-protocol-backend.herokuapp.com';
 
@@ -39,4 +39,7 @@ export const TEST_TOKEN = new PublicKey('5SosK71HJr9UpcwopNam8X9ZnuonDoGERjziWSn
 
 export const SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID: PublicKey = new PublicKey(
 	'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
-  );
+);
+
+export const S3_REGION = 'us-east-1';
+export const S3_BUCKET = 'trails-avatars';

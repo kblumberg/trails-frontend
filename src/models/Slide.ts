@@ -1,4 +1,9 @@
-import { Quiz } from "./Quiz";
+/*****************/
+/*     Slide     */
+/*****************/
+// each trail has a list of slides
+
+import { Quiz } from './Quiz';
 
 export class Slide {
 

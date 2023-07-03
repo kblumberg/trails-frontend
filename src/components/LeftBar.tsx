@@ -1,27 +1,32 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { Link, NavLink, useLocation } from 'react-router-dom';
-import { ADMIN_ADDRESS } from 'src/constants/constants';
-import { IState } from 'src/store/interfaces/state';
-import { isMobile } from 'src/utils/utils';
+/********************/
+/*     Left Bar     */
+/********************/
+// A simple nav bar on the left side of the page
 
-const home = require('../assets/icons/trailhead.png');
+import React from 'react';
+import { isMobile } from 'src/utils/utils';
+import { useSelector } from 'react-redux';
+import { IState } from 'src/store/interfaces/state';
+import { NavLink, useLocation } from 'react-router-dom';
+import { ADMIN_ADDRESS } from 'src/constants/constants';
+
 const admin = require('../assets/icons/admin.png');
-const leaderboard = require('../assets/icons/leaderboard.png');
 const settings = require('../assets/icons/tent.png');
+const home = require('../assets/icons/trailhead.png');
 const compass = require('../assets/icons/compass.png');
 const about = require('../assets/icons/flashlight.png');
-const frontier = require('../assets/icons/frontier-icon.png');
-const twitter = require('../assets/logos/twitter-logo.png');
 const docs = require('../assets/logos/docs-icon-2.png');
+const twitter = require('../assets/logos/twitter-logo.png');
+const frontier = require('../assets/icons/frontier-icon.png');
+const leaderboard = require('../assets/icons/leaderboard.png');
 const telegram = require('../assets/logos/telegram-icon-2.png');
 const flipside = require('../assets/logos/flipside-gradient.png');
 
 
-const LeftBar = (props: any) => {
+const LeftBar = () => {
+    // react hooks
+    const location = useLocation();
 	const data: IState = useSelector((state: any) => state.data);
-
-  const location = useLocation();
 
 	return (
         <div className={`left-bar ${location.pathname == '/MadWars' ? 'black-bg' : ''}`}>
@@ -77,12 +82,6 @@ const LeftBar = (props: any) => {
                 <div className='flipside' style={{'paddingBottom': '10px'}}>
                     <div className=''>Powered by</div>
                     <div className=''><a target={'_blank'} href='http://flipsidecrypto.xyz/'><img src={String(flipside)} /></a></div>
-                    {/* <div className=''>adventure</div> */}
-                    {/* Trails is a <a target={'_blank'} href='http://flipsidecrypto.xyz/'><p><img src={String(flipside)} /></p></a> adventure */}
-
-
-                    {/* Trails is a adventure */}
-                    {/* </div> */}
                 </div>
                 <div className='row'>
                     <div className='col-12 col-md-4'><a target={'_blank'} href='https://twitter.com/TrailsProtocol'><img src={String(twitter)} /></a></div>

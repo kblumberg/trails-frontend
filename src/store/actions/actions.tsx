@@ -1,11 +1,11 @@
-import { Hike } from "src/models/Hike";
-import { SlideMovement } from "src/models/SlideMovement";
-import { Trail } from "src/models/Trail";
-import { Trailhead } from "src/models/Trailhead";
-import { Xp } from "src/models/Xp";
-import * as types from "../types/types";
-import { IRewardPoolAccount } from "src/models/RewardPoolAccount";
-import { ExpeditionInviteDetail } from "src/models/ExpeditionInviteDetail";
+import { Xp } from 'src/models/Xp';
+import { Hike } from 'src/models/Hike';
+import * as types from '../types/types';
+import { Trail } from 'src/models/Trail';
+import { Trailhead } from 'src/models/Trailhead';
+import { SlideMovement } from 'src/models/SlideMovement';
+import { IRewardPoolAccount } from 'src/models/RewardPoolAccount';
+import { ExpeditionInviteDetail } from 'src/models/ExpeditionInviteDetail';
 
 export const setIsAdmin = (isAdmin: boolean) => {
     return {

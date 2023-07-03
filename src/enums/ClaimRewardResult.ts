@@ -1,3 +1,8 @@
+/*****************************/
+/*     ClaimRewardResult     */
+/*****************************/
+// when we attempt to claim a reward, here are the possible return values
+
 export const enum ClaimRewardResult {
     SUCCESS = 'SUCCESS',
     SERVER_ERROR = 'SERVER_ERROR',

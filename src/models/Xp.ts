@@ -1,4 +1,7 @@
-import { VerifyTransactionResult } from "src/enums/VerifyTransactionResult";
+/**************/
+/*     Xp     */
+/**************/
+// xp is stored with some metadata
 
 export class Xp {
 

@@ -1,3 +1,7 @@
+/**********************************/
+/*     ExpeditionInviteDetail     */
+/**********************************/
+// the backend returns a list of these for a given user - all active and completed expeditions that a user qualifies for
 
 export class ExpeditionInviteDetail {
     id: string;
