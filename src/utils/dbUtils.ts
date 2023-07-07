@@ -56,8 +56,6 @@ export const saveHike = async (address: string, trailheadId: number, step: numbe
         url: BACKEND_URL+'/api/hikes/saveHike2',
         data: fields
     });
-    console.log(`saveHike`);
-    console.log(response);
     if (response.data == VerifyTransactionResult.VERIFIED) {
         const newXp = xp + data.xp;
         dispatch(setUserXp(newXp));

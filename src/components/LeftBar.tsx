@@ -42,11 +42,11 @@ const LeftBar = () => {
                         <img className='left-bar-logo' alt='logo' src={String(home)} />{isMobile ? '' : 'Trailhead'}
                     </div>
                 </NavLink>
-                <NavLink className={(navData) => (navData.isActive ? 'active' : '')} to ='/expeditions'>
+                {/* <NavLink className={(navData) => (navData.isActive ? 'active' : '')} to ='/expeditions'>
                     <div className='left-bar-item'>
                         <img className='left-bar-logo' alt='logo' src={String(compass)} />{isMobile ? '' : 'Expeditions'}
                     </div>
-                </NavLink>
+                </NavLink> */}
                 <NavLink className={(navData) => (navData.isActive ? 'active' : '')} to ='/frontier'>
                     <div className='left-bar-item'>
                         <img className='left-bar-logo' alt='logo' src={String(frontier)} />{isMobile ? '' : 'Frontier'}

@@ -10,7 +10,7 @@ import { Provider } from 'react-redux';
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
-import { NETWORK } from './constants/constants';
+import { TX_VERIFY_NETWORK } from './constants/constants';
 import {
   GlowWalletAdapter,
   LedgerWalletAdapter,
@@ -31,7 +31,7 @@ const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 const solNetwork = WalletAdapterNetwork.Mainnet;
-const endpoint = NETWORK;
+const endpoint = TX_VERIFY_NETWORK;
 const config: SolflareWalletAdapterConfig = {
   'network': solNetwork
 };

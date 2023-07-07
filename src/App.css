@@ -291,6 +291,9 @@
 	border-radius: 30px;
 	background-color: #b8e28a;
 }
+.mad-trail .trail .button {
+	background-color: rgb(246 33 56 );
+}
 .trail.odd .inner {
 	position: absolute;
 	border-left: 30px solid #c4ab92;

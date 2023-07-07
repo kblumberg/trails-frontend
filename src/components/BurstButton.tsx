@@ -109,7 +109,6 @@ const BurstButton = (props: IProps) => {
         <Button disabled={props.disabled ? true : false} id='burst-button' className='burst-button fade-button' variant={buttonClass} type='button' onClick={async () => {
             props.onClick()
             setFadeProp('fade-out')
-            console.log(`BurstButton onClick isCorrect ${props.isCorrect}`)
 
             if (props.isCorrect) {
                 // play the correct sound effect + disply burst and check
@@ -117,7 +116,6 @@ const BurstButton = (props: IProps) => {
                 setButtonClass('success');
                 successTimeline.play();
                 playComplete();
-                console.log(`BurstButton setCompleted ${true}`)
                 props.setCompleted(true);
             } else {
                 // play the incorrect sound effect + disply cross

@@ -2,9 +2,10 @@ import { BN, web3 } from '@project-serum/anchor';
 import { account, util } from 'easy-spl';
 import { ASSOCIATED_TOKEN_PROGRAM_ID, Token, TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { WalletContextState } from '@solana/wallet-adapter-react';
-import { SOL_ADDRESS, SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID } from '../constants/constants';
+import { PROGRAM_NETWORK, SOL_ADDRESS, SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID } from '../constants/constants';
 import { MadTrailScorecard } from '../models/MadTrailScorecard';
 import { PublicKey } from '@solana/web3.js';
+import { Network } from 'src/enums/Network';
 
 // check if device is mobile or desktop
 const width = (window.innerWidth > 0) ? window.innerWidth : window.screen.height;
@@ -21,6 +22,7 @@ export const getTokenFromMint = (mint: string) => {
 	const mintToTokenMap: any = {
 		'So11111111111111111111111111111111111111112': 'SOL'
 		, '5SosK71HJr9UpcwopNam8X9ZnuonDoGERjziWSnws4u4': 'USDC'
+		, 'GuBVxVbKtM9XkRnmqv1E7RkARsoERncdZeCtezfeYLAD': 'USDC'
 	}
 	if (Object.hasOwn(mintToTokenMap, mint)) {
 			return(mintToTokenMap[mint]);
@@ -42,8 +44,15 @@ export const parseMessage = (message: string) => {
 }
 
 export const getTxUrl = (txId: string) => {
-	// TODO: base this off of network (localnet vs devnet vs mainnet)
-	return(`https://solana.fm/tx/${txId}?cluster=http%253A%252F%252F127.0.0.1%253A8899%252F`);
+	// @ts-ignore
+	if (PROGRAM_NETWORK == Network.LOCALNET) {
+		return(`https://solana.fm/tx/${txId}?cluster=http%253A%252F%252F127.0.0.1%253A8899%252F`);
+	}
+	// @ts-ignore
+	else if (PROGRAM_NETWORK == Network.DEVNET) {
+		return(`https://solscan.io/tx/${txId}?cluster=devnet`);
+	}
+	return(`https://solscan.io/tx/${txId}`);
 }
 
 export const formatDate = (timestamp: number, useMinutes: boolean = false, useWeekday: boolean = true) => {
@@ -89,7 +98,6 @@ export const createAssociatedTokenAccountSendUnsigned = async (
 	// if an address already has a token account, return it
 	const address = await Token.getAssociatedTokenAddress(ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID, mint, owner, true);
 	if (await account.exists(conn, address)) {
-		console.log(`token address for ${owner.toString()} exists ${address}`);
 		return address
 	}
 	// otherwise, create it
@@ -115,7 +123,7 @@ export const createAssociatedTokenAccountSendUnsigned = async (
 export const getXpFromMadWarsScorecard = (s: MadTrailScorecard) => {
 	// get the mad trail scorecard for a user
     const amt = Math.min(1000000, s.volume);
-    return(
+    const xp = (
         (s.hasApt ? 10 : 0)
         + (s.hasArb ? 10 : 0)
         + (s.hasBtc ? 10 : 0)
@@ -126,6 +134,7 @@ export const getXpFromMadWarsScorecard = (s: MadTrailScorecard) => {
         + Math.floor(amt / 1000)
         + Math.floor(Math.max(0, Math.log10(amt))) * 15
     )
+    return(xp);
 }
 
 export const ordinal_suffix_of = (i: number) => {

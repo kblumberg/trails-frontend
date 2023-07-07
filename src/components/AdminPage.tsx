@@ -20,7 +20,7 @@ import { TOKEN_PROGRAM_ID } from '@project-serum/anchor/dist/cjs/utils/token';
 import { Connection, PublicKey, Keypair, LAMPORTS_PER_SOL } from '@solana/web3.js';
 import { Button, Form, ButtonGroup, Dropdown, ToggleButtonGroup, ToggleButton } from 'react-bootstrap';
 import { createAssociatedTokenAccountSendUnsigned, cleanProjectName, getTxUrl, parseMessage, getTokenFromMint, findAssociatedTokenAddress } from '../utils/utils';
-import { CONFIG, NETWORK, SOL_ADDRESS, PROGRAM_ID, BACKEND_URL, TEST_TOKEN, SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID, ADMIN_ADDRESS } from '../constants/constants';
+import { CONFIG, PROGRAM_NETWORK, SOL_ADDRESS, PROGRAM_ID, BACKEND_URL, TEST_TOKEN, SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID, ADMIN_ADDRESS } from '../constants/constants';
 
 
 /*******************************************/
@@ -39,7 +39,7 @@ const moveFunds = async (
 		
 		if (walletContext && walletContext.publicKey) {
 			// load some basic info
-			const connection = new Connection(NETWORK, CONFIG);
+			const connection = new Connection(PROGRAM_NETWORK, CONFIG);
 			const mintPubkey = new PublicKey(mintAddress);
 			const mint = new Mint(connection, mintPubkey);
 			const decimals = await mint.getDecimals();
@@ -136,7 +136,7 @@ const addRewardPool = async (
             return('Pool Already Exists')
         }
 
-		const connection = new Connection(NETWORK, CONFIG);
+		const connection = new Connection(PROGRAM_NETWORK, CONFIG);
 
 		const programIdl: any = idl;
 
@@ -183,7 +183,7 @@ const addRewardPool = async (
 				// show it succeeded
 				const msg = () => toast(
 					<div>
-						Transaction Succeeded<br/><a target='_blank' href={getTxUrl(txId)}>View in Solana FM</a>
+						Transaction Succeeded<br/><a target='_blank' href={getTxUrl(txId)}>View Transaction</a>
 					</div>
 					, {
 						'theme': 'light'
@@ -236,7 +236,7 @@ const AdminPage = (props: any) => {
 		, tokens: string[] // the list of tokens we want get balances for
 		, address: string // the address we want get balances for
 	) => {
-		const connection = new Connection(NETWORK, CONFIG);
+		const connection = new Connection(PROGRAM_NETWORK, CONFIG);
 
 		// iterate over the list of tokens given
 		const d: any = {...curBalances};
@@ -422,7 +422,6 @@ const AdminPage = (props: any) => {
 				<div className='col'>
 					<Form.Group className='mb-3 token-amount-input' controlId='formAmount'>
 						<Form.Control style={{'height':'50px', 'textAlign':'right','fontSize':'20px'}} type='txId' placeholder='0.0' value={value} onChange={(e) => {
-							console.log(`e.target.value = ${e.target.value}`);
 							setValue(e.target.value)
 						}} />
 						<Form.Text className='text-muted clickable' onClick={() => {
@@ -451,7 +450,7 @@ const AdminPage = (props: any) => {
 									if (res.succeeded) {
 										const msg = () => toast(
 											<div>
-												{res.message}<br/><a target='_blank' href={getTxUrl(res.txId)}>View in Solana FM</a>
+												{res.message}<br/><a target='_blank' href={getTxUrl(res.txId)}>View Transaction</a>
 											</div>
 											, {
 												'theme': 'light'

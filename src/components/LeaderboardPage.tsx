@@ -91,7 +91,6 @@ const LeaderboardPage = (props: any) => {
     const userImg = data.image ? <img className='avatar' src={data.image} />
     : <div style={{'backgroundColor': `#${colors[0 % totColors]}`}} className='avatar'><div className='username-letter'>{data.username.slice(0, 1)}</div></div>
 
-
     // Mad Wars Scorecard
     const d: [string, number, string, number, number][][] = [
         [
@@ -120,7 +119,8 @@ const LeaderboardPage = (props: any) => {
         let xp = 0;
         if (x[0][0] == 'Volume') {
             const amt = Math.round(Math.min(1000000, x[0][1]));
-            const xp = Math.floor(amt / 1000) + Math.floor(Math.log10(amt)) * 15
+            const xp = Math.floor(amt / 1000) + Math.floor(Math.max(0, Math.log10(amt))) * 15
+            // const amt = 5;
             const amtLabel = amt.toLocaleString()
             const pct = Math.max(0, Math.floor(100 * (Math.log10(amt) / Math.log10(1000000))));
             const div = 

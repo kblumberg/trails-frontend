@@ -64,6 +64,7 @@ function App() {
 		trailheads = trailheads.filter(x => x.id != 16);
 		trailheads = trailheads.filter(x => x.id != 20);
 		trailheads = trailheads.filter(x => x.id != 6);
+		trailheads = trailheads.filter(x => x.hidden == false);
 		dispatch(actions.setTrailheads(trailheads));
 	}
 	const loadHikes = async (address: string) => {
@@ -95,8 +96,6 @@ function App() {
 			url: BACKEND_URL+'/api/madWars/updateMadTrail',
 			data: {'address': address}
 		});
-		console.log(`loadMadTrailScorecard`);
-		console.log(response.data);
 		dispatch(actions.setMadTrailScorecard(response.data));
 	}
 	const loadUserXp = async (address: string) => {
@@ -109,21 +108,18 @@ function App() {
 			data: {'address': address}
 		});
 		const xps: Xp[] = response.data;
-		if (xps.filter(x => x.trailId == 'MadTrail')) {
+		if (xps.filter(x => x.trailId == 'MadTrail').length > 0) {
 			loadMadTrailScorecard(address);
 		}
 		dispatch(actions.setUserXp(xps.reduce((a, b) => a + b.xp, 0 )));
 		dispatch(actions.setUserXps(response.data));
 	}
 	const loadLeaderboard = async () => {
-		console.log(`starting loadLeaderboard`)
 		let response = await axios({
 			method: 'get',
 			url: BACKEND_URL+'/api/hikes/leaderboard',
 		});
 		let leaderboard = response.data;
-		console.log(`done loadLeaderboard`)
-		console.log(leaderboard)
 		dispatch(actions.setLeaderboard(leaderboard));
 	}
 	const loadUserDate = async (address: string) => {
@@ -167,7 +163,6 @@ function App() {
 		const isAdmin = isAdminResponse && isAdminResponse.data.poolAuthority;
 		if (isAdmin) {
 			const rewardPoolAccount = isAdminResponse.data;
-			console.log(`rewardPoolAccount = ${rewardPoolAccount}`);
 			dispatch(actions.setRewardPoolAccount(rewardPoolAccount));
 		}
 		dispatch(actions.setIsAdmin(isAdmin));
