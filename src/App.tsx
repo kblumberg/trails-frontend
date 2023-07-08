@@ -50,7 +50,7 @@ function App() {
 			url: BACKEND_URL+'/api/trails/trails',
 		});
 		let trails: Trail[] = response.data;
-		trails = trails.filter(x => x.hidden == false);
+		trails = trails.filter(x => x.hidden === false);
 		dispatch(actions.setTrails(trails));
 	}
 	const loadTrailheads = async () => {
@@ -61,10 +61,10 @@ function App() {
 		});
 		let trailheads: Trailhead[] = response.data;
 		trailheads = trailheads.sort((a, b) => b.id - a.id);
-		trailheads = trailheads.filter(x => x.id != 16);
-		trailheads = trailheads.filter(x => x.id != 20);
-		trailheads = trailheads.filter(x => x.id != 6);
-		trailheads = trailheads.filter(x => x.hidden == false);
+		trailheads = trailheads.filter(x => x.id !== 16);
+		trailheads = trailheads.filter(x => x.id !== 20);
+		trailheads = trailheads.filter(x => x.id !== 6);
+		trailheads = trailheads.filter(x => x.hidden === false);
 		dispatch(actions.setTrailheads(trailheads));
 	}
 	const loadHikes = async (address: string) => {
@@ -108,7 +108,7 @@ function App() {
 			data: {'address': address}
 		});
 		const xps: Xp[] = response.data;
-		if (xps.filter(x => x.trailId == 'MadTrail').length > 0) {
+		if (xps.filter(x => x.trailId === 'MadTrail').length > 0) {
 			loadMadTrailScorecard(address);
 		}
 		dispatch(actions.setUserXp(xps.reduce((a, b) => a + b.xp, 0 )));

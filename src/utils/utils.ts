@@ -1,11 +1,11 @@
-import { BN, web3 } from '@project-serum/anchor';
 import { account, util } from 'easy-spl';
-import { ASSOCIATED_TOKEN_PROGRAM_ID, Token, TOKEN_PROGRAM_ID } from '@solana/spl-token';
-import { WalletContextState } from '@solana/wallet-adapter-react';
-import { PROGRAM_NETWORK, SOL_ADDRESS, SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID } from '../constants/constants';
-import { MadTrailScorecard } from '../models/MadTrailScorecard';
 import { PublicKey } from '@solana/web3.js';
 import { Network } from 'src/enums/Network';
+import { web3 } from '@project-serum/anchor';
+import { MadTrailScorecard } from '../models/MadTrailScorecard';
+import { WalletContextState } from '@solana/wallet-adapter-react';
+import { ASSOCIATED_TOKEN_PROGRAM_ID, Token, TOKEN_PROGRAM_ID } from '@solana/spl-token';
+import { PROGRAM_NETWORK, SOL_ADDRESS, SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID } from '../constants/constants';
 
 // check if device is mobile or desktop
 const width = (window.innerWidth > 0) ? window.innerWidth : window.screen.height;
@@ -22,7 +22,7 @@ export const getTokenFromMint = (mint: string) => {
 	const mintToTokenMap: any = {
 		'So11111111111111111111111111111111111111112': 'SOL'
 		, '5SosK71HJr9UpcwopNam8X9ZnuonDoGERjziWSnws4u4': 'USDC'
-		, 'GuBVxVbKtM9XkRnmqv1E7RkARsoERncdZeCtezfeYLAD': 'USDC'
+		, '7EAEXC5NFwhC1xDTNNxScPT51CiXDp1KZHnpkjawXasf': 'USDC'
 	}
 	if (Object.hasOwn(mintToTokenMap, mint)) {
 			return(mintToTokenMap[mint]);
@@ -43,16 +43,16 @@ export const parseMessage = (message: string) => {
 	return(toTitleCase(message.replaceAll('_', ' ')) );
 }
 
-export const getTxUrl = (txId: string) => {
+export const getExplorerUrl = (pref: string, val: string) => {
 	// @ts-ignore
-	if (PROGRAM_NETWORK == Network.LOCALNET) {
-		return(`https://solana.fm/tx/${txId}?cluster=http%253A%252F%252F127.0.0.1%253A8899%252F`);
+	if (PROGRAM_NETWORK === Network.LOCALNET) {
+		return(`https://solana.fm/${pref}/${val}?cluster=http%253A%252F%252F127.0.0.1%253A8899%252F`);
 	}
 	// @ts-ignore
-	else if (PROGRAM_NETWORK == Network.DEVNET) {
-		return(`https://solscan.io/tx/${txId}?cluster=devnet`);
+	else if (PROGRAM_NETWORK === Network.DEVNET) {
+		return(`https://solscan.io/${pref}/${val}?cluster=devnet`);
 	}
-	return(`https://solscan.io/tx/${txId}`);
+	return(`https://solscan.io/${pref}/${val}`);
 }
 
 export const formatDate = (timestamp: number, useMinutes: boolean = false, useWeekday: boolean = true) => {
@@ -139,13 +139,13 @@ export const getXpFromMadWarsScorecard = (s: MadTrailScorecard) => {
 
 export const ordinal_suffix_of = (i: number) => {
     const j = i % 10, k = i % 100;
-    if (j == 1 && k != 11) {
+    if (j === 1 && k !== 11) {
         return(i + 'st');
     }
-    if (j == 2 && k != 12) {
+    if (j === 2 && k !== 12) {
         return(i + 'nd');
     }
-    if (j == 3 && k != 13) {
+    if (j === 3 && k !== 13) {
         return(i + 'rd');
     }
     return(i + 'th');
@@ -156,7 +156,7 @@ export const findAssociatedTokenAddress = (
 	tokenMintAddress: PublicKey
 ) => {
 	// get a user's associated token address
-	if (tokenMintAddress.toString() == SOL_ADDRESS) {
+	if (tokenMintAddress.toString() === SOL_ADDRESS) {
 		return(walletAddress);
 	}
 	return PublicKey.findProgramAddressSync(

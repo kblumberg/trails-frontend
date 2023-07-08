@@ -43,7 +43,6 @@ const TxInput = (props: IProps) => {
     const [playIncorrect] = useSound(incorrectMp3);
     const [errorText, setErrorText] = useState('');
     const [fadeProp, setFadeProp] = useState('fade-in');
-    const [correctClass, setCorrectClass] = useState('');
     const [incorrectClass, setIncorrectClass] = useState('');
     const [buttonClass, setButtonClass] = useState('primary');
     const [buttonDisabled, setButtonDisabled] = useState(false);
@@ -137,7 +136,7 @@ const TxInput = (props: IProps) => {
                 const status = await saveHike(data.address, props.trailheadId, props.step, props.slide, props.trailId, props.slideId, txId, props.xp, props.expeditionInviteId, data, dispatch);
                 const val = status.data;
 
-                if (val == VerifyTransactionResult.VERIFIED) {
+                if (val === VerifyTransactionResult.VERIFIED) {
                     // transaction was verified - woohoo!
                     setButtonClass('success');
                     successTimeline.play();
@@ -150,19 +149,19 @@ const TxInput = (props: IProps) => {
                     setButtonClass('danger');
                     incorrectTimeline.play();
                     playIncorrect();
-                    if (val == VerifyTransactionResult.WRONG_ADDRESS) {
+                    if (val === VerifyTransactionResult.WRONG_ADDRESS) {
                         setErrorText('Incorrect address');
-                    } else if (val == VerifyTransactionResult.DUPLICATE) {
+                    } else if (val === VerifyTransactionResult.DUPLICATE) {
                         setErrorText('Tx already submitted');
-                    } else if (val == VerifyTransactionResult.TIME_LIMIT) {
+                    } else if (val === VerifyTransactionResult.TIME_LIMIT) {
                         setErrorText('Cooldown period not finished yet');
-                    } else if (val == VerifyTransactionResult.STALE_TX) {
+                    } else if (val === VerifyTransactionResult.STALE_TX) {
                         setErrorText('Transaction is too old. Check the About Us page.');
-                    } else if (val == VerifyTransactionResult.INVALID_TOKEN) {
+                    } else if (val === VerifyTransactionResult.INVALID_TOKEN) {
                         setErrorText('Invalid token');
-                    } else if (val == VerifyTransactionResult.INVALID_INVITE) {
+                    } else if (val === VerifyTransactionResult.INVALID_INVITE) {
                         setErrorText('Invalid expedition invite');
-                    } else if (val == VerifyTransactionResult.INVITE_EXPIRED) {
+                    } else if (val === VerifyTransactionResult.INVITE_EXPIRED) {
                         setErrorText('Expedition invite expired');
                     } else {
                         // setErrorText('Incorrect transaction');
@@ -176,7 +175,7 @@ const TxInput = (props: IProps) => {
                 }                             
             }}>
                 <span className={fadeProp}>Submit</span>
-                <div id='success-timeline' className={correctClass}></div>
+                <div id='success-timeline'></div>
                 <div id='incorrect-timeline' className={incorrectClass}></div>
             </Button>
             <div className='error-text'>{errorText}</div>

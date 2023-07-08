@@ -29,7 +29,7 @@ const TrailsTable = (props: ITrailsTableProps) => {
 
         const tabs = props.tabs.map((tabName: string) => {
         return(
-            <div className={`col ${activeTab == tabName ? 'active' : ''}`} onClick={handleTabClick}>
+            <div className={`col ${activeTab === tabName ? 'active' : ''}`} onClick={handleTabClick}>
                 {tabName}
             </div>
         )
@@ -46,7 +46,7 @@ const TrailsTable = (props: ITrailsTableProps) => {
                     <div className='trails-panel-outer-2'>
                         <div className='trails-panel-outer-3'>
                             {
-                                activeTab == props.headerTab && props.header ? <div className='leaderboard-header'>{props.header}</div> : null
+                                activeTab === props.headerTab && props.header ? <div className='leaderboard-header'>{props.header}</div> : null
                             }
                             <Table hover>
                                 <tbody>

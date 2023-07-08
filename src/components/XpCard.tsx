@@ -20,14 +20,14 @@ const XpCard = () => {
 
     useEffect(() => {
         // if the user address or xp changes, update our xp number
-        if (xp && address != '') {
+        if (xp && address !== '') {
             setColorClass('changing')
             setTimeout(function () {
                 setColorClass('base');
             }, 1000);
         }
         const newAddress = data.address;
-        if (newAddress != address) {
+        if (newAddress !== address) {
             setAddress(newAddress);
         }
       }, [xp, address]);

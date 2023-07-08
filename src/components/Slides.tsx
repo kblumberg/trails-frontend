@@ -108,12 +108,12 @@ const Slides = (props: IProps) => {
     let curTrails: Trail[] = []
 
     if (props.trailId) {
-        curTrails = data.trails.filter(x => x.id == props.trailId ).sort((a, b) => a.step - b.step);
+        curTrails = data.trails.filter(x => x.id === props.trailId ).sort((a, b) => a.step - b.step);
         if (curTrails.length) {
             curTrailheadId = curTrails[0].trailheadId;
         }
     }
-    if (curTrails.length == 0) {
+    if (curTrails.length === 0) {
         // if there are no curTrails, then something went wrong and return null
         return(null);
     }
@@ -124,10 +124,10 @@ const Slides = (props: IProps) => {
         let item = null;
         if (y.quiz) {
             // quiz component has some options and a submit button
-            const hasCompleted = data.xps.filter(xp => xp.slideId == y.id ).length > 0;
+            const hasCompleted = data.xps.filter(xp => xp.slideId === y.id ).length > 0;
             const options = y.quiz.options.map( (op, index) => {
                 return(
-                    <div key={index} className={`quiz-pill ${selectedOption == index ? 'selected' : ''}`}>
+                    <div key={index} className={`quiz-pill ${selectedOption === index ? 'selected' : ''}`}>
                     <Button className='trails-button quiz-pill inner' variant='primary' onClick={() => {
                         playClick();
                         setSelectedOption(index);
@@ -146,10 +146,10 @@ const Slides = (props: IProps) => {
                         <BurstButton
                             slideNum={slideNum}
                             setCompleted={setCompleted}
-                            isCorrect={selectedOption == y.quiz.correctOption}
+                            isCorrect={selectedOption === y.quiz.correctOption}
                             disabled={selectedOption < 0}
                             onClick = {() => {
-                                if ((!hasCompleted) && selectedOption == y.quiz?.correctOption) {
+                                if ((!hasCompleted) && selectedOption === y.quiz?.correctOption) {
                                     saveUserXp(data.address, curTrailheadId, curTrail.step, slideNum, trailId, slideId, y.xp, dispatch, data);
                                 }
                             }}
@@ -160,7 +160,7 @@ const Slides = (props: IProps) => {
         } else {
             // the other slides will have and image and some text
             const colSize = y.colSize ? parseInt(y.colSize) : 6;
-            const p = data.trailheads.filter(t => t.id == curTrail.trailheadId)[0].name;
+            const p = data.trailheads.filter(t => t.id === curTrail.trailheadId)[0].name;
             const img = require(`../assets/${p}/${curTrail.step}/${p}-${curTrail.step}-${j}.${y.extension}`);
             const imgStyle: any = y.maxHeight ? {'maxHeight': y.maxHeight} : {};
             if (y.imgHeight) {
@@ -170,8 +170,8 @@ const Slides = (props: IProps) => {
                 imgStyle['width'] = y.imgWidth;
             }
             const alignStyle = y.alignImage ? {'alignItems': y.alignImage} : {};
-            const classNameLeft = y.alignment == 'left' ? `col-12 col-lg-${ colSize }` : 'col-12';
-            const classNameRight = y.alignment == 'left' ? `col-12 col-lg-${ 12 - colSize }` : 'col-12';
+            const classNameLeft = y.alignment === 'left' ? `col-12 col-lg-${ colSize }` : 'col-12';
+            const classNameRight = y.alignment === 'left' ? `col-12 col-lg-${ 12 - colSize }` : 'col-12';
             const imgDiv = <div className={classNameLeft}>
                 <img style={imgStyle} className='' src={String(img)} />
             </div>
@@ -180,7 +180,7 @@ const Slides = (props: IProps) => {
                     <div dangerouslySetInnerHTML={{__html: y.htmlDescription}} />
                 </div>
                 {
-                    !y.programIds || y.programIds.length == 0 ? null
+                    !y.programIds || y.programIds.length === 0 ? null
                     :
                     <div className=''>
                         <TxInput
@@ -225,10 +225,10 @@ const Slides = (props: IProps) => {
         programIds = curTrail.slides[slideNum]?.programIds;
         quiz = curTrail.slides[slideNum]?.quiz;
     }
-    const isLastSlide = slideNum == slidesLength - 1;
+    const isLastSlide = slideNum === slidesLength - 1;
     const className = isLastSlide ? '' : 'hidden';
     
-    const hasCompleted = data.xps.filter(x => x.slideId == slideId ).length > 0;
+    const hasCompleted = data.xps.filter(x => x.slideId === slideId ).length > 0;
     const hasQuiz = (quiz != null && quiz.options.length > 0);
 
     // render the component
@@ -264,7 +264,7 @@ const Slides = (props: IProps) => {
             <Modal.Footer>
                 <div className='row'>
                         {
-                            slideNum == 0 ? null
+                            slideNum === 0 ? null
                             : 
                             <div className='col'>
                                 <Button className='inner trails-button' variant='primary' onClick={() => {
@@ -286,19 +286,19 @@ const Slides = (props: IProps) => {
                             setCompleted(false);
                             saveSlideMovement(data.address, curTrailheadId, curTrail.step, num, true, dispatch, data);
 
-                            if (num + 1 == slidesLength) {
+                            if (num + 1 === slidesLength) {
                                 // if we are not at the end, move the slide forward
                                 setSlideNum(0);
                                 handleClose();
                             } else {
-                                if (num + 2 == slidesLength) {
+                                if (num + 2 === slidesLength) {
                                     // if we are at the penultimate slide, mark as complete and update xp
                                     const finalSlideId = curTrail.slides[num]?.id;
 
                                     const hasCompleted = data.xps.filter(x => 
-                                        x.address == data.address
-                                        && x.slideId == finalSlideId
-                                        && x.xp == curTrail.xp
+                                        x.address === data.address
+                                        && x.slideId === finalSlideId
+                                        && x.xp === curTrail.xp
                                     )
                                     playComplete();
                                     successTimeline.play();
@@ -312,7 +312,7 @@ const Slides = (props: IProps) => {
                                 setSlideNum(num + 1);
                             }
                         }}>
-                            { slideNum == slidesLength - 1 ? 'Return to Trail' : 'Next'}
+                            { slideNum === slidesLength - 1 ? 'Return to Trail' : 'Next'}
                         </Button>
                     </div>
                 </div>

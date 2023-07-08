@@ -56,7 +56,7 @@ const LeaderboardPage = (props: any) => {
 
         // add xp to our global state
         const xp = getXpFromMadWarsScorecard(response.data);
-        const xps = data.xps.filter(x => x.trailId != 'MadTrail');
+        const xps = data.xps.filter(x => x.trailId !== 'MadTrail');
         const newXp = new Xp(
             data.address
             , 19
@@ -84,8 +84,8 @@ const LeaderboardPage = (props: any) => {
     const curC: [string, string, string, number, boolean] = ['Mad Trail', data.address, data.username, curXp, false];
 
     // 
-    let leaderboard = data.leaderboard.filter(x => x[1] != data.address && x[0] == activeTab);
-    const isRegistered = data.xps.filter( x => x.trailId == 'MadTrail').length > 0;
+    let leaderboard = data.leaderboard.filter(x => x[1] !== data.address && x[0] === activeTab);
+    const isRegistered = data.xps.filter( x => x.trailId === 'MadTrail').length > 0;
 
     // user avatar
     const userImg = data.image ? <img className='avatar' src={data.image} />
@@ -117,7 +117,7 @@ const LeaderboardPage = (props: any) => {
     // rows for Mad Trail Scorecard
     const scorecardRows = d.map((x, ind) => {
         let xp = 0;
-        if (x[0][0] == 'Volume') {
+        if (x[0][0] === 'Volume') {
             const amt = Math.round(Math.min(1000000, x[0][1]));
             const xp = Math.floor(amt / 1000) + Math.floor(Math.max(0, Math.log10(amt))) * 15
             // const amt = 5;
@@ -181,7 +181,7 @@ const LeaderboardPage = (props: any) => {
             return(
                 <div className={`col ${ i ? `col-10` : `first-col col-${20}` }-pct`}>
                     {
-                        y[0] == '' ? null :
+                        y[0] === '' ? null :
                         i && y ? <>
                         <Tooltip anchorSelect={`#item-${ind}-${i}`} >
                             <div>{`${y[2]}`}</div>
@@ -205,14 +205,14 @@ const LeaderboardPage = (props: any) => {
     // add the current user's row to the leaderboard
     // we do this because we only load the leaderboard data on page refresh
     // but a user's xp may change before they refresh the page
-    if (activeTab == 'Overall') {
+    if (activeTab === 'Overall') {
         leaderboard.push(cur);
     } else {
         if (isRegistered) {
             leaderboard.push(curC);
         }
     }
-    leaderboard = leaderboard.sort((a, b) => a[3] != b[3] ? b[3] - a[3] : a[2] == data.username ? -1 : a[3] < b[3] ? -1 : 1 );
+    leaderboard = leaderboard.sort((a, b) => a[3] !== b[3] ? b[3] - a[3] : a[2] === data.username ? -1 : a[3] < b[3] ? -1 : 1 );
     const place = leaderboard.map(x => x[1]).indexOf(data.address) + 1;
     const header = isRegistered ? 
     <div className='mad-trail-scorecard'>
@@ -262,11 +262,11 @@ const LeaderboardPage = (props: any) => {
             )
         } else {
             const x = leaderboard[index];
-            const className = x[1] == data.address ? 'highlight' : ''
-            const username = x[1] == data.address && data.username ? data.username : x[2] ? x[2] : x[1];
+            const className = x[1] === data.address ? 'highlight' : ''
+            const username = x[1] === data.address && data.username ? data.username : x[2] ? x[2] : x[1];
             const l = username.length;
 
-            const img = data.image && x[1] == data.address ? <img className='avatar' src={data.image} />
+            const img = data.image && x[1] === data.address ? <img className='avatar' src={data.image} />
             : x[4] ? <img className='avatar' src={`https://trails-avatars.s3.us-east-1.amazonaws.com/${x[1]}.png`} />
             : <div style={{'backgroundColor': `#${colors[index % totColors]}`}} className='avatar'><div className='username-letter'>{username.slice(0, 1)}</div></div>
             rows.push(

@@ -23,7 +23,7 @@ import { ExpeditionInviteDetail } from '../models/ExpeditionInviteDetail';
 import { VerifyTransactionResult } from 'src/enums/VerifyTransactionResult';
 import { WalletContextState, useWallet } from '@solana/wallet-adapter-react';
 import { BACKEND_URL, CONFIG, PROGRAM_NETWORK, PROGRAM_ID } from 'src/constants/constants';
-import { createAssociatedTokenAccountSendUnsigned, formatDate, getCurrentTimestamp, getTokenFromMint, getTxUrl, parseMessage } from 'src/utils/utils';
+import { createAssociatedTokenAccountSendUnsigned, formatDate, getCurrentTimestamp, getTokenFromMint, getExplorerUrl, parseMessage } from 'src/utils/utils';
 import { GetVersionedTransactionConfig } from '@solana/web3.js';
 
 import { Message } from '@solana/web3.js';
@@ -122,11 +122,11 @@ const claimRewards = async (
             
             // send the tx to the backend and display the results
             const response = await sendClaimRewardRequest(serializedTx, expeditionInvite.id);
-            if (response.data.status == ClaimRewardResult.SUCCESS) {
+            if (response.data.status === ClaimRewardResult.SUCCESS) {
                 const txId = response.data.tx;
                 const msg = () => toast(
                     <div>
-                        Transaction Succeeded<br/><a target='_blank' href={getTxUrl(txId)}>View in Solana FM</a>
+                        Transaction Succeeded<br/><a target='_blank' href={getExplorerUrl('tx', txId)}>View in Solana FM</a>
                     </div>
                     , {
                         'theme': 'light'
@@ -165,10 +165,10 @@ const ExpeditionsPage = () => {
     const data: IState = useSelector((state: any) => state.data);
 
     const addExpeditionInvite = (expeditionInviteId: string, txId: string) => {
-        const curExpeditionInvite = data.expeditionInvites.filter(x => x.id == expeditionInviteId)[0];
+        const curExpeditionInvite = data.expeditionInvites.filter(x => x.id === expeditionInviteId)[0];
         curExpeditionInvite.payoutTxId = txId;
         curExpeditionInvite.payoutTimestamp = getCurrentTimestamp();
-        const newExpeditionInvites = data.expeditionInvites.filter(x => x.id != expeditionInviteId);
+        const newExpeditionInvites = data.expeditionInvites.filter(x => x.id !== expeditionInviteId);
         newExpeditionInvites.push(curExpeditionInvite);
         dispatch(setExpeditionInvites(newExpeditionInvites));        
     }
@@ -182,18 +182,18 @@ const ExpeditionsPage = () => {
     }
 
     // there is an Active campaign tab and a Completed tab
-    const isActive = activeTab == 'Active';
+    const isActive = activeTab === 'Active';
 
     // create the rows of campaigns
     const rows = data.expeditionInvites.filter( x => isActive ? ( !x.payoutTxId ) && (x.maxNumClaims >= (x.currentClaims + 2)) : x.payoutTxId ).map( x => {
-        const projects = data.trailheads.filter(trailhead => trailhead.id == x.trailheadId)
+        const projects = data.trailheads.filter(trailhead => trailhead.id === x.trailheadId)
         if (projects.length) {
             const img = require(`../assets/projects/${projects[0].name.toLowerCase()}.png`);
 
             // check if the user has completed the expedition
             const completed = data.hikes.filter(hike =>
-                (hike.result == VerifyTransactionResult.VERIFIED)
-                && (hike.expeditionInviteId == x.id)
+                (hike.result === VerifyTransactionResult.VERIFIED)
+                && (hike.expeditionInviteId === x.id)
             ).length > 0;
             return(
                 <tr key={x.expeditionId} className='trails-table-row'>
@@ -225,7 +225,7 @@ const ExpeditionsPage = () => {
                                 {formatDate(x.payoutTimestamp, true, false)}
                             </td>
                             <td>
-                                <a target='_blank' href={getTxUrl(x.payoutTxId)}>{x.payoutTxId.slice(0,8)}...</a>
+                                <a target='_blank' href={getExplorerUrl('tx', x.payoutTxId)}>{x.payoutTxId.slice(0,8)}...</a>
                             </td>
                         </>
                     }
@@ -238,10 +238,10 @@ const ExpeditionsPage = () => {
 	return (
         <div className='expeditions-page'>
             <div className='trails-tabs row'>
-                <div className={`col ${activeTab == 'Active' ? 'active' : ''}`} onClick={handleTabClick}>
+                <div className={`col ${activeTab === 'Active' ? 'active' : ''}`} onClick={handleTabClick}>
                     Active
                 </div>
-                <div className={`col ${activeTab == 'Completed' ? 'active' : ''}`} onClick={handleTabClick}>
+                <div className={`col ${activeTab === 'Completed' ? 'active' : ''}`} onClick={handleTabClick}>
                     Completed
                 </div>
             </div>

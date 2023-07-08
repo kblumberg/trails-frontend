@@ -19,7 +19,7 @@ import { useWallet, WalletContextState } from '@solana/wallet-adapter-react';
 import { TOKEN_PROGRAM_ID } from '@project-serum/anchor/dist/cjs/utils/token';
 import { Connection, PublicKey, Keypair, LAMPORTS_PER_SOL } from '@solana/web3.js';
 import { Button, Form, ButtonGroup, Dropdown, ToggleButtonGroup, ToggleButton } from 'react-bootstrap';
-import { createAssociatedTokenAccountSendUnsigned, cleanProjectName, getTxUrl, parseMessage, getTokenFromMint, findAssociatedTokenAddress } from '../utils/utils';
+import { createAssociatedTokenAccountSendUnsigned, cleanProjectName, parseMessage, getTokenFromMint, findAssociatedTokenAddress, getExplorerUrl } from '../utils/utils';
 import { CONFIG, PROGRAM_NETWORK, SOL_ADDRESS, PROGRAM_ID, BACKEND_URL, TEST_TOKEN, SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID, ADMIN_ADDRESS } from '../constants/constants';
 
 
@@ -132,7 +132,7 @@ const addRewardPool = async (
 				'trailheadId': trailheadId
 			}
 		});
-        if (response.status != HttpStatusCodes.OK) {
+        if (response.status !== HttpStatusCodes.OK) {
             return('Pool Already Exists')
         }
 
@@ -179,11 +179,11 @@ const addRewardPool = async (
 				url: BACKEND_URL+'/api/rewardPoolAccount/addPool',
 				data: {'txId': txId, 'trailheadId': trailheadId}
 			});
-			if (response.status == 200) {
+			if (response.status === 200) {
 				// show it succeeded
 				const msg = () => toast(
 					<div>
-						Transaction Succeeded<br/><a target='_blank' href={getTxUrl(txId)}>View Transaction</a>
+						Transaction Succeeded<br/><a target='_blank' href={getExplorerUrl('tx', txId)}>View Transaction</a>
 					</div>
 					, {
 						'theme': 'light'
@@ -244,7 +244,7 @@ const AdminPage = (props: any) => {
 			const token = tokens[i];
 			let userBalance = 0;
 			try {
-				if (token == SOL_ADDRESS) {
+				if (token === SOL_ADDRESS) {
 					userBalance = await connection.getBalance(new PublicKey(address)) / LAMPORTS_PER_SOL;
 				} else {
 					const k = findAssociatedTokenAddress(new PublicKey(address), new PublicKey(token));
@@ -260,7 +260,7 @@ const AdminPage = (props: any) => {
 			d[token.toString()] = userBalance;
 		}
 		// either set the pool or user balances
-		if (address == data.address) {
+		if (address === data.address) {
 			setUserBalances(d)
 		} else {
 			setPoolBalances(d)
@@ -300,12 +300,14 @@ const AdminPage = (props: any) => {
     useEffect(() => {
 		if (data.address) {
 			getSpecificUserTokenBalances({}, tokens.map(x => x.mint), data.address);
-			getSpecificUserTokenBalances({}, tokens.map(x => x.mint), vaultAccount);
+			if (vaultAccount) {
+				getSpecificUserTokenBalances({}, tokens.map(x => x.mint), vaultAccount);
+			}
 		}
 	}, [data.address, vaultAccount])
 
 
-	const isTrails = data.address == ADMIN_ADDRESS;
+	const isTrails = data.address === ADMIN_ADDRESS;
 	const header = <div className='admin-header-outer'>
 		<div className='admin-header'>
 			{ isTrails ? null : <img className='admin-header-image' src={String(compass)} />}
@@ -344,7 +346,7 @@ const AdminPage = (props: any) => {
 				)
 			}
 		)
-		const curProject = data.trailheads.filter(x => x.id == trailheadId)[0];
+		const curProject = data.trailheads.filter(x => x.id === trailheadId)[0];
 		const curProjectImg = require(`../assets/projects/${curProject.name.toLowerCase().replaceAll(' ', '')}.png`);
 		return(
 			<div className='admin-page'>
@@ -378,8 +380,8 @@ const AdminPage = (props: any) => {
 		)
 	}
 
-	const balance: number = (toggle == 'deposit' && mint in userBalances) ? userBalances[mint]
-	: (toggle == 'withdraw' && mint in poolBalances) ? poolBalances[mint]
+	const balance: number = (toggle === 'deposit' && mint in userBalances) ? userBalances[mint]
+	: (toggle === 'withdraw' && mint in poolBalances) ? poolBalances[mint]
 	: 0;
 	
 	return (
@@ -392,7 +394,7 @@ const AdminPage = (props: any) => {
 			</div>
 			<div style={{'paddingBottom': '10px'}}>
 				{/* display the address of the reward pool */}
-				Reward Pool Account: <a target='_blank' href={`https://solana.fm/address/${vaultAccount}?cluster=http%253A%252F%252F127.0.0.1%253A8899%252F`}>{vaultAccount}</a>
+				Reward Pool Account: <a target='_blank' href={getExplorerUrl('address', vaultAccount)}>{vaultAccount}</a>
 			</div>
 			{/* deposit or withdrawal toggle */}
 			<ToggleButtonGroup
@@ -427,7 +429,7 @@ const AdminPage = (props: any) => {
 						<Form.Text className='text-muted clickable' onClick={() => {
 							setValue(balance.toString())
 						}}><span>Max: </span>
-							{/* { toggle == 'deposit' ? `Wallet` : 'Pool'} Balance: */}
+							{/* { toggle === 'deposit' ? `Wallet` : 'Pool'} Balance: */}
 							{
 								balance.toLocaleString('en-us')
 							}
@@ -439,18 +441,18 @@ const AdminPage = (props: any) => {
 						disabled={false}
 						id='burst-button'
 						className='burst-button fade-button'
-						variant={ toggle == 'deposit' ? 'success' : 'warning' }
+						variant={ toggle === 'deposit' ? 'success' : 'warning' }
 						type='button'
 						style={{'width':'200px'}}
 						onClick={async () => {
 							if (data.rewardPoolAccount) {
 								// function to deposit or withdraw funds from the pool account
-								moveFunds(data.rewardPoolAccount, data.address, walletContext, mint, parseFloat(value), toggle == 'deposit').then( (res: any) => {
+								moveFunds(data.rewardPoolAccount, data.address, walletContext, mint, parseFloat(value), toggle === 'deposit').then( (res: any) => {
 
 									if (res.succeeded) {
 										const msg = () => toast(
 											<div>
-												{res.message}<br/><a target='_blank' href={getTxUrl(res.txId)}>View Transaction</a>
+												{res.message}<br/><a target='_blank' href={getExplorerUrl('tx', res.txId)}>View Transaction</a>
 											</div>
 											, {
 												'theme': 'light'

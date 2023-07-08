@@ -29,7 +29,7 @@ const LeftBar = () => {
 	const data: IState = useSelector((state: any) => state.data);
 
 	return (
-        <div className={`left-bar ${location.pathname == '/MadWars' ? 'black-bg' : ''}`}>
+        <div className={`left-bar ${location.pathname === '/MadWars' ? 'black-bg' : ''}`}>
             {
                 isMobile ? null :
                 <div className='left-bar-header'>
@@ -68,7 +68,7 @@ const LeftBar = () => {
                     </div>
                 </NavLink>
                 {
-                    data.isAdmin || data.address == ADMIN_ADDRESS ? 
+                    data.isAdmin || data.address === ADMIN_ADDRESS ? 
                     <NavLink className={(navData) => (navData.isActive ? 'active' : '')} to ='/admin'>
                         <div className='left-bar-item'>
                             <img className='left-bar-logo' alt='logo' src={String(admin)} />{isMobile ? '' : 'Admin'}

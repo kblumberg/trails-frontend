@@ -32,17 +32,17 @@ const MainPage = (props: any) => {
 
 	return (
         <div className='row'>
-            <div className={`col-3 col-sm-2 col-md-4 col-lg-3 col-xl-2 ${location.pathname == '/MadWars' ? 'black-bg' : ''}`} style={{'paddingLeft': '0'}}>
+            <div className={`col-3 col-sm-2 col-md-4 col-lg-3 col-xl-2 ${location.pathname === '/MadWars' ? 'black-bg' : ''}`} style={{'paddingLeft': '0'}}>
                 <LeftBar />
             </div>
-            <div className={`col-9 col-sm-10 col-md-8 col-lg-9 col-xl-10 ${location.pathname == '/MadWars' ? 'mad-trail' : ''}`} style={{'paddingLeft': '0'}}>
+            <div className={`col-9 col-sm-10 col-md-8 col-lg-9 col-xl-10 ${location.pathname === '/MadWars' ? 'mad-trail' : ''}`} style={{'paddingLeft': '0'}}>
                 <div className='row' style={{'paddingTop': '55px', 'maxWidth': '1100px', 'margin': '0 auto'}}>
                     {
                         isMobile ? rightPanel : null
                     }
                     <div className={`col middle-col`}>
                         {
-                            data.address == '' ? <TrailheadsPage />
+                            data.address === '' ? <TrailheadsPage />
                             :
                             <Routes>
                                 <Route path='/' element={<TrailheadsPage />} />

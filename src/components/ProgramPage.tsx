@@ -41,7 +41,7 @@ const ProgramPage = (props: any) => {
 
 	const data: IState = useSelector((state: any) => state.data);
 
-    const curTrailheads = data.trailheads.filter(x => x.name == program?.replaceAll('_', ' ')).map(x => x.id);
+    const curTrailheads = data.trailheads.filter(x => x.name === program?.replaceAll('_', ' ')).map(x => x.id);
     const curTrailheadId = curTrailheads.length ? curTrailheads[0] : -1;
     const curTrails = data.trails.filter(x => curTrailheads.includes(x.trailheadId)).sort((a, b) => a.step - b.step);
 
@@ -50,10 +50,10 @@ const ProgramPage = (props: any) => {
     // the trails that you see when you first enter the page
     const trailDivs = curTrails.map((trail, i) => {
         // only trails where you submit a tx are repeatable
-        const isRepeatable = curTrails[i].slides.filter(x => x.programIds && (x.programIds.length > 0)).length > 0 && curTrailheadId != 12;
+        const isRepeatable = curTrails[i].slides.filter(x => x.programIds && (x.programIds.length > 0)).length > 0 && curTrailheadId !== 12;
 
         // how long do we have to wait to re-submit?
-        const lastComplete = data.xps.filter(x => x.trailId == trail.id ).reduce((a, b) => Math.max(a, b.timestamp), 0);
+        const lastComplete = data.xps.filter(x => x.trailId === trail.id ).reduce((a, b) => Math.max(a, b.timestamp), 0);
         const lastCompleteSecondsAgo = (Date.now() - lastComplete) / 1000;
         const wait = Math.max(0, (24 * 60 * 60) - lastCompleteSecondsAgo);
 
@@ -115,8 +115,8 @@ const ProgramPage = (props: any) => {
                             <ArrowLeftCircleFill />
                         </div>
                     </h3>
-                    <div>{`Get introduced to ${programName == 'Mad Trail' ? 'the Mad Wars' : programName}`}</div>
-                    <div className='mad-trail-subheader'>{programName == 'Mad Trail' ? <>After completing the Mad Trail, climb the <NavLink to='/leaderboard'>leaderboard</NavLink> to earn your <a target='blank' href='https://docs.zeta.markets/mad-wars/whitelists/mad-trainee'>Mad Trainee WL</a></> : null}</div>
+                    <div>{`Get introduced to ${programName === 'Mad Trail' ? 'the Mad Wars' : programName}`}</div>
+                    <div className='mad-trail-subheader'>{programName === 'Mad Trail' ? <>After completing the Mad Trail, climb the <NavLink to='/leaderboard'>leaderboard</NavLink> to earn your <a target='blank' href='https://docs.zeta.markets/mad-wars/whitelists/mad-trainee'>Mad Trainee WL</a></> : null}</div>
                 </div>
                 {trailDivs}
             </div>

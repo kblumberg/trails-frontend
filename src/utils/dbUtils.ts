@@ -27,7 +27,7 @@ export const saveUserXp = async (address: string, trailheadId: number, step: num
         url: BACKEND_URL+'/api/user/saveUserXp2',
         data: fields
     });
-    if (response.status == 200) {
+    if (response.status === 200) {
         const xps = data.xps;
         xps.push(newXp);
         dispatch(setUserXps(xps));
@@ -56,7 +56,7 @@ export const saveHike = async (address: string, trailheadId: number, step: numbe
         url: BACKEND_URL+'/api/hikes/saveHike2',
         data: fields
     });
-    if (response.data == VerifyTransactionResult.VERIFIED) {
+    if (response.data === VerifyTransactionResult.VERIFIED) {
         const newXp = xp + data.xp;
         dispatch(setUserXp(newXp));
         const newXp1 = new Xp(address, trailheadId, step, slide, trailId, slideId, Date.now(), xp);
